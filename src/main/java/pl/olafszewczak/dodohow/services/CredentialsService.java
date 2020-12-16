@@ -10,18 +10,39 @@ import pl.olafszewczak.dodohow.repositories.UserRepository;
 public class CredentialsService {
 
     private UserRepository userRepository;
+    private DtoMapper mapper;
+
 
     @Autowired
-    public CredentialsService(UserRepository userRepository) {
+    public CredentialsService(UserRepository userRepository, DtoMapper mapper) {
         this.userRepository = userRepository;
+        this.mapper = mapper;
     }
 
-    public User registerUser(UserDto userDto){
+    public boolean registerUser(UserDto userDto) {
+        if (!checkRegister(userDto)) {
+            User user = mapper.map(userDto);
+            userRepository.save(user);
+            return true;
+        }
+        return false;
+    }
 
-        //walidation logic
+    public boolean loginUser(UserDto userDto){
+        if(checkLogin(userDto)){
+            //login logic
+            return true;
+        }
+        return false;
+    }
 
-        User user = new User();
+    public boolean checkLogin(UserDto user) {
+        return userRepository
+                .existsByEmail(user.getEmail());
+    }
 
-        return userRepository.save(user);
+    public boolean checkRegister(UserDto user) {
+        return userRepository.existsByEmail(user.getEmail()) ||
+                userRepository.existsByLogin(user.getLogin());
     }
 }

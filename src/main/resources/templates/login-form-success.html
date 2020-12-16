@@ -19,6 +19,9 @@
                 <div class="login-wrapper my-auto">
                     <h1 class="login-title">Logowanie</h1>
                     <form action="#" th:action="@{/login}" th:object="${user}" method="post">
+                        <div class="success alert-success">
+                            Rejestracja udana!
+                        </div>
                         <div class="form-group">
                             <label for="email">Email</label>
                             <input type="email" name="email" id="email" class="form-control" placeholder="email@example.com">
