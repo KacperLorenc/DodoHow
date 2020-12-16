@@ -18,18 +18,22 @@
                 </div>
                 <div class="login-wrapper my-auto">
                     <h1 class="login-title">Log in</h1>
-                    <form action="#" th:action="@{/login}" th:object="${user}" method="post">
+                    <form action="#" th:action="@{/register}" th:object="${user}" method="post">
                         <div class="form-group">
                             <label for="email">Email</label>
-                            <input type="email" name="email" id="email" class="form-control" placeholder="email@example.com">
+                            <input type="text" name="email" id="email" class="form-control" placeholder="email@example.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="login">Login</label>
+                            <input type="text" name="login" id="login" class="form-control" placeholder="wprowadź login">
                         </div>
                         <div class="form-group mb-4">
                             <label for="password">Hasło</label>
-                            <input type="password" name="password" id="password" class="form-control" placeholder="wprowadź hasło">
+                            <input type="text" name="password" id="password" class="form-control" placeholder="wprowadź hasło">
                         </div>
-                        <input name="login" id="login" class="btn btn-block login-btn" type="submit" value="Zaloguj">
+                        <input name="register" id="register" class="btn btn-block login-btn" type="submit" value="Rejestruj">
                     </form>
-                    <p class="login-wrapper-footer-text">Nie masz konta? <a th:href="@{/register}"  class="text-reset">Zarejestruj się!</a></p>
+                    <p class="login-wrapper-footer-text">Masz już konto? <a th:href="@{/login}"  class="text-reset">Zaloguj się!</a></p>
                 </div>
             </div>
             <div class="col-sm-6 px-0 d-none d-sm-block">

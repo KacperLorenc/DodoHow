@@ -3,9 +3,7 @@ package pl.olafszewczak.dodohow.web;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import pl.olafszewczak.dodohow.dtos.UserDto;
 import pl.olafszewczak.dodohow.services.CredentialsService;
 
@@ -20,13 +18,25 @@ public class CredentialsController {
     }
 
     @GetMapping("/login")
-    private String getLoginForm(){
+    private String getLoginForm(Model model) {
+
+        UserDto userDto = new UserDto();
+        model.addAttribute("user", userDto);
 
         return "login-form";
     }
 
+
+    @PostMapping("/login")
+    private String loginUser(@ModelAttribute UserDto userDto) {
+        if (credentialsService.loginUser(userDto)) {
+            return "redirect:/";
+        }
+        return "login-form-error";
+    }
+
     @GetMapping("/register")
-    private String getRegisterForm(Model model){
+    private String getRegisterForm(Model model) {
 
         model.addAttribute("user", new UserDto());
 
@@ -34,9 +44,10 @@ public class CredentialsController {
     }
 
     @PostMapping("/register")
-    private String registerUser(@ModelAttribute UserDto userDto){
-        credentialsService.registerUser(userDto);
-
-        return "login-form";
+    private String registerUser(@ModelAttribute UserDto userDto) {
+        if (credentialsService.registerUser(userDto)) {
+            return "login-form-success";
+        }
+        return "register-form-error";
     }
 }
