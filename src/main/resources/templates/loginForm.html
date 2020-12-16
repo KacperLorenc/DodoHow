@@ -18,14 +18,20 @@
                 </div>
                 <div class="login-wrapper my-auto">
                     <h1 class="login-title">Logowanie</h1>
-                    <form action="#" th:action="@{/login}" th:object="${user}" method="post">
+                    <form action="#" th:action="@{/login}" th:object="${userDto}" method="post">
                         <div class="form-group">
                             <label for="email">Email</label>
-                            <input type="email" name="email" id="email" class="form-control" placeholder="email@example.com">
+                            <input th:field="*{email}" type="email" name="email" id="email" class="form-control" placeholder="email@example.com">
+                            <span class="validationError text-danger"
+                                  th:if="${#fields.hasErrors('email')}"
+                                  th:errors="*{email}">Email error</span>
                         </div>
                         <div class="form-group mb-4">
                             <label for="password">Hasło</label>
-                            <input type="password" name="password" id="password" class="form-control" placeholder="wprowadź hasło">
+                            <input th:field="*{password}" type="password" name="password" id="password" class="form-control" placeholder="wprowadź hasło">
+                            <span class="validationError text-danger"
+                                  th:if="${#fields.hasErrors('password')}"
+                                  th:errors="*{password}">Password error</span>
                         </div>
                         <input name="login" id="login" class="btn btn-block login-btn" type="submit" value="Zaloguj">
                     </form>

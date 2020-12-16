@@ -3,9 +3,13 @@ package pl.olafszewczak.dodohow.web;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import pl.olafszewczak.dodohow.dtos.UserDto;
 import pl.olafszewczak.dodohow.services.CredentialsService;
+
+import javax.validation.Valid;
 
 @Controller
 public class CredentialsController {
@@ -20,34 +24,46 @@ public class CredentialsController {
     @GetMapping("/login")
     private String getLoginForm(Model model) {
 
-        UserDto userDto = new UserDto();
-        model.addAttribute("user", userDto);
+        UserDto user = new UserDto();
+        model.addAttribute("userDto", user);
 
-        return "login-form";
+        return "loginForm";
     }
 
 
     @PostMapping("/login")
-    private String loginUser(@ModelAttribute UserDto userDto) {
+    private String loginUser(@Valid UserDto userDto, Errors errors, Model model) {
+
+        model.addAttribute("userDto", userDto);
+
+        if(errors.hasErrors()){
+            return "loginForm";
+        }
         if (credentialsService.loginUser(userDto)) {
             return "redirect:/";
         }
-        return "login-form-error";
+        return "loginFormError";
     }
 
     @GetMapping("/register")
     private String getRegisterForm(Model model) {
 
-        model.addAttribute("user", new UserDto());
+        UserDto userDto = new UserDto();
 
-        return "register-form";
+        model.addAttribute("userDto", userDto);
+
+        return "registerForm";
     }
 
     @PostMapping("/register")
-    private String registerUser(@ModelAttribute UserDto userDto) {
-        if (credentialsService.registerUser(userDto)) {
-            return "login-form-success";
+    private String registerUser(@Valid UserDto userDto, Errors errors) {
+
+        if(errors.hasErrors()){
+            return "registerForm";
         }
-        return "register-form-error";
+        if (credentialsService.registerUser(userDto)) {
+            return "loginFormSuccess";
+        }
+        return "registerFormError";
     }
 }
