@@ -16,10 +16,10 @@ public class DtoMapper {
     }
 
     public User map (UserDto userDto){
-        return new User(userDto.getId(), userDto.getLogin(), userDto.getPassword(), userDto.getEmail());
+        return new User(userDto.getId(), userDto.getLogin(), userDto.getPassword(), userDto.getEmail(), userDto.getActive(), userDto.getRoles());
     }
 
     public UserDto map (User user){
-        return new UserDto(user.getId(), user.getLogin(), user.getPassword(), user.getEmail());
+        return new UserDto(user.getId(), user.getUsername(), user.getPassword(), user.getEmail(), user.getActive(), user.getRoles());
     }
 }

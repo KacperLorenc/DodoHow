@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:fragment="headerfiles">
+    <title>DodoHow</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/home.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div th:fragment="nav" id="custom-bootstrap-menu" class="navbar navbar-default" role="navigation">
+    <div class="container">
+        <div class="navbar-header"><a class="navbar-brand" href="#"><span class="glyphicon glyphicon-fire"></span></a>
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-menubuilder"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
+            </button>
+        </div>
+        <div class="collapse navbar-collapse navbar-menubuilder">
+            <ul class="nav navbar-nav navbar-left">
+                <li><a href="#" class="hvr-underline-reveal">Lista Kursów</a>
+                </li>
+                <li><a href="#" class="hvr-underline-reveal">Postęp</a>
+                </li>
+            </ul>
+            <form class="form-inline my-2 my-lg-0" th:action="@{/logout}" method="post">
+                <button sec:authorize="isAuthenticated()" class="btn btn-outline-danger my-2 my-sm-0 btn-sm" type="submit">Logout</button>
+                <button sec:authorize="isAnonymous()" th:href="@{~/login}" class="btn btn-outline-info my-2 my-sm-0 btn-sm" type="submit">Login</button>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>
