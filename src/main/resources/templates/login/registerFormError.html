@@ -6,7 +6,7 @@
     <link href="https://fonts.googleapis.com/css?family=Karla:400,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.materialdesignicons.com/4.8.95/css/materialdesignicons.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="assets/css/login.css">
+    <link rel="stylesheet" href="../../assets/css/login.css">
 </head>
 <body>
 <main>
@@ -14,33 +14,33 @@
         <div class="row">
             <div class="col-sm-6 login-section-wrapper">
                 <div class="brand-wrapper">
-                    <img src="assets/images/logo.svg" alt="logo" class="logo">
+                    <img src="../../assets/images/logo.svg" alt="logo" class="logo">
                 </div>
                 <div class="login-wrapper my-auto">
-                    <h1 class="login-title">Logowanie</h1>
-                    <form action="#" th:action="@{/login}" method="post">
-                        <div th:if="${param.error}" class="alert alert-danger">
-                           Niepoprawny login lub hasło
+                    <h1 class="login-title">Rejestracja</h1>
+                    <form action="#" th:action="@{/register}" th:object="${userDto}" method="post">
+                        <div class="alert alert-danger">
+                            Podany login lub email jest już używany.
                         </div>
                         <div class="form-group">
-                            <label for="username">Login</label>
-                            <input type="username" name="username" id="username" class="form-control">
+                            <label for="email">Email</label>
+                            <input type="text" name="email" id="email" class="form-control" placeholder="email@example.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="login">Login</label>
+                            <input type="text" name="login" id="login" class="form-control" placeholder="wprowadź login">
                         </div>
                         <div class="form-group mb-4">
                             <label for="password">Hasło</label>
-                            <input type="password" name="password" id="password" class="form-control">
+                            <input type="text" name="password" id="password" class="form-control" placeholder="wprowadź hasło">
                         </div>
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input" id="remember-me" name="remember-me">
-                            <label class="form-check-label" for="remember-me">Zapamiętaj mnie</label>
-                        </div>
-                        <input name="login" id="login" class="btn btn-block login-btn" type="submit" value="Zaloguj">
+                        <input name="register" id="register" class="btn btn-block login-btn" type="submit" value="Rejestruj">
                     </form>
-                    <p class="login-wrapper-footer-text">Nie masz konta? <a th:href="@{/register}"  class="text-reset">Zarejestruj się!</a></p>
+                    <p class="login-wrapper-footer-text">Masz już konto? <a th:href="@{/templates/login}" class="text-reset">Zaloguj się!</a></p>
                 </div>
             </div>
             <div class="col-sm-6 px-0 d-none d-sm-block">
-                <img src="assets/images/login.jpg" alt="login image" class="login-img">
+                <img src="../../assets/images/login.jpg" alt="login image" class="login-img">
             </div>
         </div>
     </div>

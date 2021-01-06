@@ -34,7 +34,7 @@ public class CredentialsController {
 
     @GetMapping("/login")
     private String login() {
-        return "login";
+        return "login/login";
     }
 
     @GetMapping("/register")
@@ -44,21 +44,21 @@ public class CredentialsController {
 
         model.addAttribute("user", userDto);
 
-        return "register";
+        return "login/register";
     }
 
     @PostMapping("/register")
-    private String registerUser(@ModelAttribute("user") @Valid UserDto userDto, HttpServletRequest request, Errors errors) {
+    private String registerUser(@ModelAttribute("user") @Valid UserDto userDto, Errors errors, HttpServletRequest request) {
         if (errors.hasErrors()) {
-            return "register";
+            return "login/register";
         }
         if (credentialsService.registerUser(userDto)) {
             String appUrl = request.getContextPath();
             Optional<User> userOpt = credentialsService.getByUsername(userDto.getLogin());
             userOpt.ifPresent(user -> eventPublisher.publishEvent(new OnRegistrationCompleteEvent(user, request.getLocale(), appUrl)));
-            return "loginFormSuccess";
+            return "login/loginFormSuccess";
         }
-        return "registerFormError";
+        return "login/registerFormError";
     }
 
     @GetMapping("/registrationConfirm")
@@ -66,21 +66,25 @@ public class CredentialsController {
 
         Optional<VerificationToken> tokenOptional = credentialsService.getVerificationToken(token);
         if (tokenOptional.isEmpty()) {
-            model.addAttribute("message", "Coś poszło nie tak");
-            return "redirect:/badUser";
+            return "redirect:/wrong-token";
         }
 
         VerificationToken verificationToken = tokenOptional.get();
 
         User user = verificationToken.getUser();
         if (verificationToken.getExpiryDate().compareTo(LocalDate.now()) <= 0) {
-            model.addAttribute("message", "Link wygasł");
-            return "redirect:/badUser";
+            return "redirect:/wrong-token";
         }
 
         user.setActive(true);
         credentialsService.saveRegisteredUser(user);
-        return "redirect:/loginFormSuccess";
+        return "redirect:/login";
+    }
+
+    @GetMapping("wrong-token")
+    public String wrongToken(Model model){
+        model.addAttribute("message", "Twój link wygasł lub jest nieprawidłowy.");
+        return "login/badUser";
     }
 
 }

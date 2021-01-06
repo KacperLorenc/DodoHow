@@ -2,10 +2,7 @@ package pl.olafszewczak.dodohow.validation;
 
 import pl.olafszewczak.dodohow.dtos.UserDto;
 
-import javax.validation.Constraint;
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
-import javax.validation.Payload;
+import javax.validation.*;
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
@@ -17,9 +14,10 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Target({TYPE, ANNOTATION_TYPE})
 @Retention(RUNTIME)
 @Constraint(validatedBy = PasswordMatchesValidator.class)
+@ReportAsSingleViolation
 @Documented
 public @interface PasswordMatches {
-    String message() default "Hasła muszą być takie same";
+    String message() default "*Hasła muszą być takie same";
 
     Class<?>[] groups() default {};
 

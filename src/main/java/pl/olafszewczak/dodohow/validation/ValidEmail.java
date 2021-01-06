@@ -1,9 +1,6 @@
 package pl.olafszewczak.dodohow.validation;
 
-import javax.validation.Constraint;
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
-import javax.validation.Payload;
+import javax.validation.*;
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
@@ -16,9 +13,10 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Target({TYPE, FIELD, ANNOTATION_TYPE})
 @Retention(RUNTIME)
 @Constraint(validatedBy = EmailValidator.class)
+@ReportAsSingleViolation
 @Documented
 public @interface ValidEmail {
-    String message() default "Niepoprawny email";
+    String message() default "*Niepoprawny email";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }
