@@ -15,7 +15,9 @@
 <div th:fragment="nav" id="custom-bootstrap-menu" class="navbar navbar-default" role="navigation">
     <div class="container">
         <div class="navbar-header"><a class="navbar-brand" href="#"><span class="glyphicon glyphicon-fire"></span></a>
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-menubuilder"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-menubuilder"><span
+                    class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span
+                    class="icon-bar"></span>
             </button>
         </div>
         <div class="collapse navbar-collapse navbar-menubuilder">
@@ -25,10 +27,16 @@
                 <li><a href="#" class="hvr-underline-reveal">Postęp</a>
                 </li>
             </ul>
-            <form class="form-inline my-2 my-lg-0" th:action="@{/logout}" method="post">
-                <button sec:authorize="isAuthenticated()" class="btn btn-outline-danger my-2 my-sm-0 btn-sm" type="submit">Logout</button>
-                <button sec:authorize="isAnonymous()" th:href="@{~/login}" class="btn btn-outline-info my-2 my-sm-0 btn-sm" type="submit">Login</button>
-            </form>
+            <div sec:authorize="isAuthenticated()">
+                <form class="form-inline my-2 my-lg-0" th:action="@{/logout}" method="post">
+                    <button class="btn btn-outline-danger my-2 my-sm-0 btn-sm" type="submit">Logout</button>
+                </form>
+            </div>
+            <div sec:authorize="isAnonymous()">
+                <form class="form-inline my-2 my-lg-0" th:action="@{/login}" method="get">
+                    <button class="btn btn-outline-info my-2 my-sm-0 btn-sm" type="submit">Login</button>
+                </form>
+            </div>
         </div>
     </div>
 </div>
