@@ -21,4 +21,5 @@ public class Section {
     private String title;
     @OneToMany(mappedBy = "section", cascade = CascadeType.MERGE)
     private Set<Exercise> exercises;
+    private SectionType sectionType;
 }

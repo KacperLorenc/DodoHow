@@ -32,6 +32,8 @@ public class User {
     private String roles = "";
     @OneToMany
     private Set<VerificationToken> verificationToken;
+    @OneToMany
+    private Set<Section> sections;
 
     public User(String username, String password, String email, String roles) {
         this.username = username;

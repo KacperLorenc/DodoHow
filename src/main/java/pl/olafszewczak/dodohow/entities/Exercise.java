@@ -1,11 +1,13 @@
 package pl.olafszewczak.dodohow.entities;
 
+import com.google.common.collect.Lists;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Getter
 @Setter
@@ -28,4 +30,10 @@ public class Exercise {
     @ManyToOne()
     private Section section;
     private ExerciseType type;
+
+    public List<String> getListOfWrongAnswers(){
+      String[] answers = wrongAnswers.split(";");
+      return Lists.newArrayList(answers);
+    }
+
 }
