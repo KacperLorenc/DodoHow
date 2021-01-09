@@ -18,6 +18,9 @@ public class DbInit implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-
+        System.out.println("--------------------------------------------------------------------------------------------");
+        userRepository.findAll().forEach(u -> {
+            System.out.println("login:" + u.getUsername() + " " + "password:" + passwordEncoder.encode(u.getPassword()));
+        });
     }
 }
