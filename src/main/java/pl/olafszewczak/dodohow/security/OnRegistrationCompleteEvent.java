@@ -14,10 +14,8 @@ public class OnRegistrationCompleteEvent extends ApplicationEvent {
     private Locale locale;
     private User user;
 
-    public OnRegistrationCompleteEvent(
-            User user, Locale locale, String appUrl) {
+    public OnRegistrationCompleteEvent(User user, Locale locale, String appUrl) {
         super(user);
-
         this.user = user;
         this.locale = locale;
         this.appUrl = appUrl;

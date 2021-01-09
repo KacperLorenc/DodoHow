@@ -8,7 +8,6 @@ import pl.olafszewczak.dodohow.dtos.UserDto;
 import pl.olafszewczak.dodohow.entities.*;
 import pl.olafszewczak.dodohow.repositories.ExerciseRepository;
 import pl.olafszewczak.dodohow.repositories.SectionRepository;
-import pl.olafszewczak.dodohow.repositories.UserRepository;
 
 import java.util.Optional;
 import java.util.Set;
@@ -16,13 +15,11 @@ import java.util.stream.Collectors;
 
 @Service
 public class DtoMapper {
-    private UserRepository userRepository;
     private SectionRepository sectionRepository;
     private ExerciseRepository exerciseRepository;
 
     @Autowired
-    public DtoMapper(UserRepository userRepository, SectionRepository sectionRepository, ExerciseRepository exerciseRepository) {
-        this.userRepository = userRepository;
+    public DtoMapper( SectionRepository sectionRepository, ExerciseRepository exerciseRepository) {
         this.sectionRepository = sectionRepository;
         this.exerciseRepository = exerciseRepository;
     }
@@ -31,7 +28,7 @@ public class DtoMapper {
         User user = new User(userDto.getId(), userDto.getLogin(), userDto.getPassword(), userDto.getEmail(), userDto.getActive(), userDto.getRoles());
         Set<Long> ids = userDto.getSections();
         if (ids != null) {
-            user.setSections(sectionRepository.findAllById(ids));
+            user.setSections(sectionRepository.findAllByIdIn(ids));
         }
         return user;
     }
@@ -69,7 +66,7 @@ public class DtoMapper {
         if (sectionDto.getExercises() == null || sectionDto.getExercises().isEmpty()) {
             throw new RuntimeException("Section: " + sectionDto.getTitle() + " with id: " + sectionDto.getId() + " has no exercises");
         } else {
-            Set<Exercise> exercises = exerciseRepository.findAllById(sectionDto.getExercises());
+            Set<Exercise> exercises = exerciseRepository.findAllByIdIn(sectionDto.getExercises());
             if (exercises == null || exercises.isEmpty()) {
                 throw new RuntimeException("Section: " + sectionDto.getTitle() + " with id: " + sectionDto.getId() + " has wrong list of exercises");
             } else {

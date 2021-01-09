@@ -16,7 +16,6 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
     private CredentialsService service;
     private final JavaMailSender emailSender;
 
-
     @Autowired
     public RegistrationListener(CredentialsService service, JavaMailSender emailSender) {
         this.service = service;

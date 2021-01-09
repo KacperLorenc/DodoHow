@@ -23,7 +23,6 @@ public class DbInit implements CommandLineRunner {
         User user = new User(null,"kapa123",passwordEncoder.encode("kapa123"),"kacperlorenc1@wp.pl",true,"ROLE_USER");
         userRepository.save(user);
 
-
         userRepository.findAll().forEach(u -> {
             System.out.println("login:" + u.getUsername() + " " + "password:" + passwordEncoder.encode(u.getPassword()));
         });
