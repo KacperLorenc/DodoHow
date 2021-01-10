@@ -14,6 +14,6 @@ import java.util.Set;
 public class SectionDto {
     private Long id;
     private String title;
-    private Set<Long> exercises;
+    private Set<ExerciseDto> exercises;
     private String type;
 }

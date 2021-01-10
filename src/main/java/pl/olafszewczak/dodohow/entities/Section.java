@@ -19,7 +19,12 @@ public class Section {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
-    @OneToMany(mappedBy = "section", cascade = CascadeType.MERGE)
+    @OneToMany(mappedBy = "section", cascade = CascadeType.ALL)
     private Set<Exercise> exercises;
     private SectionType sectionType;
+
+    @Override
+    public String toString() {
+        return "id:" + id + ", title:'" + title ;
+    }
 }

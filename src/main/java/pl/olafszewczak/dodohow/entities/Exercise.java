@@ -36,4 +36,8 @@ public class Exercise {
       return Lists.newArrayList(answers);
     }
 
+    @Override
+    public String toString() {
+        return "id:" + id + ", maxScore:" + maxScore + ", question:'" + question;
+    }
 }

@@ -18,7 +18,7 @@ public class ExerciseDto {
     private String question;
     private String answer;
     private String wrongAnswers;
-    private Long section;
+    private Long sectionId;
     private String type;
 
     public List<String> getListOfWrongAnswers(){
