@@ -43,8 +43,32 @@ public class SectionService {
         return sectionRepository.findAllByIdIn(ids);
     }
 
-    public Optional<Section> getFirstSection() {
-        return sectionRepository.findBySectionType(SectionType.FIRST_SECTION);
+    @Transactional
+    public void assignNextSection(User user) {
+        Set<Section> sections = getUsersSections(user);
+        if (sections == null || sections.isEmpty()) {
+            Optional<Section> sectionOptional = getFirstSection();
+            sectionOptional.ifPresent(s -> {
+                user.getSections().add(s);
+                userRepository.save(user);
+            });
+        } else {
+            sections.stream()
+                    .map(s -> s.getSectionType().getNumber())
+                    .max(Integer::compareTo)
+                    .flatMap(number -> SectionType.findByNumber(number + 1).flatMap(type -> sectionRepository.findBySectionType(type)))
+                    .ifPresent(section -> {
+                        user.getSections().add(section);
+                        userRepository.save(user);
+                    });
+        }
     }
 
+    public Optional<Section> getFirstSection() {
+        Optional<SectionType> sectionType = SectionType.findByNumber(1);
+        if (sectionType.isPresent()) {
+            return sectionRepository.findBySectionType(sectionType.get());
+        }
+        return Optional.empty();
+    }
 }
