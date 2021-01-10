@@ -6,18 +6,18 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import pl.olafszewczak.dodohow.entities.User;
-import pl.olafszewczak.dodohow.services.CredentialsService;
+import pl.olafszewczak.dodohow.services.UserService;
 
 import java.util.UUID;
 
 @Service
 public class RegistrationListener implements ApplicationListener<OnRegistrationCompleteEvent> {
 
-    private CredentialsService service;
+    private UserService service;
     private final JavaMailSender emailSender;
 
     @Autowired
-    public RegistrationListener(CredentialsService service, JavaMailSender emailSender) {
+    public RegistrationListener(UserService service, JavaMailSender emailSender) {
         this.service = service;
         this.emailSender = emailSender;
     }

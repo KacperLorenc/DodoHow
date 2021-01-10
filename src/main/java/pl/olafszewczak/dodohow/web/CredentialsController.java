@@ -13,7 +13,7 @@ import pl.olafszewczak.dodohow.dtos.UserDto;
 import pl.olafszewczak.dodohow.entities.User;
 import pl.olafszewczak.dodohow.security.OnRegistrationCompleteEvent;
 import pl.olafszewczak.dodohow.security.VerificationToken;
-import pl.olafszewczak.dodohow.services.CredentialsService;
+import pl.olafszewczak.dodohow.services.UserService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -23,12 +23,12 @@ import java.util.Optional;
 @Controller
 public class CredentialsController {
 
-    private CredentialsService credentialsService;
+    private UserService userService;
     private ApplicationEventPublisher eventPublisher;
 
     @Autowired
-    public CredentialsController(CredentialsService credentialsService, ApplicationEventPublisher eventPublisher) {
-        this.credentialsService = credentialsService;
+    public CredentialsController(UserService userService, ApplicationEventPublisher eventPublisher) {
+        this.userService = userService;
         this.eventPublisher = eventPublisher;
     }
 
@@ -52,9 +52,9 @@ public class CredentialsController {
         if (errors.hasErrors()) {
             return "login/register";
         }
-        if (credentialsService.registerUser(userDto)) {
+        if (userService.registerUser(userDto)) {
             String appUrl = request.getContextPath();
-            Optional<User> userOpt = credentialsService.getByUsername(userDto.getLogin());
+            Optional<User> userOpt = userService.getByUsername(userDto.getLogin());
             userOpt.ifPresent(user -> eventPublisher.publishEvent(new OnRegistrationCompleteEvent(user, request.getLocale(), appUrl)));
             return "login/loginFormSuccess";
         }
@@ -64,7 +64,7 @@ public class CredentialsController {
     @GetMapping("/registrationConfirm")
     public String confirmRegistration(Model model, @RequestParam("token") String token) {
 
-        Optional<VerificationToken> tokenOptional = credentialsService.getVerificationToken(token);
+        Optional<VerificationToken> tokenOptional = userService.getVerificationToken(token);
         if (tokenOptional.isEmpty()) {
             return "redirect:/wrong-token";
         }
@@ -77,7 +77,7 @@ public class CredentialsController {
         }
 
         user.setActive(true);
-        credentialsService.saveRegisteredUser(user);
+        userService.saveRegisteredUser(user);
         return "redirect:/login";
     }
 

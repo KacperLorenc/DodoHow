@@ -1,6 +1,7 @@
 package pl.olafszewczak.dodohow.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -8,24 +9,27 @@ import pl.olafszewczak.dodohow.dtos.UserDto;
 import pl.olafszewczak.dodohow.entities.User;
 import pl.olafszewczak.dodohow.repositories.TokenRepository;
 import pl.olafszewczak.dodohow.repositories.UserRepository;
+import pl.olafszewczak.dodohow.security.IAuthenticationFacade;
 import pl.olafszewczak.dodohow.security.VerificationToken;
 
 import java.util.Optional;
 
 @Service
-public class CredentialsService {
+public class UserService {
 
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
     private TokenRepository tokenRepository;
+    private IAuthenticationFacade authenticationFacade;
     private DtoMapper mapper;
 
     @Autowired
-    public CredentialsService(UserRepository userRepository, DtoMapper mapper, PasswordEncoder passwordEncoder, TokenRepository tokenRepository) {
+    public UserService(UserRepository userRepository, DtoMapper mapper, PasswordEncoder passwordEncoder, TokenRepository tokenRepository, IAuthenticationFacade authenticationFacade) {
         this.userRepository = userRepository;
         this.mapper = mapper;
         this.passwordEncoder = passwordEncoder;
         this.tokenRepository = tokenRepository;
+        this.authenticationFacade = authenticationFacade;
     }
 
     @Transactional
@@ -39,6 +43,11 @@ public class CredentialsService {
             return true;
         }
         return false;
+    }
+
+    public Optional<User> getUserFromSession(){
+        Authentication authentication = authenticationFacade.getAuthentication();
+        return userRepository.findByUsername(authentication.getName());
     }
 
     public boolean checkRegister(UserDto user) {
@@ -66,5 +75,9 @@ public class CredentialsService {
 
     public Optional<User> getByUsername(String username){
         return userRepository.findByUsername(username);
+    }
+
+    public Optional<User> getById(Long id){
+        return userRepository.findById(id);
     }
 }
