@@ -34,6 +34,8 @@ public class User {
     private Set<VerificationToken> verificationToken;
     @OneToMany
     private Set<Section> sections;
+    @OneToMany(cascade = CascadeType.ALL)
+    private Set<Score> scores;
 
     public User(String username, String password, String email, String roles) {
         this.username = username;

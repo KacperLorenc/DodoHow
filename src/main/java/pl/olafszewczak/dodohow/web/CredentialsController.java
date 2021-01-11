@@ -54,7 +54,7 @@ public class CredentialsController {
         }
         if (userService.registerUser(userDto)) {
             String appUrl = request.getContextPath();
-            Optional<User> userOpt = userService.getByUsername(userDto.getLogin());
+            Optional<User> userOpt = userService.findByUsername(userDto.getLogin());
             userOpt.ifPresent(user -> eventPublisher.publishEvent(new OnRegistrationCompleteEvent(user, request.getLocale(), appUrl)));
             return "login/loginFormSuccess";
         }

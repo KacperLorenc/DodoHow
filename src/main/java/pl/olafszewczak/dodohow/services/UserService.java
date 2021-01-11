@@ -73,11 +73,11 @@ public class UserService {
         tokenRepository.save(myToken);
     }
 
-    public Optional<User> getByUsername(String username){
+    public Optional<User> findByUsername(String username){
         return userRepository.findByUsername(username);
     }
 
-    public Optional<User> getById(Long id){
+    public Optional<User> findById(Long id){
         return userRepository.findById(id);
     }
 }

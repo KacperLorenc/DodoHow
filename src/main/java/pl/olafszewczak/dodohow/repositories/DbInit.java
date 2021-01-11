@@ -34,7 +34,7 @@ public class DbInit implements CommandLineRunner {
         Exercise exercise2 = new Exercise(null, 10, "Powiedz nie po angielsku", "No", "", null, ExerciseType.TYPE_SENTENCE);
         Exercise exercise3 = new Exercise(null, 10, "Jak powiesz\"Moje imię to Jan\" ?", "My name is Jan", "", null, ExerciseType.TYPE_SENTENCE);
         Set<Exercise> exercises = Sets.newHashSet(exercise1, exercise2, exercise3);
-        Section section = new Section(null, "Podstawy", exercises, SectionType.FIRST_SECTION);
+        Section section = new Section(null, "Podstawy", exercises, SectionType.FIRST_SECTION,50);
         exercises.forEach(e -> e.setSection(section));
         sectionRepository.save(section);
 

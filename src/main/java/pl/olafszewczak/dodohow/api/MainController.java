@@ -5,11 +5,13 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import pl.olafszewczak.dodohow.dtos.QuizDto;
+import pl.olafszewczak.dodohow.dtos.ScoreDto;
 import pl.olafszewczak.dodohow.dtos.UserDto;
+import pl.olafszewczak.dodohow.entities.Score;
 import pl.olafszewczak.dodohow.entities.User;
+import pl.olafszewczak.dodohow.services.ScoreService;
 import pl.olafszewczak.dodohow.services.UserService;
 import pl.olafszewczak.dodohow.services.DtoMapper;
 
@@ -20,11 +22,13 @@ import java.util.Optional;
 public class MainController {
     private DtoMapper dtoMapper;
     private UserService userService;
+    private ScoreService scoreService;
 
     @Autowired
-    public MainController(DtoMapper dtoMapper, UserService userService) {
+    public MainController(DtoMapper dtoMapper, UserService userService, ScoreService scoreService) {
         this.dtoMapper = dtoMapper;
         this.userService = userService;
+        this.scoreService = scoreService;
     }
 
     @GetMapping("/sections")
@@ -38,18 +42,35 @@ public class MainController {
                 return new ResponseEntity<>(headers, HttpStatus.FOUND);
             }
             return ResponseEntity.notFound().build();
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
-    @GetMapping ("/user/{id}")
-    public ResponseEntity<UserDto> getUser(@PathVariable Long id){
+    @GetMapping("/quiz/{id}")
+    public ResponseEntity<QuizDto> getQuiz(@PathVariable Long id) {
         try {
-            Optional<User> user = userService.getById(id);
+            Optional<User> user = userService.findById(id);
+            if (user.isPresent()) {
+                QuizDto quizDto = dtoMapper.mapToQuiz(user.get());
+                if (quizDto != null) {
+                    return ResponseEntity.ok(quizDto);
+                }
+            }
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @GetMapping("/user/{id}")
+    public ResponseEntity<UserDto> getUser(@PathVariable Long id) {
+        try {
+            Optional<User> user = userService.findById(id);
             return user.map(value -> ResponseEntity.ok(dtoMapper.map(value))).orElseGet(() -> ResponseEntity.notFound().build());
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
@@ -68,5 +89,18 @@ public class MainController {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+    }
+
+    @PostMapping("/score")
+    public String addScore(@RequestBody ScoreDto scoreDto) {
+        try {
+            Score score = dtoMapper.map(scoreDto);
+            if(score!= null){
+                scoreService.addScore(score);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "home/index";
     }
 }
