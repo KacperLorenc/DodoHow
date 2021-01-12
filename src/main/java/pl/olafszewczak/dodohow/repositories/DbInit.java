@@ -47,7 +47,7 @@ public class DbInit implements CommandLineRunner {
         System.out.println("--------------------------------------------------------------------------------------------");
         System.out.println("Użytkownicy:");
         userRepository.findAll().forEach(u -> {
-            System.out.println("login:" + u.getUsername() + " " + "password:" + u.getPassword());
+            System.out.println("login:" + u.getUsername() + " " + "password:" + passwordEncoder.encode(u.getPassword()));
         });
 
         System.out.println("--------------------------------------------------------------------------------------------");

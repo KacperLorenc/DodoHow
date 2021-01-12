@@ -81,7 +81,7 @@ public class CredentialsController {
         return "redirect:/login";
     }
 
-    @GetMapping("wrong-token")
+    @GetMapping("/wrong-token")
     public String wrongToken(Model model){
         model.addAttribute("message", "Twój link wygasł lub jest nieprawidłowy.");
         return "login/badUser";
