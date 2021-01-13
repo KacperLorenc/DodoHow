@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html class="whole-screen" lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:insert="sections/navigationbar.html :: headerfiles"></head>
-<body id="page-top">
+<body class="whole-screen" id="page-top">
 <div th:insert="sections/navigationbar.html :: nav"></div>
-<header class="masthead bg-primary text-white text-center">
-    <img class="masthead-avatar mb-5" src="../../assets/img/avataaars.svg" alt=""/>
+<header class="masthead bg-white text-white text-center">
 </header>
 <div class="container d-flex align-items-center flex-column ">
     <div class="container">
-        <h2 class="page-section-heading text-center text-uppercase text-secondary mt-5">Wybór sekcji</h2>
+        <h2 class="page-section-heading text-center text-uppercase text-secondary">Wybór sekcji</h2>
         <div class="divider-custom">
             <div class="divider-custom-line"></div>
             <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
@@ -25,6 +25,26 @@
         </div>
     </div>
 </div>
-<div th:insert="home/footer :: foot"></div>
+<div class="container">
+    <th:block th:each="section, i : ${sections}">
+        <div class="row align-items-center mb-1">
+            <div class="col-md-7 text-center text-secondary" th:text="${section?.title}"></div>
+            <div class="col-md-4">
+                <a th:if="${i.index < (i.size)-1}" th:href="@{/login}">
+                    <button class="btn btn-primary btn-thin" id="loginButton1">Powtórz kurs</button>
+                </a>
+                <a th:if="${i.index == (i.size)-1}" th:href="@{/login}">
+                    <button class="btn btn-primary btn-thin" id="loginButton2">Rozpocznij kurs</button>
+                </a>
+            </div>
+        </div>
+        <div th:if="${i.index < (i.size)-1}" class="row mb-1">
+            <div class="col-md-12 border-solid-thin"></div>
+        </div>
+    </th:block>
+</div>
+<header class="masthead bg-white text-white text-center">
+</header>
+<div class="footer-bottom" th:insert="home/footer :: foot"></div>
 </body>
 </html>

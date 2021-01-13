@@ -9685,6 +9685,9 @@ button.bg-dark:focus {
   text-align: center !important;
   justify-content: center !important;
 }
+.text-footer{
+  justify-content: center !important;
+}
 
 @media (min-width: 576px) {
   .text-sm-left {
@@ -10032,6 +10035,11 @@ h3 {
   font-size: 1.25rem;
 }
 
+.btn-thin {
+  padding: 0.2rem 1.75rem;
+  font-size: 1.25rem;
+}
+
 .btn-social {
   border-radius: 100%;
   display: inline-flex;
@@ -10116,6 +10124,10 @@ h3 {
 }
 .masthead {
   padding-top: calc(6rem + 74px);
+  padding-bottom: 6rem;
+}
+.masthead-empty{
+  padding-top: 5rem;
   padding-bottom: 6rem;
 }
 .masthead .masthead-heading {
@@ -10232,11 +10244,24 @@ form .row:first-child .floating-label-form-group {
   border-top: 1px solid #e9ecef;
 }
 
+.border-solid-thin{
+  border-bottom: 1px groove #2c3e50;
+  content: "";
+}
+
 .footer {
   padding-top: 3rem;
   padding-bottom: 3rem;
   background-color: #2c3e50;
   color: #fff;
+}
+.footer-bottom {
+  bottom: 0;
+}
+
+.whole-screen {
+  margin: 0;
+  height: 100%;
 }
 
 .copyright {

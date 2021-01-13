@@ -37,9 +37,9 @@ public class SectionService {
     public Optional<Section> findNextSection(User user) {
         Set<Section> sections = findUsersSections(user);
         return sections.stream()
-                .map(s -> s.getSectionType().getNumber())
-                .max(Integer::compareTo)
-                .flatMap(number -> SectionType.findByNumber(number + 1).flatMap(type -> sectionRepository.findBySectionType(type)));
+                .map(Section::getId)
+                .max(Long::compareTo)
+                .flatMap(number -> sectionRepository.findById(number));
     }
 
     public Optional<Section> getFirstSection() {
@@ -56,6 +56,10 @@ public class SectionService {
 
     public Optional<Section> findById(Long id) {
         return sectionRepository.findById(id);
+    }
+
+    public boolean existsById(Long id){
+        return sectionRepository.existsById(id);
     }
 
 }

@@ -109,8 +109,8 @@ public class DtoMapper {
         return new ScoreDto(score.getId(), score.getUser().getId(), score.getSection().getId(), score.getScore());
     }
 
-    public QuizDto mapToQuiz(User user) {
-        return sectionService.findNextSection(user)
+    public QuizDto mapToQuiz(User user, Long sectionId) {
+        return sectionService.findById(sectionId)
                 .map(section -> new QuizDto(user.getId(), map(section)))
                 .orElse(null);
     }
