@@ -4,7 +4,12 @@
 <head th:insert="sections/navigationbar.html :: headerfiles"></head>
 <body class="whole-screen" id="page-top">
 <div th:insert="sections/navigationbar.html :: nav"></div>
-<header class="masthead bg-white text-white text-center">
+<header class="masthead bg-white text-white text-center" style="padding-bottom: 0; padding-top: 12.5rem">
+    <div class="container d-flex align-items-center flex-column">
+        <a th:href="@{/}">
+        <img class="masthead-avatar mb-5" src="../../assets/img/avataaars.png" alt=""/>
+        </a>
+    </div>
 </header>
 <div class="container d-flex align-items-center flex-column ">
     <div class="container">
@@ -19,8 +24,8 @@
 <div class="container">
     <th:block th:each="section, i : ${sections}">
         <div class="row align-items-center mb-1">
-            <div class="col-md-7 text-center text-secondary" th:text="${section?.title}"></div>
-            <div class="col-md-4">
+            <div style="font-size: 2rem" class="col-md-7 text-center text-uppercase text-secondary" th:text="${section?.title}"></div>
+            <div class="col-md-4 text-center">
                 <a th:if="${i.index < (i.size)-1}" th:href="@{/login}">
                     <button class="btn btn-primary btn-thin" id="loginButton1">Powtórz kurs</button>
                 </a>

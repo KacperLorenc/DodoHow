@@ -21,8 +21,8 @@ public class Section {
     private String title;
     @OneToMany(mappedBy = "section", cascade = CascadeType.ALL)
     private Set<Exercise> exercises;
-    private SectionType sectionType;
     private Integer maxScore;
+    private Integer numberInClass;
 
     @Override
     public String toString() {

@@ -3,7 +3,6 @@ package pl.olafszewczak.dodohow.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.olafszewczak.dodohow.entities.Section;
-import pl.olafszewczak.dodohow.entities.SectionType;
 import pl.olafszewczak.dodohow.entities.User;
 import pl.olafszewczak.dodohow.repositories.SectionRepository;
 
@@ -37,17 +36,13 @@ public class SectionService {
     public Optional<Section> findNextSection(User user) {
         Set<Section> sections = findUsersSections(user);
         return sections.stream()
-                .map(Section::getId)
-                .max(Long::compareTo)
-                .flatMap(number -> sectionRepository.findById(number));
+                .map(Section::getNumberInClass)
+                .max(Integer::compareTo)
+                .flatMap(number -> sectionRepository.findByNumberInClass(number + 1));
     }
 
     public Optional<Section> getFirstSection() {
-        Optional<SectionType> sectionType = SectionType.findByNumber(1);
-        if (sectionType.isPresent()) {
-            return sectionRepository.findBySectionType(sectionType.get());
-        }
-        return Optional.empty();
+        return sectionRepository.findByNumberInClass(1);
     }
 
     public Set<Section> findAllByIds(Collection<Long> ids) {
@@ -58,7 +53,7 @@ public class SectionService {
         return sectionRepository.findById(id);
     }
 
-    public boolean existsById(Long id){
+    public boolean existsById(Long id) {
         return sectionRepository.existsById(id);
     }
 

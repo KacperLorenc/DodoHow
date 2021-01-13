@@ -53,12 +53,7 @@ public class DtoMapper {
             if (exercises == null || exercises.isEmpty()) {
                 log.error("Section: " + sectionDto.getTitle() + " with id: " + sectionDto.getId() + " has wrong list of exercises");
             } else {
-                Optional<SectionType> sectionType = SectionType.findByLabel(sectionDto.getType());
-                if (sectionType.isPresent()) {
-                    return new Section(sectionDto.getId(), sectionDto.getTitle(), exercises, sectionType.get(), sectionDto.getMaxScore());
-                } else {
-                    log.error("Section type: " + sectionDto.getType() + " doesn't exist!");
-                }
+                    return new Section(sectionDto.getId(), sectionDto.getTitle(), exercises, sectionDto.getMaxScore(), sectionDto.getNumberInClass());
             }
         }
         return null;
@@ -68,7 +63,7 @@ public class DtoMapper {
         Set<ExerciseDto> exercises = section.getExercises().stream()
                 .map(this::map)
                 .collect(Collectors.toSet());
-        return new SectionDto(section.getId(), section.getTitle(), exercises, section.getSectionType().getLabel(), section.getMaxScore());
+        return new SectionDto(section.getId(), section.getTitle(), exercises, section.getMaxScore(), section.getNumberInClass());
     }
 
     public Exercise map(ExerciseDto exerciseDto) {
@@ -105,7 +100,7 @@ public class DtoMapper {
         return null;
     }
 
-    public ScoreDto map (Score score){
+    public ScoreDto map(Score score) {
         return new ScoreDto(score.getId(), score.getUser().getId(), score.getSection().getId(), score.getScore());
     }
 

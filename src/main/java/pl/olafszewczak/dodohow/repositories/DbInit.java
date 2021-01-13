@@ -45,9 +45,9 @@ public class DbInit implements CommandLineRunner {
         Set<Exercise> exercises1 = Sets.newHashSet(exercise1, exercise2, exercise3);
         Set<Exercise> exercises2 = Sets.newHashSet(exercise4, exercise5, exercise6);
         Set<Exercise> exercises3 = Sets.newHashSet(exercise7, exercise8, exercise9);
-        Section section = new Section(null, "Podstawy", exercises1, SectionType.FIRST_SECTION,50);
-        Section section2 = new Section(null,"Jedzenie", exercises2, SectionType.JEDZENIE, 45);
-        Section section3 = new Section(null,"Kuchnia", exercises3, SectionType.PRACA, 45);
+        Section section = new Section(null, "Podstawy", exercises1,50,1);
+        Section section2 = new Section(null,"Jedzenie", exercises2, 45, 2);
+        Section section3 = new Section(null,"Kuchnia", exercises3, 45, 3);
         exercises1.forEach(e -> e.setSection(section));
         exercises2.forEach(e -> e.setSection(section2));
         exercises3.forEach(e -> e.setSection(section3));
