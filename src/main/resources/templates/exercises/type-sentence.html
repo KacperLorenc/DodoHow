@@ -1,10 +1,38 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Exercise</title>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:insert="home/navigationbar.html :: headerfiles">
+    <link href="../../css/exercises.css" rel="stylesheet" />
 </head>
-<body>
+<body id="page-top">
+<div th:insert="home/navigationbar.html :: nav"></div>
+<header class="masthead bg-white text-white text-center">
+</header>
+
+<section class="page-section portfolio mb-100" id="portfolio">
+    <div class="container border-danger">
+        <!-- Portfolio Section Heading-->
+        <h2 class="page-section-heading text-center text-uppercase text-secondary mt-5">Wpisz Poprawne Tłumaczenie</h2>
+
+
+        <p class="extxt text-center text-uppercase text-secondary mb-0 mt-5" style="font-size: 30px">Mam na imię Jan</p><div class="form-group">
+        <label for="inputSentence"></label>
+        <input type="text" class="form-control" id="inputSentence" aria-describedby="emailHelp" placeholder="Wpisz tłumaczenie">
+    </div>
+        <div class="d-flex justify-content-between">
+
+            <a th:href="@{/selectWords}"><button class="btn btn-primary btn-xl">Powrót</button></a>
+
+
+            <a th:href="@{/sections}"><button class="btn btn-primary btn-xl">Dalej</button></a>
+
+        </div>
+
+
+
+
+    </div>
+</section>
+<div th:insert="home/footer :: foot"></div>
 
 </body>
 </html>

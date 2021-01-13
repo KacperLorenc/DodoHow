@@ -1,50 +1,42 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head th:insert="home/navigationbar.html :: headerfiles"></head>
+<head th:insert="home/navigationbar.html :: headerfiles">
+    <link href="../../css/exercises.css" rel="stylesheet" />
+</head>
 <body id="page-top">
 <div th:insert="home/navigationbar.html :: nav"></div>
-<!-- Masthead-->
-<header class="masthead bg-primary text-white text-center">
-    <div class="container d-flex align-items-center flex-column">
-        <!-- Masthead Avatar Image-->
-        <img class="masthead-avatar mb-5" src="../../assets/img/avataaars.svg" alt=""/>
-        <!-- Masthead Heading-->
-        <h1 class="masthead-heading text-uppercase mb-0">DodoHow</h1>
-        <!-- Icon Divider-->
-        <div class="divider-custom divider-light">
-            <div class="divider-custom-line"></div>
-            <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
-            <div class="divider-custom-line"></div>
-        </div>
-        <!-- Masthead Subheading-->
-        <p class="masthead-subheading font-weight-light mb-0">Czytaj - Graj - Ucz się</p>
-    </div>
+<header class="masthead bg-white text-white text-center">
 </header>
-<!-- Portfolio Section-->
-<section class="page-section portfolio" id="portfolio">
-    <div class="container">
+
+<section class="page-section portfolio mb-100" id="portfolio">
+    <div class="container border-danger">
         <!-- Portfolio Section Heading-->
-        <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">Nauka</h2>
-        <!-- Icon Divider-->
-        <div class="divider-custom">
-            <div class="divider-custom-line"></div>
-            <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
-            <div class="divider-custom-line"></div>
+        <h2 class="page-section-heading text-center text-uppercase text-secondary mt-5">Wybierz Odpowiedz</h2>
+
+
+        <p class="extxt text-center text-uppercase text-secondary mb-0 mt-5" style="font-size: 30px">Które z podanych słów oznacza "Nie" w języku angielskim</p>
+        <div class="container text-center">
+            <select class="form-select form-select-lg w-75 mb-5 mt-5" style="font-size: 30px" aria-label=".form-select-lg example">
+                <option value="NO">No</option>
+                <option value="YES">Yes</option>
+                <option value="HE">He</option>
+                <option value="WE">We</option>
+            </select>
+        </div>
+        <div class="d-flex justify-content-between">
+
+                <a th:href="@{/sections}"><button class="btn btn-primary btn-xl">Powrót</button></a>
+
+
+                <a th:href="@{/selectWords}"><button class="btn btn-primary btn-xl">Dalej</button></a>
+
         </div>
 
-        <div class="divider-custom">
-            <a sec:authorize="isAnonymous()" th:href="@{/login}">
-                <button class="btn btn-primary btn-xl" id="loginButton">Zaczynajmy!</button>
-            </a>
-            <a sec:authorize="hasRole('ROLE_USER')" th:href="@{/sections}">
-                <button class="btn btn-primary btn-xl" id="playButton">Zaczynajmy!</button>
-            </a>
-        </div>
 
-        <!-- Portfolio Grid Items-->
+
+
     </div>
 </section>
-
 <div th:insert="home/footer :: foot"></div>
 
 </body>
