@@ -13,4 +13,5 @@ import java.util.Set;
 public interface SectionRepository extends CrudRepository<Section, Long> {
     Set<Section> findAllByIdIn(Collection<Long> id);
     Optional<Section> findBySectionType(SectionType sectionType);
+    boolean existsById(Long id);
 }

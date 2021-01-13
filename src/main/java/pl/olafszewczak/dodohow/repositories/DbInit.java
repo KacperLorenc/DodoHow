@@ -33,13 +33,29 @@ public class DbInit implements CommandLineRunner {
         Exercise exercise1 = new Exercise(null, 10, "Powiedz tak po angielsku", "Yes", "", null, ExerciseType.TYPE_SENTENCE);
         Exercise exercise2 = new Exercise(null, 10, "Powiedz nie po angielsku", "No", "", null, ExerciseType.TYPE_SENTENCE);
         Exercise exercise3 = new Exercise(null, 10, "Jak powiesz\"Moje imię to Jan\" ?", "My name is Jan", "", null, ExerciseType.TYPE_SENTENCE);
-        Set<Exercise> exercises = Sets.newHashSet(exercise1, exercise2, exercise3);
-        Section section = new Section(null, "Podstawy", exercises, SectionType.FIRST_SECTION,50);
-        exercises.forEach(e -> e.setSection(section));
-        sectionRepository.save(section);
+        Exercise exercise4 = new Exercise(null, 10, "Testowe zadanie 4", "test", "", null, ExerciseType.CHOOSE_ANSWER);
+        Exercise exercise5 = new Exercise(null, 10, "Testowe zadanie 5", "test", "", null, ExerciseType.TYPE_SENTENCE);
+        Exercise exercise6 = new Exercise(null, 10, "Testowe zadanie 6", "test", "", null, ExerciseType.SELECT_WORDS);
+        Exercise exercise7 = new Exercise(null, 10, "Testowe zadanie 7", "test", "", null, ExerciseType.CHOOSE_ANSWER);
+        Exercise exercise8 = new Exercise(null, 10, "Testowe zadanie 8", "test", "", null, ExerciseType.TYPE_SENTENCE);
+        Exercise exercise9 = new Exercise(null, 10, "Testowe zadanie 9", "test", "", null, ExerciseType.SELECT_WORDS);
 
+
+
+        Set<Exercise> exercises1 = Sets.newHashSet(exercise1, exercise2, exercise3);
+        Set<Exercise> exercises2 = Sets.newHashSet(exercise4, exercise5, exercise6);
+        Set<Exercise> exercises3 = Sets.newHashSet(exercise7, exercise8, exercise9);
+        Section section = new Section(null, "Podstawy", exercises1, SectionType.FIRST_SECTION,50);
+        Section section2 = new Section(null,"Jedzenie", exercises2, SectionType.JEDZENIE, 45);
+        Section section3 = new Section(null,"Kuchnia", exercises3, SectionType.PRACA, 45);
+        exercises1.forEach(e -> e.setSection(section));
+        exercises2.forEach(e -> e.setSection(section2));
+        exercises3.forEach(e -> e.setSection(section3));
+        sectionRepository.save(section);
+        sectionRepository.save(section2);
+        sectionRepository.save(section3);
         userRepository.findById(user.getId()).ifPresent(u -> {
-            u.setSections(Sets.newHashSet(section));
+            u.setSections(Sets.newHashSet(section, section2));
             userRepository.save(u);
         });
 

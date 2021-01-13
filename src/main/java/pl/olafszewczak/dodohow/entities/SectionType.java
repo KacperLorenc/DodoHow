@@ -9,7 +9,8 @@ import java.util.Optional;
 @AllArgsConstructor
 public enum SectionType {
     FIRST_SECTION("First section", 1),
-    NORMAL_SECTION("Normal section", 2);
+    JEDZENIE("Jedzenie", 2),
+    PRACA("Praca", 3);
 
     private final String label;
     private final Integer number;

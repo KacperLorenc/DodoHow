@@ -6,14 +6,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import pl.olafszewczak.dodohow.dtos.QuizDto;
 import pl.olafszewczak.dodohow.dtos.ScoreDto;
 import pl.olafszewczak.dodohow.dtos.UserDto;
 import pl.olafszewczak.dodohow.entities.Score;
 import pl.olafszewczak.dodohow.entities.User;
+import pl.olafszewczak.dodohow.services.DtoMapper;
 import pl.olafszewczak.dodohow.services.ScoreService;
 import pl.olafszewczak.dodohow.services.UserService;
-import pl.olafszewczak.dodohow.services.DtoMapper;
 
 import java.util.Optional;
 
@@ -40,23 +39,6 @@ public class MainController {
                 headers.add("Location", "localhost:3000");
                 headers.add("UserId", currentUser.get().getId().toString());
                 return new ResponseEntity<>(headers, HttpStatus.FOUND);
-            }
-            return ResponseEntity.notFound().build();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
-
-    @GetMapping("/quiz/{id}")
-    public ResponseEntity<QuizDto> getQuiz(@PathVariable Long id) {
-        try {
-            Optional<User> user = userService.findById(id);
-            if (user.isPresent()) {
-                QuizDto quizDto = dtoMapper.mapToQuiz(user.get());
-                if (quizDto != null) {
-                    return ResponseEntity.ok(quizDto);
-                }
             }
             return ResponseEntity.notFound().build();
         } catch (Exception e) {
