@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:insert="home/navigationbar.html :: headerfiles">
-    <link href="../../css/exercises.css" rel="stylesheet" />
 </head>
 <body id="page-top">
 <div th:insert="home/navigationbar.html :: nav"></div>
@@ -14,7 +13,7 @@
         <h2 class="page-section-heading text-center text-uppercase text-secondary mt-5">Wybierz Odpowiedz</h2>
 
 
-        <p class="extxt text-center text-uppercase text-secondary mb-0 mt-5" style="font-size: 30px">Które z podanych słów oznacza "Nie" w języku angielskim</p>
+        <p class="text-center text-uppercase text-secondary mb-0 mt-5" style="font-size: 30px">Które z podanych słów oznacza "Nie" w języku angielskim</p>
         <div class="container text-center">
             <select class="form-select form-select-lg w-75 mb-5 mt-5" style="font-size: 30px" aria-label=".form-select-lg example">
                 <option selected>-</option>
@@ -24,17 +23,11 @@
                 <option value="WE">We</option>
             </select>
         </div>
+
         <div class="d-flex justify-content-between">
-
                 <a th:href="@{/sections}"><button class="btn btn-primary btn-xl">Powrót</button></a>
-
-
                 <a th:href="@{/selectWords}"><button class="btn btn-primary btn-xl">Dalej</button></a>
-
         </div>
-
-
-
 
     </div>
 </section>
