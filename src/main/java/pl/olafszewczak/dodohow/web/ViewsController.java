@@ -72,4 +72,19 @@ public class ViewsController {
             return "redirect:/";
         }
     }
+
+    @GetMapping("/chooseAnswer")
+    public String getChooseAnswer() {
+        return "exercises/choose-answer";
+    }
+
+    @GetMapping("/selectWords")
+    public String getSelectWords() {
+        return "exercises/select-words";
+    }
+
+    @GetMapping("/typeSentence")
+    public String getTypeSentence() {
+        return "exercises/type-sentence";
+    }
 }
