@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import pl.olafszewczak.dodohow.entities.Section;
 import pl.olafszewczak.dodohow.entities.User;
 import pl.olafszewczak.dodohow.services.DtoMapper;
@@ -27,7 +28,6 @@ public class ViewsController {
         this.sectionService = sectionService;
         this.mapper = mapper;
     }
-
 
     @GetMapping("/")
     public String getHome() {
@@ -54,13 +54,13 @@ public class ViewsController {
         }
     }
 
-    @GetMapping("/sections/section")
-    public String getSection(Model model, Long sectionId) {
+    @GetMapping("/sections/section/{id}")
+    public String getSection(Model model, @PathVariable Long id) {
         try {
             Optional<User> userOptional = userService.getUserFromSession();
             return userOptional.map(user -> {
-                if (sectionService.existsById(sectionId)) {
-                    model.addAttribute("quiz", mapper.mapToQuiz(user, sectionId));
+                if (sectionService.existsById(id)) {
+                    model.addAttribute("quiz", mapper.mapToQuiz(user, id));
                     return "sections/quiz";         //jeśli znalazło sekcje i uzytkownika to zwraca dobry template
                 } else {
                     return "redirect:/";

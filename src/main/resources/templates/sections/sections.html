@@ -26,11 +26,9 @@
         <div class="row align-items-center mb-1">
             <div style="font-size: 2rem" class="col-md-7 text-center text-uppercase text-secondary" th:text="${section?.title}"></div>
             <div class="col-md-4 text-center">
-                <a th:if="${i.index < (i.size)-1}" th:href="@{/login}">
-                    <button class="btn btn-primary btn-thin" id="loginButton1">Powtórz kurs</button>
-                </a>
-                <a th:if="${i.index == (i.size)-1}" th:href="@{/login}">
-                    <button class="btn btn-primary btn-thin" id="loginButton2">Rozpocznij kurs</button>
+                <a  th:href="@{/sections/section/{id}(id=${section.getId()})}">
+                    <button th:if="${i.index < (i.size)-1}" class="btn btn-primary btn-thin" id="loginButton1">Powtórz kurs</button>
+                    <button th:if="${i.index == (i.size)-1}" class="btn btn-primary btn-thin" id="loginButton2">Rozpocznij kurs</button>
                 </a>
             </div>
         </div>

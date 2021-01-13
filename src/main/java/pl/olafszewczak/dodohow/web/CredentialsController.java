@@ -34,7 +34,9 @@ public class CredentialsController {
 
     @GetMapping("/login")
     private String login() {
-        return "login/login";
+        return userService.getUserFromSession()
+                .map(u -> "home/index")
+                .orElse("login/login");
     }
 
     @GetMapping("/register")
