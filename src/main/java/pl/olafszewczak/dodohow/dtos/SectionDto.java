@@ -15,6 +15,6 @@ public class SectionDto {
     private Long id;
     private String title;
     private Set<ExerciseDto> exercises;
-    private String type;
     private Integer maxScore;
+    private Integer numberInClass;
 }
