@@ -87,4 +87,14 @@ public class ViewsController {
     public String getTypeSentence() {
         return "exercises/type-sentence";
     }
+
+    @GetMapping("/fillTheBlank")
+    public String getFillTheBlank() {
+        return "exercises/fill-the-blank";
+    }
+
+    @GetMapping("/translateWord")
+    public String getTranslateWord() {
+        return "exercises/translate-word";
+    }
 }

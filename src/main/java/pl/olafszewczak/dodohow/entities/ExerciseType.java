@@ -9,9 +9,11 @@ import java.util.Optional;
 @Getter
 @AllArgsConstructor
 public enum ExerciseType {
-    CHOOSE_ANSWER("Choose answer"),
-    SELECT_WORDS("Select words"),
-    TYPE_SENTENCE("Type a sentence");
+    CHOOSE_ANSWER("chooseAnswer"),
+    SELECT_WORDS("selectWords"),
+    TYPE_SENTENCE("typeSentence"),
+    FILL_THE_BLANK("fillTheBlank"),
+    TRANSLATE_WORD("translateWord");
 
     private String label;
 
