@@ -75,26 +75,26 @@ public class ViewsController {
 
     @GetMapping("/chooseAnswer")
     public String getChooseAnswer() {
-        return "exercises/choose-answer";
+        return "exercises/chooseAnswer";
     }
 
-    @GetMapping("/selectWords")
-    public String getSelectWords() {
-        return "exercises/select-words";
+    @GetMapping("/truthFalse")
+    public String getTruthFalse() {
+        return "exercises/truthFalse";
     }
 
     @GetMapping("/typeSentence")
     public String getTypeSentence() {
-        return "exercises/type-sentence";
+        return "exercises/typeSentence";
     }
 
     @GetMapping("/fillTheBlank")
     public String getFillTheBlank() {
-        return "exercises/fill-the-blank";
+        return "exercises/fillTheBlank";
     }
 
     @GetMapping("/translateWord")
     public String getTranslateWord() {
-        return "exercises/translate-word";
+        return "exercises/translateWord";
     }
 }

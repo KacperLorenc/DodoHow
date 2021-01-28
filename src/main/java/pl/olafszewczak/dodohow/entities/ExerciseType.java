@@ -10,7 +10,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public enum ExerciseType {
     CHOOSE_ANSWER("chooseAnswer"),
-    SELECT_WORDS("selectWords"),
+    TRUTH_FALSE("truthFalse"),
     TYPE_SENTENCE("typeSentence"),
     FILL_THE_BLANK("fillTheBlank"),
     TRANSLATE_WORD("translateWord");
