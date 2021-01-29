@@ -83,7 +83,7 @@ public class DbInit implements CommandLineRunner {
         //Sekcja nr1 - podstawy --------------------------------------------------------------------------------------------------
         Exercise basic1Ex1 = new Exercise(null, 2, "Mam na imię Jan", "My name is Jan", "My orange is Juan;My name is Jan;You eat Jan", null, ExerciseType.CHOOSE_ANSWER,1);
         Exercise basic1Ex2 = new Exercise(null, 2, "Jestem mężczyzną", "I am a man", "I am a woman;He is an ant;I am a man", null, ExerciseType.CHOOSE_ANSWER,2);
-        Exercise basic1Ex3 = new Exercise(null, 2, "Ty jesteś kobietą", "You are w woman", "You are a woman;You are an apple;She is a woman", null, ExerciseType.CHOOSE_ANSWER,3);
+        Exercise basic1Ex3 = new Exercise(null, 2, "Ty jesteś kobietą", "You are a woman", "You are a woman;You are an apple;She is a woman", null, ExerciseType.CHOOSE_ANSWER,3);
         Exercise basic1Ex4 = new Exercise(null, 2, "I is a man", "false", "true", null, ExerciseType.TRUTH_FALSE,4);
         Exercise basic1Ex5 = new Exercise(null, 2, "She is a girl", "true", "false", null, ExerciseType.TRUTH_FALSE,5);
         Exercise basic1Ex6 = new Exercise(null, 2, "They are men", "true", "false", null, ExerciseType.TRUTH_FALSE,6);
@@ -93,7 +93,7 @@ public class DbInit implements CommandLineRunner {
         Exercise basic1Ex10 = new Exercise(null, 2, "Ty jesz", "You eat", "", null, ExerciseType.TYPE_SENTENCE,10);
         Exercise basic1Ex11 = new Exercise(null, 2, "My jesteśmy kobietami", "We are women", "", null, ExerciseType.TYPE_SENTENCE,11);
         Exercise basic1Ex12 = new Exercise(null, 2, "Jabłko", "An apple", "", null, ExerciseType.TRANSLATE_WORD,12);
-        Exercise basic1Ex13 = new Exercise(null, 2, "Dziewczyna", "A Girl", "", null, ExerciseType.TRANSLATE_WORD,13);
+        Exercise basic1Ex13 = new Exercise(null, 2, "Dziewczyna", "A girl", "", null, ExerciseType.TRANSLATE_WORD,13);
         Exercise basic1Ex14 = new Exercise(null, 2, "He ... a man", "is", "are;am;is", null, ExerciseType.FILL_THE_BLANK,14);
         Exercise basic1Ex15 = new Exercise(null, 2, "We ... women", "are", "are;is;am", null, ExerciseType.FILL_THE_BLANK,15);
 

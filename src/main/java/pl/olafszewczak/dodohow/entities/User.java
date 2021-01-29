@@ -32,7 +32,7 @@ public class User {
     private String roles = "";
     @OneToMany
     private Set<VerificationToken> verificationToken;
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     private Set<Section> sections;
     @OneToMany(cascade = CascadeType.ALL)
     private Set<Score> scores;

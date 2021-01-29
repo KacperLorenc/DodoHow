@@ -11,6 +11,7 @@ import pl.olafszewczak.dodohow.services.DtoMapper;
 import pl.olafszewczak.dodohow.services.SectionService;
 import pl.olafszewczak.dodohow.services.UserService;
 
+import java.util.Comparator;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -45,8 +46,10 @@ public class ViewsController {
                 } else {
                     sectionService.findNextSection(user).ifPresent(userSections::add); //jesli ma jakas przerobiona to dodaje kolejna
                 }
+                user.setSections(userSections);
+                userService.saveRegisteredUser(user);
                 model.addAttribute("user", mapper.map(user));
-                model.addAttribute("sections", userSections.stream().map(section -> mapper.map(section, user)).collect(Collectors.toList()));
+                model.addAttribute("sections", userSections.stream().sorted(Comparator.comparing(Section::getNumberInClass)).map(section -> mapper.map(section, user)).collect(Collectors.toList()));
                 model.addAttribute("scores", sectionService.getScores(user));
                 return "sections/sections";
             }).orElse("redirect:/login");
