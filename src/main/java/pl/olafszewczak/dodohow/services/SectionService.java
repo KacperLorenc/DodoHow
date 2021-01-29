@@ -2,24 +2,25 @@ package pl.olafszewczak.dodohow.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pl.olafszewczak.dodohow.entities.Score;
 import pl.olafszewczak.dodohow.entities.Section;
 import pl.olafszewczak.dodohow.entities.User;
+import pl.olafszewczak.dodohow.repositories.ScoreRepository;
 import pl.olafszewczak.dodohow.repositories.SectionRepository;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class SectionService {
 
     private SectionRepository sectionRepository;
+    private ScoreRepository scoreRepository;
 
     @Autowired
-    public SectionService(SectionRepository sectionRepository) {
+    public SectionService(SectionRepository sectionRepository, ScoreRepository scoreRepository) {
         this.sectionRepository = sectionRepository;
+        this.scoreRepository = scoreRepository;
     }
 
     public Set<Section> findUsersSections(User user) {
@@ -55,6 +56,26 @@ public class SectionService {
 
     public boolean existsById(Long id) {
         return sectionRepository.existsById(id);
+    }
+
+    public List<Score> getScores(User user) {
+        return scoreRepository.findAllByUser(user);
+    }
+
+    public List<Score> getScores(User user, Section section) {
+        return scoreRepository.findAllBySectionAndUser(section, user);
+    }
+
+    public Score saveScore(Score score){
+        return scoreRepository.save(score);
+    }
+
+    public void deleteScore(User user, Section section){
+        scoreRepository.deleteByUserAndSection(user, section);
+    }
+
+    public Optional<Score> findScore (User user, Section section){
+        return scoreRepository.findByUserAndSection(user, section);
     }
 
 }

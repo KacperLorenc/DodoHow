@@ -8,6 +8,8 @@ import pl.olafszewczak.dodohow.entities.*;
 import pl.olafszewczak.dodohow.repositories.ExerciseRepository;
 import pl.olafszewczak.dodohow.repositories.UserRepository;
 
+import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -20,6 +22,7 @@ public class DtoMapper {
     private SectionService sectionService;
     private UserRepository userRepository;
 
+
     @Autowired
     public DtoMapper(ExerciseRepository exerciseRepository, SectionService sectionService, UserRepository userRepository) {
         this.exerciseRepository = exerciseRepository;
@@ -29,8 +32,11 @@ public class DtoMapper {
 
     public User map(UserDto userDto) {
         User user = new User(userDto.getId(), userDto.getLogin(), userDto.getPassword(), userDto.getEmail(), userDto.getActive(), userDto.getRoles());
-        Set<Long> ids = userDto.getSections().stream().map(SectionDto::getId).collect(Collectors.toSet());
-        user.setSections(sectionService.findAllByIds(ids));
+        Set<SectionDto> sections = userDto.getSections();
+        if (sections != null && !sections.isEmpty()) {
+            Set<Long> ids = userDto.getSections().stream().map(SectionDto::getId).collect(Collectors.toSet());
+            user.setSections(sectionService.findAllByIds(ids));
+        }
         return user;
     }
 
@@ -53,7 +59,7 @@ public class DtoMapper {
             if (exercises == null || exercises.isEmpty()) {
                 log.error("Section: " + sectionDto.getTitle() + " with id: " + sectionDto.getId() + " has wrong list of exercises");
             } else {
-                    return new Section(sectionDto.getId(), sectionDto.getTitle(), exercises, sectionDto.getMaxScore(), sectionDto.getNumberInClass());
+                return new Section(sectionDto.getId(), sectionDto.getTitle(), exercises, sectionDto.getMaxScore(), sectionDto.getNumberInClass());
             }
         }
         return null;
@@ -66,12 +72,22 @@ public class DtoMapper {
         return new SectionDto(section.getId(), section.getTitle(), exercises, section.getMaxScore(), section.getNumberInClass());
     }
 
+    public SectionWithScoreDto map(Section section, User user) {
+        List<Score> scores = sectionService.getScores(user, section);
+        if (scores != null && !scores.isEmpty()) {
+            Optional<Score> scoreOpt = scores.stream().max(Comparator.comparing(Score::getScore));
+            return scoreOpt.map(s -> new SectionWithScoreDto(section.getId(), section.getTitle(), section.getMaxScore(), s.getScore()))
+                    .orElse(new SectionWithScoreDto(section.getId(), section.getTitle(), section.getMaxScore(), 0));
+        }
+        return new SectionWithScoreDto(section.getId(), section.getTitle(), section.getMaxScore(), 0);
+    }
+
     public Exercise map(ExerciseDto exerciseDto) {
         Optional<ExerciseType> exerciseTypeOptional = ExerciseType.findByLabel(exerciseDto.getType());
         if (exerciseTypeOptional.isPresent()) {
             Optional<Section> sectionOptional = sectionService.findById(exerciseDto.getSectionId());
             if (sectionOptional.isPresent()) {
-                return new Exercise(exerciseDto.getId(), exerciseDto.getMaxScore(), exerciseDto.getQuestion(), exerciseDto.getAnswer(), exerciseDto.getWrongAnswers(), sectionOptional.get(), exerciseTypeOptional.get());
+                return new Exercise(exerciseDto.getId(), exerciseDto.getMaxScore(), exerciseDto.getQuestion(), exerciseDto.getAnswer(), exerciseDto.getWrongAnswers(), sectionOptional.get(), exerciseTypeOptional.get(), exerciseDto.getNumber());
             } else {
                 log.error("Section with id: " + exerciseDto.getSectionId() + " doesn't exist!");
             }
@@ -82,13 +98,13 @@ public class DtoMapper {
     }
 
     public ExerciseDto map(Exercise exercise) {
-        return new ExerciseDto(exercise.getId(), exercise.getMaxScore(), exercise.getQuestion(), exercise.getAnswer(), exercise.getWrongAnswers(), exercise.getSection().getId(), exercise.getType().getLabel());
+        return new ExerciseDto(exercise.getId(), exercise.getMaxScore(), exercise.getQuestion(), exercise.getAnswer(), exercise.getWrongAnswers(), exercise.getSection().getId(), exercise.getType().getLabel(), exercise.getNumber());
     }
 
     public Score map(ScoreDto scoreDto) {
-        Optional<User> user = userRepository.findById(scoreDto.getId());
+        Optional<User> user = userRepository.findById(scoreDto.getUserId());
         if (user.isPresent()) {
-            Optional<Section> section = sectionService.findById(scoreDto.getId());
+            Optional<Section> section = sectionService.findById(scoreDto.getSectionId());
             if (section.isPresent()) {
                 return new Score(scoreDto.getId(), user.get(), section.get(), scoreDto.getScore());
             } else {

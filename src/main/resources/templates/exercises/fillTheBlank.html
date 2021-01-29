@@ -14,23 +14,39 @@
             <h2 class="page-section-heading text-center text-uppercase text-secondary mt-5">Uzupełnij lukę w
                 tekście</h2>
 
+            <div class="form-group">
+                <input th:field="*{id}" type="hidden" class="form-control" name="id">
+            </div>
+            <div class="form-group">
+                <input th:field="*{number}" type="hidden" class="form-control" name="id">
+            </div>
+            <div class="form-group">
+                <input th:field="*{maxScore}" type="hidden" class="form-control" name="id">
+            </div>
+            <div class="form-group">
+                <input th:field="*{question}" type="hidden" class="form-control" name="id">
+            </div>
+            <div class="form-group">
+                <input th:field="*{answer}" type="hidden" class="form-control" name="id">
+            </div>
+            <div class="form-group">
+                <input th:field="*{sectionId}" type="hidden" class="form-control" name="id">
+            </div>
+            <div class="form-group">
+                <input th:field="*{type}" type="hidden" class="form-control" name="id">
+            </div>
 
-            <p class="extxt text-center text-uppercase text-secondary mb-0 mt-5" style="font-size: 30px">He ...... a
-                man</p>
+            <p th:text="${exercise.getQuestion()}" class="extxt text-center text-uppercase text-secondary mb-0 mt-5" style="font-size: 30px"></p>
 
             <div class="d-flex justify-content-center mt-3">
-                <button class="btn btn-primary btn-xl m-1">are</button>
-                <button class="btn btn-primary btn-xl m-1">is</button>
-                <button class="btn btn-primary btn-xl m-1">am</button>
+                <select th:field="*{userAnswer}" class="form-control form-select form-select-lg w-75 mb-5 mt-5" style="font-size: 30px"
+                        aria-label=".form-select-lg example">
+                    <option th:each="a : ${exercise.getListOfWrongAnswers()}"  th:value="${a}" th:text="${a}"></option>
+                </select>
             </div>
 
             <div class="d-flex justify-content-between mt-5">
-                <a th:href="@{/typeSentence}">
-                    <button class="btn btn-primary btn-xl">Powrót</button>
-                </a>
-                <a th:href="@{/translateWord}">
-                    <button class="btn btn-primary btn-xl">Dalej</button>
-                </a>
+                <input class="btn btn-primary btn-xl" type="submit" value="Zatwierdź"/>
             </div>
 
         </div>

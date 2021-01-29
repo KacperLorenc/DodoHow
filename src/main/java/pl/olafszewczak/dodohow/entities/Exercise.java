@@ -30,6 +30,7 @@ public class Exercise {
     @ManyToOne()
     private Section section;
     private ExerciseType type;
+    private Integer number;
 
     public List<String> getListOfWrongAnswers(){
       String[] answers = wrongAnswers.split(";");

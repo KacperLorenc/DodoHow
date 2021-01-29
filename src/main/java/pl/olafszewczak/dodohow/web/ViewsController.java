@@ -46,7 +46,8 @@ public class ViewsController {
                     sectionService.findNextSection(user).ifPresent(userSections::add); //jesli ma jakas przerobiona to dodaje kolejna
                 }
                 model.addAttribute("user", mapper.map(user));
-                model.addAttribute("sections", userSections.stream().map(mapper::map).collect(Collectors.toList()));
+                model.addAttribute("sections", userSections.stream().map(section -> mapper.map(section, user)).collect(Collectors.toList()));
+                model.addAttribute("scores", sectionService.getScores(user));
                 return "sections/sections";
             }).orElse("redirect:/login");
         } catch (Exception e) {

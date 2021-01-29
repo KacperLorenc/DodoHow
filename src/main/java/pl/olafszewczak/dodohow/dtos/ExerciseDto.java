@@ -20,9 +20,23 @@ public class ExerciseDto {
     private String wrongAnswers;
     private Long sectionId;
     private String type;
+    private String userAnswer;
+    private Integer number;
 
     public List<String> getListOfWrongAnswers(){
         String[] answers = wrongAnswers.split(";");
         return Lists.newArrayList(answers);
+    }
+
+    public ExerciseDto(Long id, Integer maxScore, String question, String answer, String wrongAnswers, Long sectionId, String type, Integer number) {
+        this.id = id;
+        this.maxScore = maxScore;
+        this.question = question;
+        this.answer = answer;
+        this.wrongAnswers = wrongAnswers;
+        this.sectionId = sectionId;
+        this.type = type;
+        this.userAnswer = null;
+        this.number = number;
     }
 }
