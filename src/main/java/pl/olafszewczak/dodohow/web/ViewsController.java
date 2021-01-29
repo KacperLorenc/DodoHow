@@ -73,29 +73,4 @@ public class ViewsController {
             return "redirect:/";
         }
     }
-
-    @GetMapping("/chooseAnswer")
-    public String getChooseAnswer() {
-        return "exercises/chooseAnswer";
-    }
-
-    @GetMapping("/truthFalse")
-    public String getTruthFalse() {
-        return "exercises/truthFalse";
-    }
-
-    @GetMapping("/typeSentence")
-    public String getTypeSentence() {
-        return "exercises/typeSentence";
-    }
-
-    @GetMapping("/fillTheBlank")
-    public String getFillTheBlank() {
-        return "exercises/fillTheBlank";
-    }
-
-    @GetMapping("/translateWord")
-    public String getTranslateWord() {
-        return "exercises/translateWord";
-    }
 }

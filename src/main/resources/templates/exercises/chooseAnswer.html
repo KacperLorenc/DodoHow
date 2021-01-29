@@ -22,13 +22,13 @@
         </div>
     </div>
 </nav>
-<header class="masthead bg-white text-white text-center">
+<header class="masthead bg-white text-white text-center" style="padding-top: 5rem;">
 </header>
 <form action="#" th:action="@{/next-exercise}" th:object="${exercise}" method="post" >
     <section class="page-section portfolio mb-100" id="portfolio">
-        <div class="container border-danger">
+        <div class="container pt-5 pb-5 container-border">
             <!-- Portfolio Section Heading-->
-            <h2 class="page-section-heading text-center text-uppercase text-secondary mt-5">Wybierz Odpowiedz</h2>
+            <h2 class="page-section-heading text-center text-uppercase text-secondary mt-5">Wybierz odpowiedź</h2>
 
             <div class="form-group">
                 <input th:field="*{id}" type="hidden" class="form-control" name="id">
@@ -52,22 +52,22 @@
                 <input th:field="*{type}" type="hidden" class="form-control" name="id">
             </div>
 
-            <p th:text="${exercise.getQuestion()}" class="text-center text-uppercase text-secondary mb-0 mt-5" style="font-size: 30px"></p>
-            <div class="container text-center">
+            <p th:text="${exercise.getQuestion()}" class="text-center text-uppercase text-secondary mb-0 mt-5" style="font-size: 45px"></p>
+            <div class="container d-flex justify-content-center text-center">
                 <select th:field="*{userAnswer}" class="form-control form-select form-select-lg w-75 mb-5 mt-5" style="font-size: 30px"
                         aria-label=".form-select-lg example">
                     <option th:each="a : ${exercise.getListOfWrongAnswers()}" th:value="${a}" th:text="${a}"></option>
                 </select>
             </div>
 
-            <div class="d-flex justify-content-between">
+            <div class="d-flex justify-content-center">
                     <input class="btn btn-primary btn-xl" type="submit" value="Zatwierdź"/>
             </div>
 
         </div>
     </section>
 </form>
-<header class="masthead bg-white text-white text-center">
+<header class="masthead bg-white text-white text-center" style="padding-top: 1rem;">
 </header>
 <div th:insert="home/footer :: foot"></div>
 

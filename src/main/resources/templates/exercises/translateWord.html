@@ -4,12 +4,12 @@
 </head>
 <body id="page-top">
 <div th:insert="exercises/chooseAnswer.html:: exNav"></div>
-<header class="masthead bg-white text-white text-center">
+<header class="masthead bg-white text-white text-center" style="padding-top: 5rem;">
 </header>
 
 <form action="#" th:action="@{/next-exercise}" th:object="${exercise}" method="post">
     <section class="page-section portfolio mb-100" id="portfolio">
-        <div class="container border-danger">
+        <div class="container pt-5 pb-5 container-border">
             <!-- Portfolio Section Heading-->
             <h2 class="page-section-heading text-center text-uppercase text-secondary mt-5">Przetłumacz słowo</h2>
 
@@ -33,12 +33,12 @@
             </div>
 
             <p th:text="${exercise.getQuestion()}" class="extxt text-center text-uppercase text-secondary mb-0 mt-5" style="font-size: 45px"></p>
-            <div class="form-group">
+            <div class="form-group d-flex justify-content-center mt-3">
                 <label for="translateWord"></label>
                 <input th:field="*{userAnswer}" type="text" class="form-control mb-5" style="font-size: 30px" id="translateWord"
                        placeholder="Wpisz tłumaczenie">
             </div>
-            <div class="d-flex justify-content-between">
+            <div class="d-flex justify-content-center">
                 <input class="btn btn-primary btn-xl" type="submit" value="Zatwierdź"/>
             </div>
 
@@ -46,7 +46,7 @@
         </div>
     </section>
 </form>
-<header class="masthead bg-white text-white text-center">
+<header class="masthead bg-white text-white text-center" style="padding-top: 1rem;">
 </header>
 <div th:insert="home/footer :: foot"></div>
 

@@ -84,11 +84,11 @@ public class DbInit implements CommandLineRunner {
         Exercise basic1Ex1 = new Exercise(null, 2, "Mam na imię Jan", "My name is Jan", "My orange is Juan;My name is Jan;You eat Jan", null, ExerciseType.CHOOSE_ANSWER,1);
         Exercise basic1Ex2 = new Exercise(null, 2, "Jestem mężczyzną", "I am a man", "I am a woman;He is an ant;I am a man", null, ExerciseType.CHOOSE_ANSWER,2);
         Exercise basic1Ex3 = new Exercise(null, 2, "Ty jesteś kobietą", "You are w woman", "You are a woman;You are an apple;She is a woman", null, ExerciseType.CHOOSE_ANSWER,3);
-        Exercise basic1Ex4 = new Exercise(null, 2, "I is a man", "False", "", null, ExerciseType.TRUTH_FALSE,4);
-        Exercise basic1Ex5 = new Exercise(null, 2, "She is a girl", "True", "", null, ExerciseType.TRUTH_FALSE,5);
-        Exercise basic1Ex6 = new Exercise(null, 2, "They are men", "True", "True", null, ExerciseType.TRUTH_FALSE,6);
+        Exercise basic1Ex4 = new Exercise(null, 2, "I is a man", "false", "true", null, ExerciseType.TRUTH_FALSE,4);
+        Exercise basic1Ex5 = new Exercise(null, 2, "She is a girl", "true", "false", null, ExerciseType.TRUTH_FALSE,5);
+        Exercise basic1Ex6 = new Exercise(null, 2, "They are men", "true", "false", null, ExerciseType.TRUTH_FALSE,6);
         Exercise basic1Ex7 = new Exercise(null, 2, "Jestem chłopcem", "I am a boy", "", null, ExerciseType.TYPE_SENTENCE,7);
-        Exercise basic1Ex8 = new Exercise(null, 2, "On jest dziewczyną", "She is a girl", "", null, ExerciseType.TYPE_SENTENCE,8);
+        Exercise basic1Ex8 = new Exercise(null, 2, "Ona jest dziewczyną", "She is a girl", "", null, ExerciseType.TYPE_SENTENCE,8);
         Exercise basic1Ex9 = new Exercise(null, 2, "Jestem kobietą", "I am a woman", "", null, ExerciseType.TYPE_SENTENCE,9);
         Exercise basic1Ex10 = new Exercise(null, 2, "Ty jesz", "You eat", "", null, ExerciseType.TYPE_SENTENCE,10);
         Exercise basic1Ex11 = new Exercise(null, 2, "My jesteśmy kobietami", "We are women", "", null, ExerciseType.TYPE_SENTENCE,11);
@@ -106,9 +106,9 @@ public class DbInit implements CommandLineRunner {
         Exercise animalsEx1 = new Exercise(null, 2, "Kot i pies", "A cat and a dog", "A cat and a dog;An elephant and an ant;A dog and a duck", null, ExerciseType.CHOOSE_ANSWER,1);
         Exercise animalsEx2 = new Exercise(null, 2, "Koty jedzą ryby", "Cats eat fish", "Fish eat cats;Ants eat elephants;Cats eat fish", null, ExerciseType.CHOOSE_ANSWER,2);
         Exercise animalsEx3 = new Exercise(null, 2, "Jestem człowiekiem", "I am a human", "I are an apple;I am a human;She a duck", null, ExerciseType.CHOOSE_ANSWER,3);
-        Exercise animalsEx4 = new Exercise(null, 2, "Cats are animals", "True", "", null, ExerciseType.TRUTH_FALSE,4);
-        Exercise animalsEx5 = new Exercise(null, 2, "Dogs is animals", "False", "", null, ExerciseType.TRUTH_FALSE,5);
-        Exercise animalsEx6 = new Exercise(null, 2, "The elephant eat a apple", "False", "", null, ExerciseType.TRUTH_FALSE,6);
+        Exercise animalsEx4 = new Exercise(null, 2, "Cats are animals", "true", "", null, ExerciseType.TRUTH_FALSE,4);
+        Exercise animalsEx5 = new Exercise(null, 2, "Dogs is animals", "false", "", null, ExerciseType.TRUTH_FALSE,5);
+        Exercise animalsEx6 = new Exercise(null, 2, "The elephant eat a apple", "false", "", null, ExerciseType.TRUTH_FALSE,6);
         Exercise animalsEx7 = new Exercise(null, 2, "Ptaki jedzą chleb", "Birds eat bread", "", null, ExerciseType.TYPE_SENTENCE,7);
         Exercise animalsEx8 = new Exercise(null, 2, "Ona ma kota", "She has a cat", "", null, ExerciseType.TYPE_SENTENCE,8);
         Exercise animalsEx9 = new Exercise(null, 2, "To jest świnia", "It is a pig", "", null, ExerciseType.TYPE_SENTENCE,9);
@@ -120,14 +120,14 @@ public class DbInit implements CommandLineRunner {
         Exercise animalsEx15 = new Exercise(null, 2, "... purr", "Cats", "Elephants;Dogs;Cats", null, ExerciseType.FILL_THE_BLANK,15);
 
         Set<Exercise> exercisesAnimals = Sets.newHashSet(animalsEx1, animalsEx2, animalsEx3, animalsEx4, animalsEx5, animalsEx6, animalsEx7, animalsEx8, animalsEx9, animalsEx10, animalsEx11, animalsEx12, animalsEx13, animalsEx14, animalsEx15);
-        Section animalsSec = new Section(null, "Zwierzęta", exercisesAnimals,30,1);
+        Section animalsSec = new Section(null, "Zwierzęta", exercisesAnimals,30,2);
         exercisesAnimals.forEach(e -> e.setSection(animalsSec));
         sectionRepository.save(animalsSec);
 
-        userRepository.findById(user.getId()).ifPresent(u -> {
-            u.setSections(Sets.newHashSet(basicsSec, animalsSec));
-            userRepository.save(u);
-        });
+     //   userRepository.findById(user.getId()).ifPresent(u -> {
+     //       u.setSections(Sets.newHashSet(basicsSec, animalsSec));
+   //         userRepository.save(u);
+    //    });
 
         //Sekcja nr3 - blueprint --------------------------------------------------------------------------------------------------
 //        Exercise Ex1 = new Exercise(null, 2, "", "", "", null, ExerciseType.CHOOSE_ANSWER);
