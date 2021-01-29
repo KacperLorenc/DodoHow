@@ -32,8 +32,8 @@
             </div>
             <div class="col-md-4 text-center">
                 <a  th:href="@{/course/{id}(id=${section.getId()})}">
-                    <button th:if="${section?.getUserScore() > 0}" class="btn btn-primary btn-thin" id="loginButton1">Powtórz kurs</button>
-                    <button th:if="${section?.getUserScore() == 0}" class="btn btn-primary btn-thin" id="loginButton2">Rozpocznij kurs</button>
+                    <button th:if="${section?.getUserScore() > 0}" class="btn btn-primary btn-thin" id="loginButton1">Powtórz quiz</button>
+                    <button th:if="${section?.getUserScore() == 0}" class="btn btn-primary btn-thin" id="loginButton2">Rozpocznij quiz</button>
                 </a>
             </div>
         </div>
