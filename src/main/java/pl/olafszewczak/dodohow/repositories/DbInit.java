@@ -55,7 +55,7 @@ public class DbInit implements CommandLineRunner {
         //Sekcja nr1 - podstawy --------------------------------------------------------------------------------------------------
         Exercise basic1Ex1 = new Exercise(null, 2, "Mam na imię Jan", "My name is Jan", "My orange is Juan;My name is Jan;You eat Jan;She be Jan", null, ExerciseType.CHOOSE_ANSWER,1);
         Exercise basic1Ex2 = new Exercise(null, 2, "Jestem mężczyzną", "I am a man", "You a man;I am a woman;He is an ant;I am a man", null, ExerciseType.CHOOSE_ANSWER,2);
-        Exercise basic1Ex3 = new Exercise(null, 2, "Ty jesteś kobietą", "You are a woman", "You are a woman;You are an apple;She is a woman", null, ExerciseType.CHOOSE_ANSWER,3);
+        Exercise basic1Ex3 = new Exercise(null, 2, "Ty jesteś kobietą", "You are a woman", "He cooks;You are a woman;You are an apple;She is a woman", null, ExerciseType.CHOOSE_ANSWER,3);
         Exercise basic1Ex4 = new Exercise(null, 2, "I is a man", "false", "true", null, ExerciseType.TRUTH_FALSE,4);
         Exercise basic1Ex5 = new Exercise(null, 2, "She is a girl", "true", "false", null, ExerciseType.TRUTH_FALSE,5);
         Exercise basic1Ex6 = new Exercise(null, 2, "They are men", "true", "false", null, ExerciseType.TRUTH_FALSE,6);
@@ -97,8 +97,8 @@ public class DbInit implements CommandLineRunner {
         sectionRepository.save(animalsSec);
 
         //Sekcja nr3 - Jedzenie --------------------------------------------------------------------------------------------------
-        Exercise foodEx1 = new Exercise(null, 2, "Oni mają pomarańcze", "They have oranges", "They are oranges;They have oranges;We have bread", null, ExerciseType.CHOOSE_ANSWER,1);
-        Exercise foodEx2 = new Exercise(null, 2, "Jem kurczaka", "I eat chicken", "", null, ExerciseType.CHOOSE_ANSWER,2);
+        Exercise foodEx1 = new Exercise(null, 2, "Oni mają pomarańcze", "They have oranges", "They are oranges;They have oranges;We have bread;You eat an orange", null, ExerciseType.CHOOSE_ANSWER,1);
+        Exercise foodEx2 = new Exercise(null, 2, "Jem kurczaka", "I eat chicken", "I have chicken;You have an apple;I eat chicken;She has a fork", null, ExerciseType.CHOOSE_ANSWER,2);
         Exercise foodEx3 = new Exercise(null, 2, "Owoce i warzywa", "Fruits and vegetables", "Apple and pie;Fruits and vegetables;Cats and dogs;Fruits and fish", null, ExerciseType.CHOOSE_ANSWER,3);
         Exercise foodEx4 = new Exercise(null, 2, "He has an orange", "true", "", null, ExerciseType.TRUTH_FALSE,4);
         Exercise foodEx5 = new Exercise(null, 2, "I has an apple", "false", "", null, ExerciseType.TRUTH_FALSE,5);
