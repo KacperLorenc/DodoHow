@@ -34,24 +34,8 @@
                 <input th:field="*{id}" type="hidden" class="form-control" name="id">
             </div>
             <div class="form-group">
-                <input th:field="*{number}" type="hidden" class="form-control" name="id">
-            </div>
-            <div class="form-group">
-                <input th:field="*{maxScore}" type="hidden" class="form-control" name="id">
-            </div>
-            <div class="form-group">
                 <input th:field="*{question}" type="hidden" class="form-control" name="id">
             </div>
-            <div class="form-group">
-                <input th:field="*{answer}" type="hidden" class="form-control" name="id">
-            </div>
-            <div class="form-group">
-                <input th:field="*{sectionId}" type="hidden" class="form-control" name="id">
-            </div>
-            <div class="form-group">
-                <input th:field="*{type}" type="hidden" class="form-control" name="id">
-            </div>
-
             <p th:text="${exercise.getQuestion()}" class="text-center text-uppercase text-secondary mb-0 mt-5" style="font-size: 45px"></p>
             <div class="container d-flex justify-content-center text-center">
                 <select th:field="*{userAnswer}" class="form-control form-select form-select-lg w-75 mb-5 mt-5" style="font-size: 30px"
