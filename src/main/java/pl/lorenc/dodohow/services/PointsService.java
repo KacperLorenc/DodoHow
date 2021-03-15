@@ -56,7 +56,11 @@ public class PointsService {
         return pointsRepository.findAllByExerciseInAndUser(exercises, user);
     }
 
-    public void deleteAllByUserAndExercises (User user, List<Exercise> exercises) {
+    public void deleteAllByUserAndExercises(User user, List<Exercise> exercises) {
         pointsRepository.deleteAllByUserAndExerciseIn(user, exercises);
+    }
+
+    public Optional<Points> findByUserAndExercise(User user, Exercise exercise) {
+        return pointsRepository.findByUserAndExercise(user, exercise);
     }
 }

@@ -15,18 +15,21 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav ml-auto">
-                <li sec:authorize="isAuthenticated()" class="nav-item mx-0 mx-lg-1"><a th:href="@{/logout}"
-                                                                                       class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger"
-                                                                                       href="#page-top">Wyloguj</a></li>
+                <li sec:authorize="isAuthenticated()" class="nav-item mx-0 mx-lg-1">
+                    <a th:href="@{/logout}"
+                       class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger"
+                       href="#page-top">Wyloguj</a>
+                </li>
             </ul>
         </div>
     </div>
 </nav>
-<header class="masthead bg-white text-white text-center" style="padding-top: 5rem;">
+<header class="masthead bg-primary text-white text-center" style="padding-top: 7.5rem; margin-bottom: 2rem">
 </header>
-<form action="#" th:action="@{/next-exercise}" th:object="${exercise}" method="post" >
-    <section class="page-section portfolio mb-100" id="portfolio">
-        <div class="container pt-5 pb-5 container-border">
+<div class="container pt-5 pb-5 container-border">
+    <form action="#" th:action="@{/next-exercise}" th:object="${exercise}" method="post">
+        <section class="exercise-section portfolio mb-100" id="portfolio">
+
             <!-- Portfolio Section Heading-->
             <h2 class="page-section-heading text-center text-uppercase text-secondary mt-5">Wybierz odpowiedź</h2>
 
@@ -36,23 +39,46 @@
             <div class="form-group">
                 <input th:field="*{question}" type="hidden" class="form-control" name="id">
             </div>
-            <p th:text="${exercise.getQuestion()}" class="text-center text-uppercase text-secondary mb-0 mt-5" style="font-size: 45px"></p>
+            <p th:text="${exercise.getQuestion()}" class="text-center text-uppercase text-secondary mb-0 mt-5"
+               style="font-size: 45px"></p>
             <div class="container d-flex justify-content-center text-center">
-                <select th:field="*{userAnswer}" class="form-control form-select form-select-lg w-75 mb-5 mt-5" style="font-size: 30px"
+                <select th:field="*{userAnswer}" class="form-control form-select form-select-lg w-75 mb-5 mt-5"
+                        style="font-size: 30px"
                         aria-label=".form-select-lg example">
                     <option th:each="a : ${exercise.getListOfWrongAnswers()}" th:value="${a}" th:text="${a}"></option>
                 </select>
             </div>
 
             <div class="d-flex justify-content-center">
-                    <input class="btn btn-primary btn-xl" type="submit" value="Zatwierdź"/>
+                <input class="btn btn-primary btn-xl" type="submit" value="Zatwierdź"/>
             </div>
+        </section>
+    </form>
 
-        </div>
-    </section>
-</form>
-<header class="masthead bg-white text-white text-center" style="padding-top: 1rem;">
-</header>
+    <div class="row" style="justify-content: space-between; width:100%; margin:0;"
+         th:if="${booleans[0]?.exists && booleans[1]?.exists}">
+        <a th:href="@{/previous-exercise?id={exerciseId}(exerciseId= ${booleans[0]?.exerciseId})}">
+            <button class="btn btn-primary btn-xl">Cofnij</button>
+        </a>
+        <a th:href="@{/next-exercise?id={exerciseId}(exerciseId=${booleans[1]?.exerciseId})}">
+            <button class="btn btn-primary btn-xl">Następne</button>
+        </a>
+    </div>
+    <div class="row" style="justify-content: left; width: 100%; margin:0;" th:if="${booleans[0]?.exists && !booleans[1]?.exists}">
+        <a th:href="@{/previous-exercise?id={exerciseId}(exerciseId= ${booleans[0]?.exerciseId})}">
+            <button class="btn btn-primary btn-xl">Cofnij</button>
+        </a>
+    </div>
+    <div class="row" style="justify-content: right; width:100%; margin:0;" th:if="${!booleans[0]?.exists && booleans[1]?.exists}">
+        <a th:href="@{/next-exercise?id={exerciseId}(exerciseId=${booleans[1]?.exerciseId})}">
+            <button class="btn btn-primary btn-xl">Następne</button>
+        </a>
+    </div>
+
+
+</div>
+<div class="masthead bg-main-green text-white text-center" style="padding-top: 1rem; margin-top: 2rem">
+</div>
 <div th:insert="home/footer :: foot"></div>
 
 </body>

@@ -14,4 +14,5 @@ public interface ExerciseRepository extends CrudRepository<Exercise, Long> {
     Set<Exercise> findAllByIdIn(Collection<Long> id);
     List<Exercise> findAllBySectionId(Long id);
     Optional<Exercise> findBySection_IdAndNumber(Long id, Integer number);
+    boolean existsBySectionIdAndNumber(Long sectionId, Integer number);
 }

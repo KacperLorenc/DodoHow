@@ -46,4 +46,8 @@ public class ExerciseService {
     public Optional<Exercise> findBySectionAndNumber(Long sectionId, Integer number){
         return exerciseRepository.findBySection_IdAndNumber(sectionId, number);
     }
+
+    public boolean existsBySectionIdAndNumber(Long sectionId, Integer number) {
+        return exerciseRepository.existsBySectionIdAndNumber(sectionId, number);
+    }
 }

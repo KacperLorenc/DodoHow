@@ -7,6 +7,7 @@ import pl.lorenc.dodohow.entities.Points;
 import pl.lorenc.dodohow.entities.User;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface PointsRepository extends CrudRepository<Points, Long> {
@@ -14,4 +15,5 @@ public interface PointsRepository extends CrudRepository<Points, Long> {
     void deleteByUserAndExercise(User user, Exercise exercise);
     void deleteAllByUserAndExerciseIn(User user, List<Exercise> exercises);
     List<Points> findAllByExerciseInAndUser(List<Exercise> exercises, User user);
+    Optional<Points> findByUserAndExercise(User user, Exercise exercise);
 }

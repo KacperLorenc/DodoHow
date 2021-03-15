@@ -142,7 +142,7 @@ public class DtoMapper {
     }
 
     public PointsDto map(Points points) {
-        return new PointsDto(points.getId(), points.getExercise().getId(), points.getUser().getId(), points.getUserScore(), points.getMaxScore());
+        return new PointsDto(points.getId(), points.getExercise().getId(), points.getUser().getId(), points.getUserScore(), points.getMaxScore(), points.getExercise().getQuestion());
     }
 
 

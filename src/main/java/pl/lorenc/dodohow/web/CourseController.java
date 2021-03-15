@@ -1,10 +1,12 @@
 package pl.lorenc.dodohow.web;
 
+import com.google.common.collect.Lists;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pl.lorenc.dodohow.dtos.ExerciseDto;
+import pl.lorenc.dodohow.dtos.ExerciseRefferenceDto;
 import pl.lorenc.dodohow.dtos.PointsDto;
 import pl.lorenc.dodohow.dtos.ScoreDto;
 import pl.lorenc.dodohow.entities.*;
@@ -49,13 +51,12 @@ public class CourseController {
                     List<Exercise> exercises = exerciseService.findAllBy(sectionOpt.get().getId());
                     pointsService.deleteAllByUserAndExercises(user, exercises);
 
-                    Optional<ExerciseDto> firstExercise = exerciseService.findAllBy(id).stream()
-                            .map(mapper::map).min(Comparator.comparing(ExerciseDto::getNumber));
+                    Optional<Exercise> firstExercise = exerciseService.findAllBy(id)
+                            .stream()
+                            .min(Comparator.comparing(Exercise::getNumber));
 
-                    return firstExercise.map(e -> {
-                        model.addAttribute("exercise", e);
-                        return "exercises/" + e.getType();
-                    }).orElse("redirect:/sections");
+                    return firstExercise.map(e -> getExerciseTemplate(model, e))
+                            .orElse("redirect:/sections");
                 }
 
                 return "redirect:/sections";
@@ -76,21 +77,57 @@ public class CourseController {
             if (exercise.getId() == null) {
                 return "redirect:/sections";
             }
+
+
+            //find exercise by id
             Optional<Exercise> exerciseOpt = exerciseService.findById(exercise.getId());
             if (exerciseOpt.isPresent()) {
+
+                //find context to exercise which is user and section
+                Exercise currentExercise = exerciseOpt.get();
                 Optional<User> userOpt = userService.getUserFromSession();
-                Optional<Section> sectionOpt = sectionService.findById(exerciseOpt.get().getSection().getId());
+                Optional<Section> sectionOpt = sectionService.findById(currentExercise.getSection().getId());
                 if (userOpt.isPresent() && sectionOpt.isPresent()) {
-                    Points points = new Points(null, 0, exerciseOpt.get().getMaxScore(), userOpt.get(), exerciseOpt.get());
-                    if (exercise.getUserAnswer() != null && exercise.getUserAnswer().equals(exerciseOpt.get().getAnswer())) {
-                        points.setUserScore(exerciseOpt.get().getMaxScore());
-                        Optional<Score> scoreOpt = sectionService.findScore(userOpt.get(), sectionOpt.get());
-                        scoreOpt.ifPresent(score -> {
-                            score.setScore(score.getScore() + exerciseOpt.get().getMaxScore());
-                            sectionService.saveScore(score);
-                        });
+
+                    //Check if user already submitted answer to question during this quiz
+                    User user = userOpt.get();
+                    Optional<Points> oldPointsOpt = pointsService.findByUserAndExercise(user, currentExercise);
+                    if (oldPointsOpt.isPresent()) {
+                        //action if user answered question
+                        Points oldPoints = oldPointsOpt.get();
+                        Optional<Score> scoreOpt = sectionService.findScore(user, sectionOpt.get());
+                        if (exercise.getUserAnswer() != null && exercise.getUserAnswer().equals(currentExercise.getAnswer())) {
+                            scoreOpt.ifPresent(score -> {
+                                if (oldPoints.getUserScore() == 0) { //add points if previously user answered incorrectly
+                                    score.setScore(score.getScore() + currentExercise.getMaxScore());
+                                    sectionService.saveScore(score);
+                                }
+                            });
+                            oldPoints.setUserScore(currentExercise.getMaxScore());
+                        } else {
+                            scoreOpt.ifPresent(score -> {
+                                if (oldPoints.getUserScore() > 0) { //substract if previously user answered correctly
+                                    score.setScore(score.getScore() > currentExercise.getMaxScore() ? score.getScore() - currentExercise.getMaxScore() : 0);
+                                    sectionService.saveScore(score);
+                                }
+                            });
+                            oldPoints.setUserScore(0);
+                        }
+                        pointsService.save(oldPoints);
+                    } else {
+
+                        //action if user answered this question for the first time
+                        Points points = new Points(null, 0, currentExercise.getMaxScore(), user, currentExercise);
+                        if (exercise.getUserAnswer() != null && exercise.getUserAnswer().equals(currentExercise.getAnswer())) {
+                            points.setUserScore(currentExercise.getMaxScore());
+                            Optional<Score> scoreOpt = sectionService.findScore(user, sectionOpt.get());
+                            scoreOpt.ifPresent(score -> {
+                                score.setScore(score.getScore() + currentExercise.getMaxScore());
+                                sectionService.saveScore(score);
+                            });
+                        }
+                        pointsService.save(points);
                     }
-                    pointsService.save(points);
                     return "redirect:/next-exercise?id=" + exercise.getId();
                 }
             }
@@ -112,13 +149,11 @@ public class CourseController {
             }
 
             Exercise currentExercise = exerciseOpt.get();
-
             Optional<Exercise> next = exerciseService.findBySectionAndNumber(currentExercise.getSection().getId(), currentExercise.getNumber() + 1);
             if (next.isEmpty()) {
-                Optional<Section> sectionOpt = sectionService.findById(currentExercise.getId());
+                Optional<Section> sectionOpt = sectionService.findById(currentExercise.getSection().getId());
                 return sectionOpt.map(section -> summary(model, section)).orElse("redirect:/sections");
             }
-
 
             return getExerciseTemplate(model, next.get());
         } catch (Exception e) {
@@ -157,8 +192,18 @@ public class CourseController {
     private String getExerciseTemplate(Model model, Exercise exercise) {
 
         ExerciseDto nextExercise = mapper.map(exercise);
-        Optional<Section> section = sectionService.findById(nextExercise.getSectionId());
         model.addAttribute("exercise", nextExercise);
+
+        boolean previous = exerciseService.existsBySectionIdAndNumber(exercise.getSection().getId(), exercise.getNumber() - 1);
+        boolean next = exerciseService.existsBySectionIdAndNumber(exercise.getSection().getId(), exercise.getNumber() + 1);
+
+        List<ExerciseRefferenceDto> booleans = Lists.newArrayList(
+                new ExerciseRefferenceDto(previous, exercise.getId()),
+                new ExerciseRefferenceDto(next, exercise.getId())
+        );
+
+        model.addAttribute("booleans", booleans);
+
         return "exercises/" + nextExercise.getType();
     }
 
@@ -166,16 +211,31 @@ public class CourseController {
 
         Optional<User> user = userService.getUserFromSession();
         if (user.isPresent()) {
-            List<Exercise> exercises = exerciseService.findAllBy(section.getId());
-            List<PointsDto> points = pointsService.findAllByExercisesAndUser(exercises, user.get()).stream()
-                    .map(mapper::map)
-                    .collect(Collectors.toList());
+
+            List<PointsDto> points = getUserPoints(user.get(), section.getId());
 
             model.addAttribute("points", points);
             model.addAttribute("section", mapper.map(section));
 
-            return "exercises/summary";
+            return "sections/summary";
         }
         return "redirect:/sections";
+    }
+
+    private List<PointsDto> getUserPoints(User user, Long sectionId) {
+        List<Exercise> exercises = exerciseService.findAllBy(sectionId);
+        List<PointsDto> points = pointsService.findAllByExercisesAndUser(exercises, user).stream()
+                .map(mapper::map)
+                .collect(Collectors.toList());
+
+        List<PointsDto> missingPoints = exercises.stream()
+                .filter(e -> !points.stream().map(PointsDto::getExerciseId).collect(Collectors.toList()).contains(e.getId()))
+                .map(e -> new PointsDto(null, e.getId(), user.getId(), 0, e.getMaxScore(), e.getQuestion()))
+                .collect(Collectors.toList());
+
+        points.addAll(missingPoints);
+        points.sort(Comparator.comparing(PointsDto::getExerciseId));
+
+        return points;
     }
 }

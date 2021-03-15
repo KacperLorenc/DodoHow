@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html class="whole-screen" lang="en" xmlns:th="http://www.thymeleaf.org"
+>
+<head th:insert="sections/navigationbar.html :: headerfiles"></head>
+<body class="whole-screen" id="page-top">
+<div th:insert="sections/navigationbar.html :: nav"></div>
+<header class="masthead bg-white text-white text-center" style="padding-bottom: 0; padding-top: 12.5rem">
+    <div class="container d-flex align-items-center flex-column">
+        <a th:href="@{/}">
+            <img class="masthead-avatar mb-5" src="../../assets/img/avataaars.png" alt=""/>
+        </a>
+    </div>
+</header>
+<div class="container d-flex align-items-center flex-column ">
+    <div class="container">
+        <h2 class="page-section-heading text-center text-uppercase text-secondary">Podsumowanie</h2>
+        <div class="divider-custom">
+            <div class="divider-custom-line"></div>
+            <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
+            <div class="divider-custom-line"></div>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <th:block th:each="point, i : ${points}">
+        <div class="row align-items-center mb-1">
+
+            <div style="font-size: 1.5rem" class="row col-md-8 text-left text-uppercase text-secondary">
+                <div th:text="${i.index} + 1"></div>
+                <div>.</div>
+                &nbsp
+                <div th:text="${point?.question}"></div>
+            </div>
+            <div class="col-md-3 text-right">
+                <img th:if="${point?.getUserScore() == point?.getMaxScore()}" src="../../assets/images/ok_icon.png"
+                     alt="ok"/>
+                <img th:if="${point?.getUserScore() < point?.getMaxScore()}" src="../../assets/images/cancel_icon.png"
+                     alt="not ok"/>
+            </div>
+        </div>
+        <div th:if="${i.index < (i.size)-1}" class="row mb-1">
+            <div class="col-md-12 border-solid-thin"></div>
+        </div>
+    </th:block>
+</div>
+<div class="d-flex justify-content-center">
+    <a th:href="@{/sections}">
+        <button class="btn btn-primary btn-xl">Powrót</button>
+    </a>
+</div>
+<header class="masthead bg-white text-white text-center">
+</header>
+<div class="footer-bottom" th:insert="home/footer :: foot"></div>
+</body>
+</html>

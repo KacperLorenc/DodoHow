@@ -36,10 +36,17 @@ public class SectionService {
 
     public Optional<Section> findNextSection(User user) {
         Set<Section> sections = findUsersSections(user);
-        return sections.stream()
+        Optional<Section> currentLastSection = sections.stream()
                 .map(Section::getNumberInClass)
                 .max(Integer::compareTo)
-                .flatMap(number -> sectionRepository.findByNumberInClass(number + 1));
+                .flatMap(number -> sectionRepository.findByNumberInClass(number));
+        if (currentLastSection.isPresent()) {
+            if (checkIfScoreExists(currentLastSection.get(), user)) {
+                return sectionRepository.findByNumberInClass(currentLastSection.get().getNumberInClass());
+            }
+        }
+
+        return Optional.empty();
     }
 
     public Optional<Section> getFirstSection() {
@@ -66,16 +73,21 @@ public class SectionService {
         return scoreRepository.findAllBySectionAndUser(section, user);
     }
 
-    public Score saveScore(Score score){
+    public Score saveScore(Score score) {
         return scoreRepository.save(score);
     }
 
-    public void deleteScore(User user, Section section){
+    public void deleteScore(User user, Section section) {
         scoreRepository.deleteByUserAndSection(user, section);
     }
 
-    public Optional<Score> findScore (User user, Section section){
+    public Optional<Score> findScore(User user, Section section) {
         return scoreRepository.findByUserAndSection(user, section);
+    }
+
+    public boolean checkIfScoreExists(Section section, User user) {
+        return scoreRepository.findByUserAndSection(user, section)
+                .isPresent();
     }
 
 }

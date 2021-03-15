@@ -9,11 +9,9 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PointsDto {
-    private Long id;
+public class ExerciseRefferenceDto {
+
+    private Boolean exists;
     private Long exerciseId;
-    private Long userId;
-    private Integer userScore;
-    private Integer maxScore;
-    private String question;
+
 }
