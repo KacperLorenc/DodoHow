@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import pl.lorenc.dodohow.entities.Section;
 import pl.lorenc.dodohow.services.DtoMapper;
+import pl.lorenc.dodohow.services.ScoreService;
 import pl.lorenc.dodohow.services.SectionService;
 import pl.lorenc.dodohow.services.UserService;
 import pl.lorenc.dodohow.entities.User;
@@ -21,12 +22,14 @@ public class ViewsController {
 
     private UserService userService;
     private SectionService sectionService;
+    private ScoreService scoreService;
     private DtoMapper mapper;
 
     @Autowired
-    public ViewsController(UserService userService, SectionService sectionService, DtoMapper mapper) {
+    public ViewsController(UserService userService, SectionService sectionService, ScoreService scoreService, DtoMapper mapper) {
         this.userService = userService;
         this.sectionService = sectionService;
+        this.scoreService = scoreService;
         this.mapper = mapper;
     }
 
@@ -50,10 +53,11 @@ public class ViewsController {
                 userService.saveRegisteredUser(user);
                 model.addAttribute("user", mapper.map(user));
                 model.addAttribute("sections", userSections.stream().sorted(Comparator.comparing(Section::getNumberInClass)).map(section -> mapper.map(section, user)).collect(Collectors.toList()));
-                model.addAttribute("scores", sectionService.getScores(user));
+                model.addAttribute("scores", scoreService.getScores(user));
                 return "sections/sections";
             }).orElse("redirect:/login");
         } catch (Exception e) {
+            e.printStackTrace();
             return "redirect:/";
         }
     }

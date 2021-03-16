@@ -10913,24 +10913,49 @@ form .row:first-child .floating-label-form-group {
 }
 
 .button-select ::-moz-focus-inner {
-  border: 0;
+    border: 0;
 }
+
 .button-select:focus {
-  outline: none;
+    outline: none;
 }
-.button-select option{
-  background-color: rgba(26, 188, 156, 0.9);
-  width: 60px;
-  font-size: 1.2em;
-  padding: 10px 0;
-  text-align: center;
-  margin-right: 20px;
-  display: inline-block;
-  cursor: pointer;
-  border-radius: 5px;
+
+.button-select option {
+    background-color: rgba(26, 188, 156, 0.9);
+    width: 60px;
+    font-size: 1.2em;
+    padding: 10px 0;
+    text-align: center;
+    margin-right: 20px;
+    display: inline-block;
+    cursor: pointer;
+    border-radius: 5px;
 }
-.container-border{
+
+.container-border {
     border-bottom: 4px groove #2c3e80;
     border-top: 4px groove #2c3e80;
     border-radius: 20px;
+}
+
+.question-container {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: repeat(20, 1fr);
+}
+
+.question {
+    grid-column: 5/17;
+}
+
+.questions-map {
+    grid-column: 18/20;
+}
+
+.test-question-map {
+    width: 100%;
+    height: 100%;
+    border: red 3px solid;
+    background-color: blue;
 }

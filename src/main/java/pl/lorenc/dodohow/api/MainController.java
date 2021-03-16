@@ -78,7 +78,7 @@ public class MainController {
         try {
             Score score = dtoMapper.map(scoreDto);
             if(score!= null){
-                scoreService.addScore(score);
+                scoreService.saveScore(score);
             }
         } catch (Exception e) {
             e.printStackTrace();

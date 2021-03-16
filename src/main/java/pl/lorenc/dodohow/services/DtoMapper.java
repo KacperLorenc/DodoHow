@@ -21,13 +21,15 @@ public class DtoMapper {
     private ExerciseRepository exerciseRepository;
     private SectionService sectionService;
     private UserRepository userRepository;
+    private ScoreService scoreService;
 
 
     @Autowired
-    public DtoMapper(ExerciseRepository exerciseRepository, SectionService sectionService, UserRepository userRepository) {
+    public DtoMapper(ExerciseRepository exerciseRepository, SectionService sectionService, UserRepository userRepository, ScoreService scoreService) {
         this.exerciseRepository = exerciseRepository;
         this.sectionService = sectionService;
         this.userRepository = userRepository;
+        this.scoreService = scoreService;
     }
 
     public User map(UserDto userDto) {
@@ -73,7 +75,7 @@ public class DtoMapper {
     }
 
     public SectionWithScoreDto map(Section section, User user) {
-        List<Score> scores = sectionService.getScores(user, section);
+        List<Score> scores = scoreService.getScores(user, section);
         if (scores != null && !scores.isEmpty()) {
             Optional<Score> scoreOpt = scores.stream().max(Comparator.comparing(Score::getScore));
             return scoreOpt.map(s -> new SectionWithScoreDto(section.getId(), section.getTitle(), section.getMaxScore(), s.getScore()))

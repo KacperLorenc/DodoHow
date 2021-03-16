@@ -18,5 +18,6 @@ public interface ScoreRepository extends CrudRepository<Score, Long> {
     List<Score> findAllBySectionAndUser(Section section, User user);
     void deleteByUserAndSection(User user, Section section);
     Optional<Score> findByUserAndSection(User user, Section section);
+    Optional<Score> findByUser_IdAndSection_Id(Long userId, Long sectionId);
 
 }

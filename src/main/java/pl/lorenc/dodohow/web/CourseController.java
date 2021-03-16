@@ -23,13 +23,15 @@ public class CourseController {
     private SectionService sectionService;
     private ExerciseService exerciseService;
     private PointsService pointsService;
+    private ScoreService scoreService;
     private DtoMapper mapper;
 
-    public CourseController(UserService userService, SectionService sectionService, ExerciseService exerciseService, PointsService pointsService, DtoMapper mapper) {
+    public CourseController(UserService userService, SectionService sectionService, ExerciseService exerciseService, PointsService pointsService, ScoreService scoreService, DtoMapper mapper) {
         this.userService = userService;
         this.sectionService = sectionService;
         this.exerciseService = exerciseService;
         this.pointsService = pointsService;
+        this.scoreService = scoreService;
         this.mapper = mapper;
     }
 
@@ -45,8 +47,8 @@ public class CourseController {
                 Optional<Section> sectionOpt = sectionService.findById(id);
                 if (sectionOpt.isPresent()) {
 
-                    sectionService.deleteScore(user, sectionOpt.get());
-                    sectionService.saveScore(mapper.map(scoreDto));
+                    scoreService.deleteScore(user, sectionOpt.get());
+                    scoreService.saveScore(mapper.map(scoreDto));
 
                     List<Exercise> exercises = exerciseService.findAllBy(sectionOpt.get().getId());
                     pointsService.deleteAllByUserAndExercises(user, exercises);
@@ -95,12 +97,12 @@ public class CourseController {
                     if (oldPointsOpt.isPresent()) {
                         //action if user answered question
                         Points oldPoints = oldPointsOpt.get();
-                        Optional<Score> scoreOpt = sectionService.findScore(user, sectionOpt.get());
+                        Optional<Score> scoreOpt = scoreService.findScore(user, sectionOpt.get());
                         if (exercise.getUserAnswer() != null && exercise.getUserAnswer().equals(currentExercise.getAnswer())) {
                             scoreOpt.ifPresent(score -> {
                                 if (oldPoints.getUserScore() == 0) { //add points if previously user answered incorrectly
                                     score.setScore(score.getScore() + currentExercise.getMaxScore());
-                                    sectionService.saveScore(score);
+                                    scoreService.saveScore(score);
                                 }
                             });
                             oldPoints.setUserScore(currentExercise.getMaxScore());
@@ -108,7 +110,7 @@ public class CourseController {
                             scoreOpt.ifPresent(score -> {
                                 if (oldPoints.getUserScore() > 0) { //substract if previously user answered correctly
                                     score.setScore(score.getScore() > currentExercise.getMaxScore() ? score.getScore() - currentExercise.getMaxScore() : 0);
-                                    sectionService.saveScore(score);
+                                    scoreService.saveScore(score);
                                 }
                             });
                             oldPoints.setUserScore(0);
@@ -120,10 +122,10 @@ public class CourseController {
                         Points points = new Points(null, 0, currentExercise.getMaxScore(), user, currentExercise);
                         if (exercise.getUserAnswer() != null && exercise.getUserAnswer().equals(currentExercise.getAnswer())) {
                             points.setUserScore(currentExercise.getMaxScore());
-                            Optional<Score> scoreOpt = sectionService.findScore(user, sectionOpt.get());
+                            Optional<Score> scoreOpt = scoreService.findScore(user, sectionOpt.get());
                             scoreOpt.ifPresent(score -> {
                                 score.setScore(score.getScore() + currentExercise.getMaxScore());
-                                sectionService.saveScore(score);
+                                scoreService.saveScore(score);
                             });
                         }
                         pointsService.save(points);

@@ -2,38 +2,30 @@ package pl.lorenc.dodohow.services;
 
 import org.springframework.stereotype.Service;
 import pl.lorenc.dodohow.entities.Score;
+import pl.lorenc.dodohow.entities.Section;
+import pl.lorenc.dodohow.entities.User;
+import pl.lorenc.dodohow.repositories.ScoreRepository;
 import pl.lorenc.dodohow.repositories.SectionRepository;
 import pl.lorenc.dodohow.repositories.UserRepository;
 
-import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
 public class ScoreService {
     private SectionRepository sectionRepository;
     private UserRepository userRepository;
+    private ScoreRepository scoreRepository;
 
-    public ScoreService(SectionRepository sectionRepository, UserRepository userRepository) {
+    public ScoreService(SectionRepository sectionRepository, UserRepository userRepository, ScoreRepository scoreRepository) {
         this.sectionRepository = sectionRepository;
         this.userRepository = userRepository;
+        this.scoreRepository = scoreRepository;
     }
 
-    public void addScore(Long userId, Long sectionId, Integer score) {
-        userRepository.findById(userId)
-                .ifPresent(user -> sectionRepository.findById(sectionId).ifPresent(section -> {
-                    Score newScore = new Score(null, user, section, score, LocalDateTime.now());
-                    Set<Score> scores = user.getScores();
-                    if (scores == null) {
-                        scores = new HashSet<>();
-                    }
-                    scores.add(newScore);
-                    newScore.setUser(user);
-                    userRepository.save(user);
-                }));
-    }
-
-    public void addScore(Score score) {
+    public void saveScore(Score score) {
         userRepository.findById(score.getUser().getId()).ifPresent(user -> {
             Set<Score> scores = user.getScores();
             if (scores == null) {
@@ -43,5 +35,26 @@ public class ScoreService {
             score.setUser(user);
             userRepository.save(user);
         });
+    }
+
+    public List<Score> getScores(User user) {
+        return scoreRepository.findAllByUser(user);
+    }
+
+    public List<Score> getScores(User user, Section section) {
+        return scoreRepository.findAllBySectionAndUser(section, user);
+    }
+
+    public void deleteScore(User user, Section section) {
+        scoreRepository.deleteByUserAndSection(user, section);
+    }
+
+    public Optional<Score> findScore(User user, Section section) {
+        return scoreRepository.findByUserAndSection(user, section);
+    }
+
+    public boolean checkIfScoreExists(Section section, User user) {
+        return scoreRepository.findByUserAndSection(user, section)
+                .isPresent();
     }
 }
