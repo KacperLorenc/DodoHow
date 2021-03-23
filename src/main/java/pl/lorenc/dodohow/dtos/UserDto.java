@@ -37,13 +37,15 @@ public class UserDto {
     private Boolean active;
     private String roles;
     private Set<SectionDto> sections;
+    private Boolean teacher;
 
-    public UserDto(Long id, @NotNull(message = "*Pole musi być uzupełnione") @NotEmpty(message = "*Pole musi być uzupełnione") @Size(min = 5, max = 100, message = "Login musi mieć przynajmniej 5 znaków") String login, @NotNull(message = "*Pole musi być uzupełnione") @NotEmpty(message = "*Pole musi być uzupełnione") @Size(min = 5, max = 100, message = "Hasło musi mieć przynajmniej 5 znaków") String password,  @NotNull(message = "*Pole musi być uzupełnione") @NotEmpty(message = "*Pole musi być uzupełnione") String email, Boolean active, String roles) {
+    public UserDto(Long id, @NotNull(message = "*Pole musi być uzupełnione") @NotEmpty(message = "*Pole musi być uzupełnione") @Size(min = 5, max = 100, message = "Login musi mieć przynajmniej 5 znaków") String login, @NotNull(message = "*Pole musi być uzupełnione") @NotEmpty(message = "*Pole musi być uzupełnione") @Size(min = 5, max = 100, message = "Hasło musi mieć przynajmniej 5 znaków") String password,  @NotNull(message = "*Pole musi być uzupełnione") @NotEmpty(message = "*Pole musi być uzupełnione") String email, Boolean active, String roles, Boolean teacher) {
         this.id = id;
         this.login = login;
         this.password = password;
         this.email = email;
         this.active = active;
         this.roles = roles;
+        this.teacher = teacher;
     }
 }

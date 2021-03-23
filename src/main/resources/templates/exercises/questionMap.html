@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:fragment="map">
+    <th:block th:each="point, i : ${map}">
+        <div class="row align-items-center"
+             style="margin-bottom: 8px;">
+            <div style="font-size: 1.3rem" class="row col-md-6 text-right text-uppercase text-secondary">
+                <div th:text="${i.index} + 1"></div>
+                <div>.</div>
+            </div>
+            <div class="col-md-5 text-left" style="padding: 0;">
+                <a th:href="@{/exercise?id={exerciseId}(exerciseId=${point?.exerciseId})}">
+                    <img style="width: 50%; height: auto " th:if="${!point?.skipped}"
+                         src="../../assets/images/maybe-ok.png"
+                         alt="Visited"/>
+                </a>
+                <a th:href="@{/exercise?id={exerciseId}(exerciseId=${point?.exerciseId})}">
+                    <img style="width: 50%; height: auto" th:if="${point?.skipped}"
+                         src="../../assets/images/cancel-64.png"
+                         alt="Not visited"/>
+                </a>
+            </div>
+            <div th:if="${exercise?.id == point?.exerciseId}" class="col-md-4" style="padding: 0">
+                <img style="width: 60%; height: auto;"
+                     src="../../assets/images/left-arrow.png"
+                     alt="Here"/>
+            </div>
+        </div>
+    </th:block>
+</div>
+</body>
+</html>

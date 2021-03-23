@@ -3,9 +3,9 @@
 <head th:insert="home/navigationbar.html :: headerfiles">
 </head>
 <body id="page-top">
-<div th:insert="exercises/chooseAnswer.html:: exNav"></div>
-<header class="masthead bg-primary text-white text-center" style="padding-top: 7.5rem; margin-bottom: 2rem">
-</header>
+<div th:insert="exercises/navigationBar.html :: exNav"></div>
+<div class="masthead bg-primary text-white text-center" style="padding-top: 7.5rem; margin-bottom: 2rem">
+</div>
 <div class="question-container">
     <div class="question container pt-5 pb-5 container-border">
         <form action="#" th:action="@{/next-exercise}" th:object="${exercise}" method="post">
@@ -40,28 +40,26 @@
         <div class="row" style="justify-content: space-between; width:100%; margin:0;"
              th:if="${booleans[0]?.exists && booleans[1]?.exists}">
             <a th:href="@{/previous-exercise?id={exerciseId}(exerciseId= ${booleans[0]?.exerciseId})}">
-                <button class="btn btn-primary btn-xl">Cofnij</button>
+                <button class="btn btn-primary btn-xl" style="width: 12rem !important;">Poprzednie</button>
             </a>
             <a th:href="@{/next-exercise?id={exerciseId}(exerciseId=${booleans[1]?.exerciseId})}">
-                <button class="btn btn-primary btn-xl">Następne</button>
+                <button class="btn btn-primary btn-xl" style="width: 12rem !important;">Następne</button>
             </a>
         </div>
         <div class="row" style="justify-content: left; width: 100%; margin:0;"
              th:if="${booleans[0]?.exists && !booleans[1]?.exists}">
             <a th:href="@{/previous-exercise?id={exerciseId}(exerciseId= ${booleans[0]?.exerciseId})}">
-                <button class="btn btn-primary btn-xl">Cofnij</button>
+                <button class="btn btn-primary btn-xl" style="width: 12rem !important;">Poprzednie</button>
             </a>
         </div>
         <div class="row" style="justify-content: right; width:100%; margin:0;"
              th:if="${!booleans[0]?.exists && booleans[1]?.exists}">
             <a th:href="@{/next-exercise?id={exerciseId}(exerciseId=${booleans[1]?.exerciseId})}">
-                <button class="btn btn-primary btn-xl">Następne</button>
+                <button class="btn btn-primary btn-xl" style="width: 12rem !important;">Następne</button>
             </a>
         </div>
     </div>
-    <div class="questions-map test-question-map">
-        lol
-    </div>
+    <div class="questions-map" th:insert="exercises/questionMap :: map"></div>
 </div>
 <div class="masthead bg-main-green text-white text-center" style="padding-top: 1rem; margin-top: 2rem">
 </div>

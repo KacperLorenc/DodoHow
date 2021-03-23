@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import pl.lorenc.dodohow.dtos.UserDto;
-import pl.lorenc.dodohow.services.UserService;
 import pl.lorenc.dodohow.entities.User;
 import pl.lorenc.dodohow.security.OnRegistrationCompleteEvent;
 import pl.lorenc.dodohow.security.VerificationToken;
+import pl.lorenc.dodohow.services.UserService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -33,7 +33,11 @@ public class CredentialsController {
     }
 
     @GetMapping("/login")
-    private String login() {
+    private String login(Model model) {
+
+        if (model.containsAttribute("user"))
+            return "login/loginFormSuccess";
+
         return userService.getUserFromSession()
                 .map(u -> "home/index")
                 .orElse("login/login");
@@ -55,10 +59,12 @@ public class CredentialsController {
             return "login/register";
         }
         if (userService.registerUser(userDto)) {
-            String appUrl = request.getContextPath();
-            Optional<User> userOpt = userService.findByUsername(userDto.getLogin());
-            userOpt.ifPresent(user -> eventPublisher.publishEvent(new OnRegistrationCompleteEvent(user, request.getLocale(), appUrl)));
-            return "login/loginFormSuccess";
+            if (userDto.getTeacher() == null || !userDto.getTeacher()) {
+                String appUrl = request.getContextPath();
+                Optional<User> userOpt = userService.findByUsername(userDto.getLogin());
+                userOpt.ifPresent(user -> eventPublisher.publishEvent(new OnRegistrationCompleteEvent(user, request.getLocale(), appUrl)));
+            }
+            return "redirect:login";
         }
         return "login/registerFormError";
     }
@@ -84,7 +90,7 @@ public class CredentialsController {
     }
 
     @GetMapping("/wrong-token")
-    public String wrongToken(Model model){
+    public String wrongToken(Model model) {
         model.addAttribute("message", "Twój link wygasł lub jest nieprawidłowy.");
         return "login/badUser";
     }

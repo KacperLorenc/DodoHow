@@ -8,10 +8,7 @@ import pl.lorenc.dodohow.entities.*;
 import pl.lorenc.dodohow.repositories.ExerciseRepository;
 import pl.lorenc.dodohow.repositories.UserRepository;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,6 +31,7 @@ public class DtoMapper {
 
     public User map(UserDto userDto) {
         User user = new User(userDto.getId(), userDto.getLogin(), userDto.getPassword(), userDto.getEmail(), userDto.getActive(), userDto.getRoles());
+
         Set<SectionDto> sections = userDto.getSections();
         if (sections != null && !sections.isEmpty()) {
             Set<Long> ids = userDto.getSections().stream().map(SectionDto::getId).collect(Collectors.toSet());
@@ -43,7 +41,11 @@ public class DtoMapper {
     }
 
     public UserDto map(User user) {
-        UserDto userDto = new UserDto(user.getId(), user.getUsername(), user.getPassword(), user.getEmail(), user.getActive(), user.getRoles());
+
+        boolean teacher = user.getRoleList()
+                .contains("ROLE_TEACHER");
+
+        UserDto userDto = new UserDto(user.getId(), user.getUsername(), user.getPassword(), user.getEmail(), user.getActive(), user.getRoles(), teacher);
         Set<Section> sections = sectionService.findUsersSections(user);
         if (sections != null) {
             userDto.setSections(sections.stream()
@@ -144,8 +146,50 @@ public class DtoMapper {
     }
 
     public PointsDto map(Points points) {
-        return new PointsDto(points.getId(), points.getExercise().getId(), points.getUser().getId(), points.getUserScore(), points.getMaxScore(), points.getExercise().getQuestion());
+
+        Optional<Exercise> exerciseOpt = exerciseRepository.findById(points.getExercise().getId());
+        return exerciseOpt.map(exercise -> new PointsDto(points.getId(), exercise.getId(), exercise.getNumber(), points.getUser().getId(), points.getUserScore(), points.getMaxScore(), points.getExercise().getQuestion()))
+                .orElse(null);
     }
 
+    public QuizClassDto map(QuizClass quizClass) {
+
+        if (quizClass == null)
+            return null;
+
+        Set<Long> students = new HashSet<>();
+        if (quizClass.getStudents() != null) {
+            students = quizClass.getStudents()
+                    .stream()
+                    .map(User::getId)
+                    .collect(Collectors.toSet());
+        }
+
+        Set<Long> sections = new HashSet<>();
+        if (quizClass.getSections() != null) {
+            sections = quizClass.getSections()
+                    .stream()
+                    .map(Section::getId)
+                    .collect(Collectors.toSet());
+        }
+
+        return new QuizClassDto(quizClass.getId(), quizClass.getTeacher().getId(), students, sections);
+    }
+
+    public QuizClass map(QuizClassDto quizClassDto) {
+
+        if (quizClassDto == null)
+            return null;
+
+        Optional<User> teacherOpt = userRepository.findById(quizClassDto.getTeacherId());
+        Set<User> students = userRepository.findAllById(quizClassDto.getStudents());
+        Set<Section> sections = sectionService.findAllByIds(quizClassDto.getSections());
+
+        if (teacherOpt.isEmpty())
+            log.error("User with id: " + quizClassDto.getTeacherId() + " doesn't exist!");
+
+        return new QuizClass(quizClassDto.getId(), teacherOpt.orElse(null), students, sections);
+
+    }
 
 }

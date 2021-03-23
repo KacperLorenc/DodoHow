@@ -10942,20 +10942,26 @@ form .row:first-child .floating-label-form-group {
     width: 100%;
     height: 100%;
     display: grid;
-    grid-template-columns: repeat(20, 1fr);
+    grid-template-columns: [first] 80px [line2] 150px [line3] auto [line4] 10px [five] 110px [six] 130px [end];
 }
 
 .question {
-    grid-column: 5/17;
+    grid-column: line3/line4;
 }
 
 .questions-map {
-    grid-column: 18/20;
+    grid-column: line4/six;
+    max-width: 130px;
 }
 
 .test-question-map {
     width: 100%;
     height: 100%;
     border: red 3px solid;
-    background-color: blue;
+}
+
+@media screen and (max-width: 1700px) {
+    .questions-map {
+        display: none !important;
+    }
 }

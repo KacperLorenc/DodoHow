@@ -53,6 +53,10 @@
                                   th:if="${#fields.hasErrors('matchingPassword')}"
                                   th:errors="*{matchingPassword}">Password error</span>
                         </div>
+                        <div class="form-check">
+                            <input th:field="*{teacher}" type="checkbox" class="form-check-input" id="teacher" name="teacher">
+                            <label class="teacher" for="teacher">Konto nauczyciela</label>
+                        </div>
                         <input name="register" id="register" class="btn btn-block login-btn" type="submit"
                                value="Rejestruj">
                     </form>

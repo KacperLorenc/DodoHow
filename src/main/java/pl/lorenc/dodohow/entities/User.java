@@ -34,7 +34,7 @@ public class User {
     private Set<VerificationToken> verificationToken;
     @OneToMany(fetch = FetchType.EAGER)
     private Set<Section> sections;
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private Set<Score> scores;
 
     public User(String username, String password, String email, String roles) {

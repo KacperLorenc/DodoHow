@@ -37,7 +37,10 @@ public class UserService {
         if (!checkRegister(userDto)) {
             User user = mapper.map(userDto);
             user.setPassword(passwordEncoder.encode(user.getPassword()));
-            user.setRoles("ROLE_USER");
+            if(userDto.getTeacher() == null || !userDto.getTeacher())
+                user.setRoles("ROLE_USER");
+            else
+                user.setRoles("ROLE_TEACHER");
             user.setActive(false);
             userRepository.save(user);
             return true;
