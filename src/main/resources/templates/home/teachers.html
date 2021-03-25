@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html class="whole-screen" lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:insert="sections/navigationbar.html :: headerfiles"></head>
+<body class="whole-screen" id="page-top">
+<div th:insert="sections/navigationbar.html :: nav"></div>
+<header class="masthead bg-primary text-white text-center"
+        style="padding-bottom: 1rem; padding-top: 12.5rem; margin-bottom: 6rem">
+    <div class="container d-flex align-items-center flex-column">
+        <a th:href="@{/}">
+            <img class="masthead-avatar mb-5" src="../../assets/img/avataaars.png" alt=""/>
+        </a>
+    </div>
+</header>
+<div class="container d-flex align-items-center flex-column ">
+    <div class="container">
+        <h2 th:if="${!teacherSet?.getTeachers()?.isEmpty()}"
+            class="page-section-heading text-center text-uppercase text-secondary">
+            Aktywacja nauczycieli</h2>
+        <h2 th:if="${teacherSet?.getTeachers()?.isEmpty()}"
+            class="page-section-heading text-center text-uppercase text-secondary">Brak
+            nauczycieli</h2>
+        <div class="divider-custom">
+            <div class="divider-custom-line"></div>
+            <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
+            <div class="divider-custom-line"></div>
+        </div>
+    </div>
+</div>
+<div th:if="${!teacherSet?.getTeachers()?.isEmpty()}" class="container d-flex align-items-center flex-column ">
+    <form name="search" th:object="${search}" th:action="@{/teachers/search}" method="get" class="ml-5">
+        <div class="row p-1 mb-2 mt-2" style="width: 59rem;">
+            <div class="col-md-8 p-0 ml-5">
+                <input th:required="required" type="text" name="username" id="username" class="form-control"
+                       placeholder="login">
+            </div>
+            <div class="col-md-3 p-0 ml-1">
+                <input style="height: 42px;" class="btn btn-primary btn-thin" type="submit" value="Szukaj">
+            </div>
+        </div>
+    </form>
+</div>
+<div th:if="${!teacherSet?.getTeachers()?.isEmpty()}" class="container mt-3"
+     style="margin-bottom: 3rem; max-height: 60%; min-width: 80%; overflow-y: auto;">
+    <th:block th:each="teacher, i : ${teacherSet?.getTeachers()}">
+        <div class="row align-items-center mb-1">
+            <div style="font-size: 1rem" class="col-md-3 text-center text-uppercase text-secondary"
+                 th:text="${teacher?.getLogin()}">
+            </div>
+            <div style="font-size: 1rem" class="col-md-3 text-center text-uppercase text-secondary"
+                 th:text="${teacher?.getEmail()}">
+            </div>
+            <div class="col-md-3 d-flex flex-row-reverse">
+                <a th:href="@{/teachers/{id}(id=${teacher?.getId()})}">
+                    <button class="btn btn-success btn-table" style="width: 60%; height: auto;" >Aktywuj</button>
+                </a>
+            </div>
+            <div class="col-md-3 d-flex flex-row">
+                <a th:href="@{/delete-teacher/{id}(id=${teacher?.getId()})}">
+                    <button class="btn btn-success btn-table btn-danger">Usuń</button>
+                </a>
+            </div>
+        </div>
+        <div th:if="${i.index < (i.size)-1}" class="row mb-1">
+            <div class="col-md-12 border-solid-thin"></div>
+        </div>
+    </th:block>
+</div>
+<div th:if="${teacherSet?.getTeachers()?.isEmpty()}" class="page-section pt-0">
+    <div class="container d-flex" style="justify-content: center">
+        <a th:href="@{/}">
+            <button class="btn btn-primary btn-xl">Powrót</button>
+        </a>
+    </div>
+</div>
+<div th:if="${!teacherSet?.getTeachers()?.isEmpty()}" class="page-section pt-0">
+    <div class="container d-flex" style="justify-content: center">
+        <a th:href="@{/teachers}">
+            <button class="btn btn-primary btn-xl">Pobierz wszystkich</button>
+        </a>
+    </div>
+</div>
+<div class="masthead bg-main-green text-white text-center">
+</div>
+<div class="footer-bottom" th:insert="home/footer :: foot"></div>
+</body>
+</html>

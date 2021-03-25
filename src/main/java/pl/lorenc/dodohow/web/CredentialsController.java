@@ -5,31 +5,34 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import pl.lorenc.dodohow.dtos.TeachersSetDto;
 import pl.lorenc.dodohow.dtos.UserDto;
 import pl.lorenc.dodohow.entities.User;
 import pl.lorenc.dodohow.security.OnRegistrationCompleteEvent;
 import pl.lorenc.dodohow.security.VerificationToken;
+import pl.lorenc.dodohow.services.DtoMapper;
 import pl.lorenc.dodohow.services.UserService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Controller
 public class CredentialsController {
 
     private UserService userService;
     private ApplicationEventPublisher eventPublisher;
+    private DtoMapper mapper;
 
     @Autowired
-    public CredentialsController(UserService userService, ApplicationEventPublisher eventPublisher) {
+    public CredentialsController(UserService userService, ApplicationEventPublisher eventPublisher, DtoMapper mapper) {
         this.userService = userService;
         this.eventPublisher = eventPublisher;
+        this.mapper = mapper;
     }
 
     @GetMapping("/login")
@@ -93,6 +96,70 @@ public class CredentialsController {
     public String wrongToken(Model model) {
         model.addAttribute("message", "Twój link wygasł lub jest nieprawidłowy.");
         return "login/badUser";
+    }
+
+
+    @GetMapping("/teachers/{id}")
+    public String activateTeacher(@PathVariable Long id, Model model) {
+        try {
+            if (id != null)
+                userService.activateUser(id);
+            Set<UserDto> t = userService.findUsersBy(false, "ROLE_TEACHER")
+                    .stream()
+                    .map(mapper::map)
+                    .collect(Collectors.toSet());
+            model.addAttribute("teacherSet", new TeachersSetDto(t));
+            return "home/teachers";
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "redirect:/teachers";
+        }
+    }
+
+    @GetMapping("/delete-teacher/{id}")
+    public String deleteTeacher(@PathVariable Long id, Model model) {
+        try {
+            if (id != null)
+                userService.deleteUser(id);
+            Set<UserDto> t = userService.findUsersBy(false, "ROLE_TEACHER")
+                    .stream()
+                    .map(mapper::map)
+                    .collect(Collectors.toSet());
+            model.addAttribute("teacherSet", new TeachersSetDto(t));
+            return "home/teachers";
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "redirect:/teachers";
+        }
+    }
+
+    @GetMapping("/teachers/search")
+    public String getTeachers(
+            @RequestParam(value = "username", required = true) String username,
+            @ModelAttribute("teacherSet") TeachersSetDto teacherSet,
+            Model model
+    ) {
+        try {
+            if (username == null || username.trim().isEmpty()) {
+                model.addAttribute("teacherSet", teacherSet);
+                return "home/teachers";
+            }
+
+            Set<UserDto> t = userService.findInactiveTeachersByUsername(username.trim())
+                    .stream()
+                    .map(mapper::map)
+                    .collect(Collectors.toSet());
+
+            model.addAttribute("teacherSet", new TeachersSetDto(t));
+
+            return "home/teachers";
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "redirect:teachers";
+        }
     }
 
 }

@@ -182,7 +182,7 @@ public class DtoMapper {
             return null;
 
         Optional<User> teacherOpt = userRepository.findById(quizClassDto.getTeacherId());
-        Set<User> students = userRepository.findAllById(quizClassDto.getStudents());
+        Set<User> students = userRepository.findAllByIdIn(quizClassDto.getStudents());
         Set<Section> sections = sectionService.findAllByIds(quizClassDto.getSections());
 
         if (teacherOpt.isEmpty())

@@ -5,6 +5,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import pl.lorenc.dodohow.dtos.TeachersSetDto;
+import pl.lorenc.dodohow.dtos.UserDto;
 import pl.lorenc.dodohow.entities.Section;
 import pl.lorenc.dodohow.services.DtoMapper;
 import pl.lorenc.dodohow.services.ScoreService;
@@ -74,6 +76,24 @@ public class ViewsController {
                     return "redirect:/";
                 }
             }).orElse("redirect:/login");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "redirect:/";
+        }
+    }
+
+    @GetMapping("/teachers")
+    public String getTeachers(Model model) {
+        try {
+
+            Set<UserDto> teachers = userService.findUsersBy(false, "ROLE_TEACHER")
+                    .stream()
+                    .map(mapper::map)
+                    .collect(Collectors.toSet());
+            model.addAttribute("teacherSet", new TeachersSetDto(teachers));
+            model.addAttribute("search", new UserDto());
+            return "home/teachers";
 
         } catch (Exception e) {
             e.printStackTrace();

@@ -32,6 +32,18 @@ public class DbInit implements CommandLineRunner {
         User user = new User(null, "kapa123", passwordEncoder.encode("kapa123"), "kacperlorenc1@wp.pl", true, "ROLE_USER");
         userRepository.save(user);
 
+        User admin = new User(null, "admin123", passwordEncoder.encode("admin123"), "admin@wp.pl", true, "ROLE_ADMIN");
+        userRepository.save(admin);
+
+        User t1 = new User(null, "kasia123", passwordEncoder.encode("kasia123"), "kasia@wp.pl", false, "ROLE_TEACHER");
+        userRepository.save(t1);
+
+
+        for (int i = 1; i < 30; i++ ){
+            User   t2 = new User(null, "nauczyciel" + i, passwordEncoder.encode("nauczyciel" + i), "nauczyciel" + i + "@wp.pl", false, "ROLE_TEACHER");
+            userRepository.save(t2);
+        }
+
         //Sekcja nr0 - blueprint --------------------------------------------------------------------------------------------------
 //        Exercise Ex1 = new Exercise(null, 1, "", "", "", null, ExerciseType.CHOOSE_ANSWER);
 //        Exercise Ex1 = new Exercise(null, 1, "", "", "", null, ExerciseType.CHOOSE_ANSWER);

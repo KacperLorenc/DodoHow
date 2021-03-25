@@ -6,13 +6,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lorenc.dodohow.dtos.UserDto;
-import pl.lorenc.dodohow.repositories.TokenRepository;
 import pl.lorenc.dodohow.entities.User;
+import pl.lorenc.dodohow.repositories.TokenRepository;
 import pl.lorenc.dodohow.repositories.UserRepository;
 import pl.lorenc.dodohow.security.IAuthenticationFacade;
 import pl.lorenc.dodohow.security.VerificationToken;
 
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class UserService {
@@ -37,7 +38,7 @@ public class UserService {
         if (!checkRegister(userDto)) {
             User user = mapper.map(userDto);
             user.setPassword(passwordEncoder.encode(user.getPassword()));
-            if(userDto.getTeacher() == null || !userDto.getTeacher())
+            if (userDto.getTeacher() == null || !userDto.getTeacher())
                 user.setRoles("ROLE_USER");
             else
                 user.setRoles("ROLE_TEACHER");
@@ -48,7 +49,7 @@ public class UserService {
         return false;
     }
 
-    public Optional<User> getUserFromSession(){
+    public Optional<User> getUserFromSession() {
         Authentication authentication = authenticationFacade.getAuthentication();
         return userRepository.findByUsername(authentication.getName());
     }
@@ -76,11 +77,33 @@ public class UserService {
         tokenRepository.save(myToken);
     }
 
-    public Optional<User> findByUsername(String username){
+    public Optional<User> findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
 
-    public Optional<User> findById(Long id){
+    public Optional<User> findById(Long id) {
         return userRepository.findById(id);
+    }
+
+    public Set<User> findUsersBy(boolean active, String role, String username) {
+        return userRepository.findAllByActiveAndRolesContainsAndUsernameContaining(active, role, username);
+    }
+
+    public Set<User> findInactiveTeachersByUsername(String username) {
+        return findUsersBy(false, "ROLE_TEACHER", username);
+    }
+
+    public Set<User> findUsersBy(boolean active, String role) {
+        return userRepository.findAllByActiveAndRolesContains(active, role);
+    }
+
+    @Transactional
+    public void activateUser(Long id) {
+        userRepository.updateUser(id, true);
+    }
+
+    @Transactional
+    public void deleteUser(Long id){
+        userRepository.deleteById(id);
     }
 }

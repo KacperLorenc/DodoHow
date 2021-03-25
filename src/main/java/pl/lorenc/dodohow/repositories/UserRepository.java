@@ -1,6 +1,9 @@
 package pl.lorenc.dodohow.repositories;
 
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import pl.lorenc.dodohow.entities.User;
 
@@ -17,6 +20,14 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
     Optional<User> findByUsername(String username);
 
-    Set<User> findAllById(Collection<Long> id);
+    Set<User> findAllByIdIn(Collection<Long> id);
+
+    Set<User> findAllByActiveAndRolesContainsAndUsernameContaining(boolean active, String role, String username);
+
+    Set<User> findAllByActiveAndRolesContains(boolean active, String role);
+
+    @Modifying
+    @Query("update User u set u.active = :active where u.id = :id")
+    void updateUser(@Param(value = "id") Long id, @Param(value = "active") boolean active);
 
 }
