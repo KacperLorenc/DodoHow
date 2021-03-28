@@ -18,52 +18,54 @@ import java.util.stream.Collectors;
 public class CourseFacade {
 
     private UserService userService;
-    private SectionService sectionService;
+    private QuizService quizService;
     private ExerciseService exerciseService;
     private PointsService pointsService;
     private ScoreService scoreService;
     private DtoMapper mapper;
 
-    public CourseFacade(UserService userService, SectionService sectionService, ExerciseService exerciseService, PointsService pointsService, ScoreService scoreService, DtoMapper mapper) {
+    public CourseFacade(UserService userService, QuizService quizService, ExerciseService exerciseService, PointsService pointsService, ScoreService scoreService, DtoMapper mapper) {
         this.userService = userService;
-        this.sectionService = sectionService;
+        this.quizService = quizService;
         this.exerciseService = exerciseService;
         this.pointsService = pointsService;
         this.scoreService = scoreService;
         this.mapper = mapper;
     }
 
-    public String newCourse(Long id, Model model) {
+    public String newQuiz(Long id, Model model) {
         try {
 
             Optional<User> userOpt = userService.getUserFromSession();
 
             return userOpt.map(user -> {
+                ScoreDto scoreDto = new ScoreDto(null, user.getId(), id, 0);
+                Optional<Quiz> quizOpt = quizService.findById(id);
+                if (quizOpt.isPresent()) {
 
-                Optional<Section> sectionOpt = sectionService.findById(id);
-                if (sectionOpt.isPresent()) {
+                    scoreService.deleteScore(user, quizOpt.get());
+                    scoreService.saveScore(mapper.map(scoreDto));
 
-                    scoreService.deleteScore(user, sectionOpt.get());
-                    List<Exercise> exercises = exerciseService.findAllBy(sectionOpt.get().getId());
+                    List<Exercise> exercises = exerciseService.findAllBy(quizOpt.get().getId());
                     pointsService.deleteAllByUserAndExercises(user, exercises);
 
                     Optional<Exercise> firstExercise = exerciseService.findAllBy(id)
                             .stream()
                             .min(Comparator.comparing(Exercise::getNumber));
 
-                    model.addAttribute("map", getUserPoints(user, sectionOpt.get().getId()));
+                    model.addAttribute("map", getUserPoints(user, quizOpt.get().getId()));
 
                     return firstExercise.map(e -> getExerciseTemplate(model, e))
-                            .orElse("redirect:/sections");
+                            .orElse("redirect:/quizzes");
                 }
 
-                return "redirect:/sections";
-            }).orElse("redirect:/sections");
+                return "redirect:/quizzes";
+            }).orElse("redirect:/quizzes");
 
 
         } catch (Exception e) {
             e.printStackTrace();
-            return "redirect:/sections";
+            return "redirect:/quizzes";
         }
     }
 
@@ -72,31 +74,26 @@ public class CourseFacade {
         try {
 
             if (exercise.getId() == null) {
-                return "redirect:/sections";
+                return "redirect:/quizzes";
             }
 
             //find exercise by id
             Optional<Exercise> exerciseOpt = exerciseService.findById(exercise.getId());
             if (exerciseOpt.isPresent()) {
 
-                //find context to exercise which is user and section
+                //find context to exercise which is user and quiz
                 Exercise currentExercise = exerciseOpt.get();
                 Optional<User> userOpt = userService.getUserFromSession();
-                Optional<Section> sectionOpt = sectionService.findById(currentExercise.getSection().getId());
-                if (userOpt.isPresent() && sectionOpt.isPresent()) {
-                    User user = userOpt.get();
-
-                    if (!scoreService.checkIfScoreExists(sectionOpt.get(), user)) {
-                        ScoreDto scoreDto = new ScoreDto(null, user.getId(), sectionOpt.get().getId(), 0);
-                        scoreService.saveScore(mapper.map(scoreDto));
-                    }
+                Optional<Quiz> quizOpt = quizService.findById(currentExercise.getQuiz().getId());
+                if (userOpt.isPresent() && quizOpt.isPresent()) {
 
                     //Check if user already submitted answer to question during this quiz
+                    User user = userOpt.get();
                     Optional<Points> oldPointsOpt = pointsService.findByUserAndExercise(user, currentExercise);
                     if (oldPointsOpt.isPresent()) {
                         //action if user answered question
                         Points oldPoints = oldPointsOpt.get();
-                        Optional<Score> scoreOpt = scoreService.findScore(user, sectionOpt.get());
+                        Optional<Score> scoreOpt = scoreService.findScore(user, quizOpt.get());
                         if (exercise.getUserAnswer() != null && exercise.getUserAnswer().equals(currentExercise.getAnswer())) {
                             scoreOpt.ifPresent(score -> {
                                 if (oldPoints.getUserScore() == 0) { //add points if previously user answered incorrectly
@@ -121,7 +118,7 @@ public class CourseFacade {
                         Points points = new Points(null, 0, currentExercise.getMaxScore(), user, currentExercise);
                         if (exercise.getUserAnswer() != null && exercise.getUserAnswer().equals(currentExercise.getAnswer())) {
                             points.setUserScore(currentExercise.getMaxScore());
-                            Optional<Score> scoreOpt = scoreService.findScore(user, sectionOpt.get());
+                            Optional<Score> scoreOpt = scoreService.findScore(user, quizOpt.get());
                             scoreOpt.ifPresent(score -> {
                                 score.setScore(score.getScore() + currentExercise.getMaxScore());
                                 scoreService.saveScore(score);
@@ -132,10 +129,10 @@ public class CourseFacade {
                     return "redirect:/next-exercise?id=" + exercise.getId();
                 }
             }
-            return "redirect:/sections";
+            return "redirect:/quizzes";
         } catch (Exception e) {
             e.printStackTrace();
-            return "redirect:/sections";
+            return "redirect:/quizzes";
         }
     }
 
@@ -144,17 +141,17 @@ public class CourseFacade {
             Optional<Exercise> exerciseOpt = exerciseService.findById(id);
 
             if (exerciseOpt.isEmpty()) {
-                return "redirect:/sections";
+                return "redirect:/quizzes";
             }
 
             userService.getUserFromSession()
-                    .ifPresent(u -> model.addAttribute("map", getUserPoints(u, exerciseOpt.get().getSection().getId())));
+                    .ifPresent(u -> model.addAttribute("map", getUserPoints(u, exerciseOpt.get().getQuiz().getId())));
 
             return getExerciseTemplate(model, exerciseOpt.get());
 
         } catch (Exception e) {
             e.printStackTrace();
-            return "redirect:/sections";
+            return "redirect:/quizzes";
         }
     }
 
@@ -164,23 +161,23 @@ public class CourseFacade {
             Optional<Exercise> exerciseOpt = exerciseService.findById(id);
 
             if (exerciseOpt.isEmpty()) {
-                return "redirect:/sections";
+                return "redirect:/quizzes";
             }
 
             Exercise currentExercise = exerciseOpt.get();
-            Optional<Exercise> next = exerciseService.findBySectionAndNumber(currentExercise.getSection().getId(), currentExercise.getNumber() + 1);
+            Optional<Exercise> next = exerciseService.findByQuizIdAndNumber(currentExercise.getQuiz().getId(), currentExercise.getNumber() + 1);
             if (next.isEmpty()) {
-                Optional<Section> sectionOpt = sectionService.findById(currentExercise.getSection().getId());
-                return sectionOpt.map(section -> summary(model, section)).orElse("redirect:/sections");
+                Optional<Quiz> quizOpt = quizService.findById(currentExercise.getQuiz().getId());
+                return quizOpt.map(quiz -> summary(model, quiz)).orElse("redirect:/quizzes");
             }
 
             userService.getUserFromSession()
-                    .ifPresent(u -> model.addAttribute("map", getUserPoints(u, next.get().getSection().getId())));
+                    .ifPresent(u -> model.addAttribute("map", getUserPoints(u, next.get().getQuiz().getId())));
 
             return getExerciseTemplate(model, next.get());
         } catch (Exception e) {
             e.printStackTrace();
-            return "redirect:/sections";
+            return "redirect:/quizzes";
         }
     }
 
@@ -189,26 +186,26 @@ public class CourseFacade {
             Optional<Exercise> exerciseOpt = exerciseService.findById(id);
 
             if (exerciseOpt.isEmpty()) {
-                return "redirect:/sections";
+                return "redirect:/quizzes";
             }
 
             Exercise currentExercise = exerciseOpt.get();
 
-            Optional<Exercise> previous = exerciseService.findBySectionAndNumber(currentExercise.getSection().getId(), currentExercise.getNumber() - 1);
+            Optional<Exercise> previous = exerciseService.findByQuizIdAndNumber(currentExercise.getQuiz().getId(), currentExercise.getNumber() - 1);
 
             if (previous.isEmpty()) {
-                Optional<Section> sectionOpt = sectionService.findById(currentExercise.getId());
-                return sectionOpt.map(section -> summary(model, section)).orElse("redirect:/sections");
+                Optional<Quiz> quizOpt = quizService.findById(currentExercise.getId());
+                return quizOpt.map(quiz -> summary(model, quiz)).orElse("redirect:/quizzes");
             }
 
             userService.getUserFromSession()
-                    .ifPresent(u -> model.addAttribute("map", getUserPoints(u, previous.get().getSection().getId())));
+                    .ifPresent(u -> model.addAttribute("map", getUserPoints(u, previous.get().getQuiz().getId())));
 
             return getExerciseTemplate(model, previous.get());
 
         } catch (Exception e) {
             e.printStackTrace();
-            return "redirect:/sections";
+            return "redirect:/quizzes";
         }
     }
 
@@ -217,8 +214,8 @@ public class CourseFacade {
         ExerciseDto nextExercise = mapper.map(exercise);
         model.addAttribute("exercise", nextExercise);
 
-        boolean previous = exerciseService.existsBySectionIdAndNumber(exercise.getSection().getId(), exercise.getNumber() - 1);
-        boolean next = exerciseService.existsBySectionIdAndNumber(exercise.getSection().getId(), exercise.getNumber() + 1);
+        boolean previous = exerciseService.existsByQuizIdAndNumber(exercise.getQuiz().getId(), exercise.getNumber() - 1);
+        boolean next = exerciseService.existsByQuizIdAndNumber(exercise.getQuiz().getId(), exercise.getNumber() + 1);
 
         List<ExerciseRefferenceDto> booleans = Lists.newArrayList(
                 new ExerciseRefferenceDto(previous, exercise.getId()),
@@ -230,23 +227,23 @@ public class CourseFacade {
         return "exercises/" + nextExercise.getType();
     }
 
-    private String summary(Model model, Section section) {
+    private String summary(Model model, Quiz quiz) {
 
         Optional<User> user = userService.getUserFromSession();
         if (user.isPresent()) {
 
-            List<PointsDto> points = getUserPoints(user.get(), section.getId());
+            List<PointsDto> points = getUserPoints(user.get(), quiz.getId());
 
             model.addAttribute("points", points);
-            model.addAttribute("section", mapper.map(section));
+            model.addAttribute("quiz", mapper.map(quiz));
 
-            return "sections/summary";
+            return "quizzes/summary";
         }
-        return "redirect:/sections";
+        return "redirect:/quizzes";
     }
 
-    private List<PointsDto> getUserPoints(User user, Long sectionId) {
-        List<Exercise> exercises = exerciseService.findAllBy(sectionId);
+    private List<PointsDto> getUserPoints(User user, Long quizId) {
+        List<Exercise> exercises = exerciseService.findAllBy(quizId);
         List<PointsDto> points = pointsService.findAllByExercisesAndUser(exercises, user).stream()
                 .map(p -> {
                     PointsDto pDto = mapper.map(p);

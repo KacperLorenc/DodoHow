@@ -18,18 +18,17 @@ public class Score {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne (cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id")
+    @ManyToOne
     private User user;
     @ManyToOne
-    private Section section;
+    private Quiz quiz;
     private Integer score;
     private LocalDateTime dateTime;
 
-    public Score(Long id, User user, Section section, Integer score) {
+    public Score(Long id, User user, Quiz quiz, Integer score) {
         this.id = id;
         this.user = user;
-        this.section = section;
+        this.quiz = quiz;
         this.score = score;
         this.dateTime = LocalDateTime.now();
     }

@@ -5,11 +5,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Set;
+
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class QuizDto {
-    private Long userId;
-    private SectionDto sectionDto;
+    private Long id;
+    private String title;
+    private Set<ExerciseDto> exercises;
+    private Integer maxScore;
+    private Integer numberInClass;
 }

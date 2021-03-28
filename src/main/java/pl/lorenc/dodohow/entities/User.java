@@ -33,7 +33,7 @@ public class User {
     @OneToMany
     private Set<VerificationToken> verificationToken;
     @OneToMany(fetch = FetchType.EAGER)
-    private Set<Section> sections;
+    private Set<Quiz> quizzes;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private Set<Score> scores;
 

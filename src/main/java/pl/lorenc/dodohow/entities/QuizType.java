@@ -7,24 +7,24 @@ import java.util.Optional;
 
 @Getter
 @AllArgsConstructor
-public enum SectionType {
-    FIRST_SECTION("First section", 1),
-    JEDZENIE("Jedzenie", 2),
-    PRACA("Praca", 3);
+public enum QuizType {
+    FIRST_QUIZ("First quiz", 1),
+    FOOD("Jedzenie", 2),
+    WORK("Praca", 3);
 
     private final String label;
     private final Integer number;
 
-    public static Optional<SectionType> findByLabel(String label) {
-        for (SectionType s : SectionType.values()) {
+    public static Optional<QuizType> findByLabel(String label) {
+        for (QuizType s : QuizType.values()) {
             if (s.getLabel().equals(label)) {
                 return Optional.of(s);
             }
         }
         return Optional.empty();
     }
-    public static Optional<SectionType> findByNumber(Integer number) {
-        for (SectionType s : SectionType.values()) {
+    public static Optional<QuizType> findByNumber(Integer number) {
+        for (QuizType s : QuizType.values()) {
             if (s.getNumber().equals(number)) {
                 return Optional.of(s);
             }

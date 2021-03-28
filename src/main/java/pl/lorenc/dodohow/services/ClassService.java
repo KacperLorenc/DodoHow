@@ -2,6 +2,7 @@ package pl.lorenc.dodohow.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.lorenc.dodohow.entities.QuizClass;
 import pl.lorenc.dodohow.repositories.ClassRepository;
 
@@ -17,6 +18,7 @@ public class ClassService {
         this.repository = repository;
     }
 
+    @Transactional
     public <S extends QuizClass> S save(S s) {
         return repository.save(s);
     }
@@ -33,10 +35,12 @@ public class ClassService {
         return repository.findAll();
     }
 
+    @Transactional
     public void deleteById(Long aLong) {
         repository.deleteById(aLong);
     }
 
+    @Transactional
     public void delete(QuizClass quizClass) {
         repository.delete(quizClass);
     }

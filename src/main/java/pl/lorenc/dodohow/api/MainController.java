@@ -30,8 +30,8 @@ public class MainController {
         this.scoreService = scoreService;
     }
 
-    @GetMapping("/sections")
-    public ResponseEntity<HttpHeaders> getSections() {
+    @GetMapping("/quizzes")
+    public ResponseEntity<HttpHeaders> getQuizzes() {
         try {
             Optional<User> currentUser = userService.getUserFromSession();
             if (currentUser.isPresent()) {

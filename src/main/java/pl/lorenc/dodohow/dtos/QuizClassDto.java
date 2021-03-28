@@ -15,5 +15,5 @@ public class QuizClassDto {
     private Long id;
     private Long teacherId;
     private Set<Long> students;
-    private Set<Long> sections;
+    private Set<Long> quizList;
 }

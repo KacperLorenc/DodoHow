@@ -7,11 +7,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-public class SectionWithScoreDto {
-    private Long id;
-    private String title;
-    private Integer maxScore;
-    private Integer userScore;
+@AllArgsConstructor
+public class UserQuizDto {
+    private Long userId;
+    private QuizDto quizDto;
 }

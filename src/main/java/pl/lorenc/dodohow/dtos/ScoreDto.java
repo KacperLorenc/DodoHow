@@ -12,6 +12,6 @@ import lombok.Setter;
 public class ScoreDto {
     private Long id;
     private Long userId;
-    private Long sectionId;
+    private Long quizId;
     private Integer score;
 }

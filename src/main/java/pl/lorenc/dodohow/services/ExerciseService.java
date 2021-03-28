@@ -2,6 +2,7 @@ package pl.lorenc.dodohow.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.lorenc.dodohow.entities.Exercise;
 import pl.lorenc.dodohow.repositories.ExerciseRepository;
 
@@ -23,6 +24,7 @@ public class ExerciseService {
         return exerciseRepository.findAllByIdIn(id);
     }
 
+    @Transactional
     public <S extends Exercise> S save(S exercise) {
         return exerciseRepository.save(exercise);
     }
@@ -31,23 +33,25 @@ public class ExerciseService {
         return exerciseRepository.findById(id);
     }
 
+    @Transactional
     public void deleteById(Long id) {
         exerciseRepository.deleteById(id);
     }
 
+    @Transactional
     public void delete(Exercise exercise) {
         exerciseRepository.delete(exercise);
     }
 
-    public List<Exercise> findAllBy(Long sectionId){
-        return exerciseRepository.findAllBySectionId(sectionId);
+    public List<Exercise> findAllBy(Long quizId){
+        return exerciseRepository.findAllByQuizId(quizId);
     }
 
-    public Optional<Exercise> findBySectionAndNumber(Long sectionId, Integer number){
-        return exerciseRepository.findBySection_IdAndNumber(sectionId, number);
+    public Optional<Exercise> findByQuizIdAndNumber(Long quizId, Integer number){
+        return exerciseRepository.findByQuiz_IdAndNumber(quizId, number);
     }
 
-    public boolean existsBySectionIdAndNumber(Long sectionId, Integer number) {
-        return exerciseRepository.existsBySectionIdAndNumber(sectionId, number);
+    public boolean existsByQuizIdAndNumber(Long quizId, Integer number) {
+        return exerciseRepository.existsByQuizIdAndNumber(quizId, number);
     }
 }

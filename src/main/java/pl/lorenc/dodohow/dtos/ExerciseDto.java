@@ -18,7 +18,7 @@ public class ExerciseDto {
     private String question;
     private String answer;
     private String wrongAnswers;
-    private Long sectionId;
+    private Long quizId;
     private String type;
     private String userAnswer;
     private Integer number;
@@ -28,13 +28,13 @@ public class ExerciseDto {
         return Lists.newArrayList(answers);
     }
 
-    public ExerciseDto(Long id, Integer maxScore, String question, String answer, String wrongAnswers, Long sectionId, String type, Integer number) {
+    public ExerciseDto(Long id, Integer maxScore, String question, String answer, String wrongAnswers, Long quizId, String type, Integer number) {
         this.id = id;
         this.maxScore = maxScore;
         this.question = question;
         this.answer = answer;
         this.wrongAnswers = wrongAnswers;
-        this.sectionId = sectionId;
+        this.quizId = quizId;
         this.type = type;
         this.userAnswer = null;
         this.number = number;

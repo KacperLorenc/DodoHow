@@ -27,5 +27,5 @@ public class QuizClass {
     private Set<User> students;
 
     @OneToMany(cascade = CascadeType.ALL)
-    private Set<Section> sections;
+    private Set<Quiz> quizzes;
 }

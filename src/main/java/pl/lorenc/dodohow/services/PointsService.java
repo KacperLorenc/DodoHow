@@ -2,6 +2,7 @@ package pl.lorenc.dodohow.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.lorenc.dodohow.entities.Exercise;
 import pl.lorenc.dodohow.entities.Points;
 import pl.lorenc.dodohow.entities.User;
@@ -20,6 +21,7 @@ public class PointsService {
         this.pointsRepository = pointsRepository;
     }
 
+    @Transactional
     public Points save(Points point) {
         return pointsRepository.save(point);
     }
@@ -39,15 +41,15 @@ public class PointsService {
     public long count() {
         return pointsRepository.count();
     }
-
+    @Transactional
     public void deleteById(Long id) {
         pointsRepository.deleteById(id);
     }
-
+    @Transactional
     public void delete(Points points) {
         pointsRepository.delete(points);
     }
-
+    @Transactional
     public void delete(User user, Exercise exercise) {
         pointsRepository.deleteByUserAndExercise(user, exercise);
     }
@@ -56,6 +58,7 @@ public class PointsService {
         return pointsRepository.findAllByExerciseInAndUser(exercises, user);
     }
 
+    @Transactional
     public void deleteAllByUserAndExercises(User user, List<Exercise> exercises) {
         pointsRepository.deleteAllByUserAndExerciseIn(user, exercises);
     }

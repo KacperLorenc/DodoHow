@@ -1,11 +1,12 @@
 package pl.lorenc.dodohow.services;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import pl.lorenc.dodohow.entities.Quiz;
 import pl.lorenc.dodohow.entities.Score;
-import pl.lorenc.dodohow.entities.Section;
 import pl.lorenc.dodohow.entities.User;
 import pl.lorenc.dodohow.repositories.ScoreRepository;
-import pl.lorenc.dodohow.repositories.SectionRepository;
+import pl.lorenc.dodohow.repositories.QuizRepository;
 import pl.lorenc.dodohow.repositories.UserRepository;
 
 import java.util.HashSet;
@@ -15,16 +16,17 @@ import java.util.Set;
 
 @Service
 public class ScoreService {
-    private SectionRepository sectionRepository;
+    private QuizRepository quizRepository;
     private UserRepository userRepository;
     private ScoreRepository scoreRepository;
 
-    public ScoreService(SectionRepository sectionRepository, UserRepository userRepository, ScoreRepository scoreRepository) {
-        this.sectionRepository = sectionRepository;
+    public ScoreService(QuizRepository quizRepository, UserRepository userRepository, ScoreRepository scoreRepository) {
+        this.quizRepository = quizRepository;
         this.userRepository = userRepository;
         this.scoreRepository = scoreRepository;
     }
 
+    @Transactional
     public void saveScore(Score score) {
         userRepository.findById(score.getUser().getId()).ifPresent(user -> {
             Set<Score> scores = user.getScores();
@@ -41,20 +43,21 @@ public class ScoreService {
         return scoreRepository.findAllByUser(user);
     }
 
-    public List<Score> getScores(User user, Section section) {
-        return scoreRepository.findAllBySectionAndUser(section, user);
+    public List<Score> getScores(User user, Quiz quiz) {
+        return scoreRepository.findAllByQuizAndUser(quiz, user);
     }
 
-    public void deleteScore(User user, Section section) {
-        scoreRepository.deleteByUserAndSection(user, section);
+    @Transactional
+    public void deleteScore(User user, Quiz quiz) {
+        scoreRepository.deleteByUserAndQuiz(user, quiz);
     }
 
-    public Optional<Score> findScore(User user, Section section) {
-        return scoreRepository.findByUserAndSection(user, section);
+    public Optional<Score> findScore(User user, Quiz quiz) {
+        return scoreRepository.findByUserAndQuiz(user, quiz);
     }
 
-    public boolean checkIfScoreExists(Section section, User user) {
-        return scoreRepository.findByUserAndSection(user, section)
+    public boolean checkIfScoreExists(Quiz quiz, User user) {
+        return scoreRepository.findByUserAndQuiz(user, quiz)
                 .isPresent();
     }
 }

@@ -16,15 +16,15 @@ import java.util.stream.Collectors;
 public class DtoMapper {
 
     private ExerciseRepository exerciseRepository;
-    private SectionService sectionService;
+    private QuizService quizService;
     private UserRepository userRepository;
     private ScoreService scoreService;
 
 
     @Autowired
-    public DtoMapper(ExerciseRepository exerciseRepository, SectionService sectionService, UserRepository userRepository, ScoreService scoreService) {
+    public DtoMapper(ExerciseRepository exerciseRepository, QuizService quizService, UserRepository userRepository, ScoreService scoreService) {
         this.exerciseRepository = exerciseRepository;
-        this.sectionService = sectionService;
+        this.quizService = quizService;
         this.userRepository = userRepository;
         this.scoreService = scoreService;
     }
@@ -32,10 +32,10 @@ public class DtoMapper {
     public User map(UserDto userDto) {
         User user = new User(userDto.getId(), userDto.getLogin(), userDto.getPassword(), userDto.getEmail(), userDto.getActive(), userDto.getRoles());
 
-        Set<SectionDto> sections = userDto.getSections();
-        if (sections != null && !sections.isEmpty()) {
-            Set<Long> ids = userDto.getSections().stream().map(SectionDto::getId).collect(Collectors.toSet());
-            user.setSections(sectionService.findAllByIds(ids));
+        Set<QuizDto> quizzes = userDto.getQuizList();
+        if (quizzes != null && !quizzes.isEmpty()) {
+            Set<Long> ids = userDto.getQuizList().stream().map(QuizDto::getId).collect(Collectors.toSet());
+            user.setQuizzes(quizService.findAllByIds(ids));
         }
         return user;
     }
@@ -46,54 +46,54 @@ public class DtoMapper {
                 .contains("ROLE_TEACHER");
 
         UserDto userDto = new UserDto(user.getId(), user.getUsername(), user.getPassword(), user.getEmail(), user.getActive(), user.getRoles(), teacher);
-        Set<Section> sections = sectionService.findUsersSections(user);
-        if (sections != null) {
-            userDto.setSections(sections.stream()
+        Set<Quiz> quizzes = quizService.findUsersQuizzes(user);
+        if (quizzes != null) {
+            userDto.setQuizList(quizzes.stream()
                     .map(this::map)
                     .collect(Collectors.toSet()));
         }
         return userDto;
     }
 
-    public Section map(SectionDto sectionDto) {
-        if (sectionDto.getExercises() == null || sectionDto.getExercises().isEmpty()) {
-            log.error("Section: " + sectionDto.getTitle() + " with id: " + sectionDto.getId() + " has no exercises");
+    public Quiz map(QuizDto quizDto) {
+        if (quizDto.getExercises() == null || quizDto.getExercises().isEmpty()) {
+            log.error("Quiz: " + quizDto.getTitle() + " with id: " + quizDto.getId() + " has no exercises");
         } else {
-            Set<Exercise> exercises = exerciseRepository.findAllByIdIn(sectionDto.getExercises().stream().map(ExerciseDto::getId).collect(Collectors.toSet()));
+            Set<Exercise> exercises = exerciseRepository.findAllByIdIn(quizDto.getExercises().stream().map(ExerciseDto::getId).collect(Collectors.toSet()));
             if (exercises == null || exercises.isEmpty()) {
-                log.error("Section: " + sectionDto.getTitle() + " with id: " + sectionDto.getId() + " has wrong list of exercises");
+                log.error("Quiz: " + quizDto.getTitle() + " with id: " + quizDto.getId() + " has wrong list of exercises");
             } else {
-                return new Section(sectionDto.getId(), sectionDto.getTitle(), exercises, sectionDto.getMaxScore(), sectionDto.getNumberInClass());
+                return new Quiz(quizDto.getId(), quizDto.getTitle(), exercises, quizDto.getMaxScore(), quizDto.getNumberInClass());
             }
         }
         return null;
     }
 
-    public SectionDto map(Section section) {
-        Set<ExerciseDto> exercises = section.getExercises().stream()
+    public QuizDto map(Quiz quiz) {
+        Set<ExerciseDto> exercises = quiz.getExercises().stream()
                 .map(this::map)
                 .collect(Collectors.toSet());
-        return new SectionDto(section.getId(), section.getTitle(), exercises, section.getMaxScore(), section.getNumberInClass());
+        return new QuizDto(quiz.getId(), quiz.getTitle(), exercises, quiz.getMaxScore(), quiz.getNumberInClass());
     }
 
-    public SectionWithScoreDto map(Section section, User user) {
-        List<Score> scores = scoreService.getScores(user, section);
+    public QuizWithScoreDto map(Quiz quiz, User user) {
+        List<Score> scores = scoreService.getScores(user, quiz);
         if (scores != null && !scores.isEmpty()) {
             Optional<Score> scoreOpt = scores.stream().max(Comparator.comparing(Score::getScore));
-            return scoreOpt.map(s -> new SectionWithScoreDto(section.getId(), section.getTitle(), section.getMaxScore(), s.getScore()))
-                    .orElse(new SectionWithScoreDto(section.getId(), section.getTitle(), section.getMaxScore(), 0));
+            return scoreOpt.map(s -> new QuizWithScoreDto(quiz.getId(), quiz.getTitle(), quiz.getMaxScore(), s.getScore()))
+                    .orElse(new QuizWithScoreDto(quiz.getId(), quiz.getTitle(), quiz.getMaxScore(), 0));
         }
-        return new SectionWithScoreDto(section.getId(), section.getTitle(), section.getMaxScore(), 0);
+        return new QuizWithScoreDto(quiz.getId(), quiz.getTitle(), quiz.getMaxScore(), 0);
     }
 
     public Exercise map(ExerciseDto exerciseDto) {
         Optional<ExerciseType> exerciseTypeOptional = ExerciseType.findByLabel(exerciseDto.getType());
         if (exerciseTypeOptional.isPresent()) {
-            Optional<Section> sectionOptional = sectionService.findById(exerciseDto.getSectionId());
-            if (sectionOptional.isPresent()) {
-                return new Exercise(exerciseDto.getId(), exerciseDto.getMaxScore(), exerciseDto.getQuestion(), exerciseDto.getAnswer(), exerciseDto.getWrongAnswers(), sectionOptional.get(), exerciseTypeOptional.get(), exerciseDto.getNumber());
+            Optional<Quiz> quizOptional = quizService.findById(exerciseDto.getQuizId());
+            if (quizOptional.isPresent()) {
+                return new Exercise(exerciseDto.getId(), exerciseDto.getMaxScore(), exerciseDto.getQuestion(), exerciseDto.getAnswer(), exerciseDto.getWrongAnswers(), quizOptional.get(), exerciseTypeOptional.get(), exerciseDto.getNumber());
             } else {
-                log.error("Section with id: " + exerciseDto.getSectionId() + " doesn't exist!");
+                log.error("Quiz with id: " + exerciseDto.getQuizId() + " doesn't exist!");
             }
         } else {
             log.error("Exercise type: " + exerciseDto.getType() + " doesn't exist!");
@@ -102,17 +102,17 @@ public class DtoMapper {
     }
 
     public ExerciseDto map(Exercise exercise) {
-        return new ExerciseDto(exercise.getId(), exercise.getMaxScore(), exercise.getQuestion(), exercise.getAnswer(), exercise.getWrongAnswers(), exercise.getSection().getId(), exercise.getType().getLabel(), exercise.getNumber());
+        return new ExerciseDto(exercise.getId(), exercise.getMaxScore(), exercise.getQuestion(), exercise.getAnswer(), exercise.getWrongAnswers(), exercise.getQuiz().getId(), exercise.getType().getLabel(), exercise.getNumber());
     }
 
     public Score map(ScoreDto scoreDto) {
         Optional<User> user = userRepository.findById(scoreDto.getUserId());
         if (user.isPresent()) {
-            Optional<Section> section = sectionService.findById(scoreDto.getSectionId());
-            if (section.isPresent()) {
-                return new Score(scoreDto.getId(), user.get(), section.get(), scoreDto.getScore());
+            Optional<Quiz> quiz = quizService.findById(scoreDto.getQuizId());
+            if (quiz.isPresent()) {
+                return new Score(scoreDto.getId(), user.get(), quiz.get(), scoreDto.getScore());
             } else {
-                log.error("Section with id: " + scoreDto.getSectionId() + " doesn't exist!");
+                log.error("Quiz with id: " + scoreDto.getQuizId() + " doesn't exist!");
             }
         } else {
             log.error("User with id: " + scoreDto.getUserId() + " doesn't exist!");
@@ -121,12 +121,12 @@ public class DtoMapper {
     }
 
     public ScoreDto map(Score score) {
-        return new ScoreDto(score.getId(), score.getUser().getId(), score.getSection().getId(), score.getScore());
+        return new ScoreDto(score.getId(), score.getUser().getId(), score.getQuiz().getId(), score.getScore());
     }
 
-    public QuizDto mapToQuiz(User user, Long sectionId) {
-        return sectionService.findById(sectionId)
-                .map(section -> new QuizDto(user.getId(), map(section)))
+    public UserQuizDto mapToQuiz(User user, Long quizId) {
+        return quizService.findById(quizId)
+                .map(quiz -> new UserQuizDto(user.getId(), map(quiz)))
                 .orElse(null);
     }
 
@@ -165,15 +165,15 @@ public class DtoMapper {
                     .collect(Collectors.toSet());
         }
 
-        Set<Long> sections = new HashSet<>();
-        if (quizClass.getSections() != null) {
-            sections = quizClass.getSections()
+        Set<Long> quizzes = new HashSet<>();
+        if (quizClass.getQuizzes() != null) {
+            quizzes = quizClass.getQuizzes()
                     .stream()
-                    .map(Section::getId)
+                    .map(Quiz::getId)
                     .collect(Collectors.toSet());
         }
 
-        return new QuizClassDto(quizClass.getId(), quizClass.getTeacher().getId(), students, sections);
+        return new QuizClassDto(quizClass.getId(), quizClass.getTeacher().getId(), students, quizzes);
     }
 
     public QuizClass map(QuizClassDto quizClassDto) {
@@ -183,12 +183,12 @@ public class DtoMapper {
 
         Optional<User> teacherOpt = userRepository.findById(quizClassDto.getTeacherId());
         Set<User> students = userRepository.findAllByIdIn(quizClassDto.getStudents());
-        Set<Section> sections = sectionService.findAllByIds(quizClassDto.getSections());
+        Set<Quiz> quizzes = quizService.findAllByIds(quizClassDto.getQuizList());
 
         if (teacherOpt.isEmpty())
             log.error("User with id: " + quizClassDto.getTeacherId() + " doesn't exist!");
 
-        return new QuizClass(quizClassDto.getId(), teacherOpt.orElse(null), students, sections);
+        return new QuizClass(quizClassDto.getId(), teacherOpt.orElse(null), students, quizzes);
 
     }
 

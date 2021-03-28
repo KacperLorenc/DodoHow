@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html class="whole-screen" lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head th:insert="sections/navigationbar.html :: headerfiles"></head>
+<head th:insert="quizzes/navigationbar.html :: headerfiles"></head>
 <body class="whole-screen" id="page-top">
-<div th:insert="sections/navigationbar.html :: nav"></div>
+<div th:insert="quizzes/navigationbar.html :: nav"></div>
 <header class="masthead bg-primary text-white text-center" style="padding-bottom: 1rem; padding-top: 12.5rem; margin-bottom: 6rem">
     <div class="container d-flex align-items-center flex-column">
         <a th:href="@{/}">
@@ -22,18 +22,18 @@
     </div>
 </div>
 <div class="container"  style="margin-bottom: 7rem">
-    <th:block th:each="section, i : ${sections}">
+    <th:block th:each="quiz, i : ${quizzes}">
         <div class="row align-items-center mb-1">
-            <div style="font-size: 2rem" class="col-md-4 text-center text-uppercase text-secondary" th:text="${section?.title}"></div>
+            <div style="font-size: 2rem" class="col-md-4 text-center text-uppercase text-secondary" th:text="${quiz?.title}"></div>
             <div style="font-size: 2rem" class="col-md-4 text-center text-uppercase text-secondary" >
-                <span th:text="${section?.getUserScore()}"></span>
+                <span th:text="${quiz?.getUserScore()}"></span>
                 <span>/</span>
-                <span th:text="${section?.getMaxScore()}"></span>
+                <span th:text="${quiz?.getMaxScore()}"></span>
             </div>
             <div class="col-md-4 text-center">
-                <a  th:href="@{/course/{id}(id=${section.getId()})}">
-                    <button th:if="${section?.getUserScore() > 0}" class="btn btn-primary btn-thin" id="loginButton1">Powtórz quiz</button>
-                    <button th:if="${section?.getUserScore() == 0}" class="btn btn-primary btn-thin" id="loginButton2">Rozpocznij quiz</button>
+                <a  th:href="@{/course/{id}(id=${quiz.getId()})}">
+                    <button th:if="${quiz?.getUserScore() > 0}" class="btn btn-primary btn-thin" id="loginButton1">Powtórz quiz</button>
+                    <button th:if="${quiz?.getUserScore() == 0}" class="btn btn-primary btn-thin" id="loginButton2">Rozpocznij quiz</button>
                 </a>
             </div>
         </div>

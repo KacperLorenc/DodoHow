@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html class="whole-screen" lang="en" xmlns:th="http://www.thymeleaf.org"
 >
-<head th:insert="sections/navigationbar.html :: headerfiles"></head>
+<head th:insert="quizzes/navigationbar.html :: headerfiles"></head>
 <body class="whole-screen" id="page-top">
-<div th:insert="sections/navigationbar.html :: nav"></div>
+<div th:insert="quizzes/navigationbar.html :: nav"></div>
 <header class="masthead bg-primary text-white text-center pb-2 " style="padding-bottom: 0; padding-top: 12.5rem">
     <div class="container d-flex align-items-center flex-column">
         <a th:href="@{/}">
@@ -44,7 +44,7 @@
     </th:block>
 </div>
 <div class="d-flex justify-content-center">
-    <a th:href="@{/sections}">
+    <a th:href="@{/quizzes}">
         <button class="btn btn-primary btn-xl">Powrót</button>
     </a>
 </div>

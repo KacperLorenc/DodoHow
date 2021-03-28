@@ -28,7 +28,7 @@ public class Exercise {
     @Column(nullable = false)
     private String wrongAnswers;
     @ManyToOne()
-    private Section section;
+    private Quiz quiz;
     private ExerciseType type;
     private Integer number;
 

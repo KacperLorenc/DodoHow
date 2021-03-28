@@ -7,10 +7,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import pl.lorenc.dodohow.dtos.TeachersSetDto;
 import pl.lorenc.dodohow.dtos.UserDto;
-import pl.lorenc.dodohow.entities.Section;
+import pl.lorenc.dodohow.entities.Quiz;
 import pl.lorenc.dodohow.services.DtoMapper;
 import pl.lorenc.dodohow.services.ScoreService;
-import pl.lorenc.dodohow.services.SectionService;
+import pl.lorenc.dodohow.services.QuizService;
 import pl.lorenc.dodohow.services.UserService;
 import pl.lorenc.dodohow.entities.User;
 
@@ -23,14 +23,14 @@ import java.util.stream.Collectors;
 public class ViewsController {
 
     private UserService userService;
-    private SectionService sectionService;
+    private QuizService quizService;
     private ScoreService scoreService;
     private DtoMapper mapper;
 
     @Autowired
-    public ViewsController(UserService userService, SectionService sectionService, ScoreService scoreService, DtoMapper mapper) {
+    public ViewsController(UserService userService, QuizService quizService, ScoreService scoreService, DtoMapper mapper) {
         this.userService = userService;
-        this.sectionService = sectionService;
+        this.quizService = quizService;
         this.scoreService = scoreService;
         this.mapper = mapper;
     }
@@ -40,23 +40,23 @@ public class ViewsController {
         return "home/index";
     }
 
-    @GetMapping("/sections")
-    public String getSections(Model model) {
+    @GetMapping("/quizzes")
+    public String getQuizzes(Model model) {
         try {
             Optional<User> userOptional = userService.getUserFromSession();
             return userOptional.map(user -> {
-                Set<Section> userSections = sectionService.findUsersSections(user); //znajduje sekcje uzytkownika
-                if (userSections.isEmpty()) {
-                    sectionService.getFirstSection().ifPresent(userSections::add); //jesli nie ma zadnych przerobionych to przypisuje pierwsza sekcje
+                Set<Quiz> userQuizs = quizService.findUsersQuizzes(user); //znajduje sekcje uzytkownika
+                if (userQuizs.isEmpty()) {
+                    quizService.getFirstQuiz().ifPresent(userQuizs::add); //jesli nie ma zadnych przerobionych to przypisuje pierwsza sekcje
                 } else {
-                    sectionService.findNextSection(user).ifPresent(userSections::add); //jesli ma jakas przerobiona to dodaje kolejna
+                    quizService.findNextQuiz(user).ifPresent(userQuizs::add); //jesli ma jakas przerobiona to dodaje kolejna
                 }
-                user.setSections(userSections);
+                user.setQuizzes(userQuizs);
                 userService.saveRegisteredUser(user);
                 model.addAttribute("user", mapper.map(user));
-                model.addAttribute("sections", userSections.stream().sorted(Comparator.comparing(Section::getNumberInClass)).map(section -> mapper.map(section, user)).collect(Collectors.toList()));
+                model.addAttribute("quizzes", userQuizs.stream().sorted(Comparator.comparing(Quiz::getNumberInClass)).map(quiz -> mapper.map(quiz, user)).collect(Collectors.toList()));
                 model.addAttribute("scores", scoreService.getScores(user));
-                return "sections/sections";
+                return "quizzes/quizzes";
             }).orElse("redirect:/login");
         } catch (Exception e) {
             e.printStackTrace();
@@ -64,14 +64,14 @@ public class ViewsController {
         }
     }
 
-    @GetMapping("/sections/section/{id}")
-    public String getSection(Model model, @PathVariable Long id) {
+    @GetMapping("/quizzes/quiz/{id}")
+    public String getquiz(Model model, @PathVariable Long id) {
         try {
             Optional<User> userOptional = userService.getUserFromSession();
             return userOptional.map(user -> {
-                if (sectionService.existsById(id)) {
+                if (quizService.existsById(id)) {
                     model.addAttribute("quiz", mapper.mapToQuiz(user, id));
-                    return "sections/quiz";         //jeśli znalazło sekcje i uzytkownika to zwraca dobry template
+                    return "quizzes/quiz";         //jeśli znalazło sekcje i uzytkownika to zwraca dobry template
                 } else {
                     return "redirect:/";
                 }
