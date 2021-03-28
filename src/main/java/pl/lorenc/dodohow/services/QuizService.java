@@ -4,13 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.lorenc.dodohow.entities.Quiz;
 import pl.lorenc.dodohow.entities.User;
-import pl.lorenc.dodohow.repositories.ScoreRepository;
 import pl.lorenc.dodohow.repositories.QuizRepository;
+import pl.lorenc.dodohow.repositories.ScoreRepository;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -69,5 +66,9 @@ public class QuizService {
 
     public boolean existsByQuizAndUser(Quiz quiz, User user) {
         return scoreRepository.existsByUserAndQuiz(user, quiz);
+    }
+
+    public Set<Quiz> findAllByClassId(Long classId) {
+        return quizRepository.findAllByQuizClassId(classId);
     }
 }

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:insert="course/navigationbar.html :: headerfiles"></head>
+<body class="whole-screen" id="page-top">
+<div th:insert="course/navigationbar.html :: nav"></div>
+<header class="masthead bg-primary text-white text-center mb-5" style="padding-bottom: 1rem; padding-top: 12.5rem;">
+    <div class="container d-flex align-items-center flex-column">
+        <a th:href="@{/}">
+            <img class="masthead-avatar mb-5" src="../../assets/img/avataaars.png" alt=""/>
+        </a>
+
+        <h1 class="masthead-heading text-uppercase mb-0">Twoje klasy</h1>
+
+        <div class="divider-custom divider-light">
+            <div class="divider-custom-line"></div>
+            <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
+            <div class="divider-custom-line"></div>
+        </div>
+    </div>
+</header>
+<div class="container class-container justify-content-between" th:each="class : ${classes}">
+    <th:block th:insert="course/class-card"></th:block>
+    <th:block th:insert="course/class-card"></th:block>
+    <th:block th:insert="course/class-card"></th:block>
+    <th:block th:insert="course/class-card"></th:block> <th:block th:insert="course/class-card"></th:block>
+    <th:block th:insert="course/class-card"></th:block>
+    <th:block th:insert="course/class-card"></th:block>
+    <th:block th:insert="course/class-card"></th:block>
+    <th:block th:insert="course/class-card"></th:block>
+    <th:block th:insert="course/class-card"></th:block>
+    <th:block th:insert="course/class-card"></th:block>
+
+
+</div>
+
+<div class="masthead bg-main-green text-white text-center mt-5">
+</div>
+<div class="footer-bottom" th:insert="home/footer :: foot"></div>
+</body>
+</html>

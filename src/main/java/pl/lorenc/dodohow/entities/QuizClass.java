@@ -19,13 +19,16 @@ public class QuizClass {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne (cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id")
+    @ManyToOne
     private User teacher;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany
     private Set<User> students;
 
     @OneToMany(cascade = CascadeType.ALL)
     private Set<Quiz> quizzes;
+
+    private String title;
+
+    private String description;
 }

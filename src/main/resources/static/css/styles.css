@@ -10971,3 +10971,22 @@ form .row:first-child .floating-label-form-group {
         display: none !important;
     }
 }
+
+.class-container {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+}
+
+.class-card {
+    width: calc(100% / 6 - 40px);
+    margin: 10px 10px;
+    -ms-flex-negative: 0;
+    flex-shrink: 0;
+    height: 200px;
+    min-width: 18rem;
+    max-width: 18rem;
+    padding: 10px;
+}

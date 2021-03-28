@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body th:fragment="class-card">
+<div class="card class-card">
+    <div class="card-body">
+        <h5 th:text="${class?.getTitle()}" class="card-title text-secondary">Card title</h5>
+        <p th:text="${class?.getDescription()}" class="card-text text-secondary">Text</p>
+        <a th:href="@{/quizzes/{id}(id=${class.getId()})}" href="#" class="btn btn-primary btn-thin">Rozpocznij</a>
+    </div>
+</div>
+</body>
+</html>

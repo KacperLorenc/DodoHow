@@ -17,4 +17,5 @@ public class QuizDto {
     private Set<ExerciseDto> exercises;
     private Integer maxScore;
     private Integer numberInClass;
+    private Long classId;
 }

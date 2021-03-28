@@ -16,4 +16,6 @@ public class QuizClassDto {
     private Long teacherId;
     private Set<Long> students;
     private Set<Long> quizList;
+    private String title;
+    private String description;
 }

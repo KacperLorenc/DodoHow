@@ -42,7 +42,7 @@
             <a sec:authorize="isAnonymous()" th:href="@{/login}">
                 <button class="btn btn-primary btn-xl" id="loginButton">Zaczynajmy!</button>
             </a>
-            <a sec:authorize="hasRole('ROLE_USER')" th:href="@{/quizzes}">
+            <a sec:authorize="hasRole('ROLE_USER')" th:href="@{/classes}">
                 <button class="btn btn-primary btn-xl" id="playButton">Zaczynajmy!</button>
             </a>
             <a sec:authorize="hasRole('ROLE_TEACHER')">

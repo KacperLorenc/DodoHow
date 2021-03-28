@@ -5,10 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import pl.lorenc.dodohow.entities.Exercise;
-import pl.lorenc.dodohow.entities.ExerciseType;
-import pl.lorenc.dodohow.entities.Quiz;
-import pl.lorenc.dodohow.entities.User;
+import pl.lorenc.dodohow.entities.*;
+
+import java.util.HashSet;
 import java.util.Set;
 
 @Service
@@ -17,13 +16,15 @@ public class DbInit implements CommandLineRunner {
     private PasswordEncoder passwordEncoder;
     private QuizRepository quizRepository;
     private ExerciseRepository exerciseRepository;
+    private ClassRepository classRepository;
 
     @Autowired
-    public DbInit(UserRepository userRepository, PasswordEncoder passwordEncoder, QuizRepository quizRepository, ExerciseRepository exerciseRepository) {
+    public DbInit(UserRepository userRepository, PasswordEncoder passwordEncoder, QuizRepository quizRepository, ExerciseRepository exerciseRepository, ClassRepository classRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.quizRepository = quizRepository;
         this.exerciseRepository = exerciseRepository;
+        this.classRepository = classRepository;
     }
 
     @Override
@@ -38,6 +39,8 @@ public class DbInit implements CommandLineRunner {
         User t1 = new User(null, "kasia123", passwordEncoder.encode("kasia123"), "kasia@wp.pl", false, "ROLE_TEACHER");
         userRepository.save(t1);
 
+
+        QuizClass dodohow = new QuizClass(null, admin, Sets.newHashSet(user), new HashSet<>(), "DodoHow", "Podstawy proponowowane przed dodohow");
 
         for (int i = 1; i < 30; i++ ){
             User   t2 = new User(null, "nauczyciel" + i, passwordEncoder.encode("nauczyciel" + i), "nauczyciel" + i + "@wp.pl", false, "ROLE_TEACHER");
@@ -84,9 +87,9 @@ public class DbInit implements CommandLineRunner {
         Exercise basic1Ex15 = new Exercise(null, 1, "We ... women", "are", "are;is;am;be", null, ExerciseType.FILL_THE_BLANK,10);
 
         Set<Exercise> exercisesBasic1 = Sets.newHashSet(basic1Ex1, basic1Ex2, basic1Ex3, basic1Ex4, basic1Ex5, basic1Ex6, basic1Ex7, basic1Ex8, basic1Ex9, basic1Ex10, basic1Ex11, basic1Ex12, basic1Ex13, basic1Ex14, basic1Ex15);
-        Quiz basicsSec = new Quiz(null, "Podstawy", exercisesBasic1,15,1);
+        Quiz basicsSec = new Quiz(null, "Podstawy", exercisesBasic1,15,1, dodohow);
+        basicsSec.setQuizClass(dodohow);
         exercisesBasic1.forEach(e -> e.setQuiz(basicsSec));
-        quizRepository.save(basicsSec);
 
         //Sekcja nr1 - Zwierzęta --------------------------------------------------------------------------------------------------
         Exercise animalsEx1 = new Exercise(null, 1, "Kot i pies", "A cat and a dog", "A cat and a dog;An elephant and an ant;A dog and a duck", null, ExerciseType.CHOOSE_ANSWER,1);
@@ -106,9 +109,9 @@ public class DbInit implements CommandLineRunner {
         Exercise animalsEx15 = new Exercise(null, 1, "... purr", "Cats", "Elephants;Dogs;Cats", null, ExerciseType.FILL_THE_BLANK,15);
 
         Set<Exercise> exercisesAnimals = Sets.newHashSet(animalsEx1, animalsEx2, animalsEx3, animalsEx4, animalsEx5, animalsEx6, animalsEx7, animalsEx8, animalsEx9, animalsEx10, animalsEx11, animalsEx12, animalsEx13, animalsEx14, animalsEx15);
-        Quiz animalsSec = new Quiz(null, "Zwierzęta", exercisesAnimals,15,2);
+        Quiz animalsSec = new Quiz(null, "Zwierzęta", exercisesAnimals,15,2, dodohow);
+        animalsSec.setQuizClass(dodohow);
         exercisesAnimals.forEach(e -> e.setQuiz(animalsSec));
-        quizRepository.save(animalsSec);
 
         //Sekcja nr3 - Jedzenie --------------------------------------------------------------------------------------------------
         Exercise foodEx1 = new Exercise(null, 1, "Oni mają pomarańcze", "They have oranges", "They are oranges;They have oranges;We have bread;You eat an orange", null, ExerciseType.CHOOSE_ANSWER,15);
@@ -128,9 +131,13 @@ public class DbInit implements CommandLineRunner {
         Exercise foodEx15 = new Exercise(null, 1, "They ... beer", "drink", "eat;drink;are;is", null, ExerciseType.FILL_THE_BLANK,2);
 
         Set<Exercise> exercises = Sets.newHashSet(foodEx1, foodEx2, foodEx3, foodEx4, foodEx5, foodEx6, foodEx7, foodEx8, foodEx9, foodEx10, foodEx11, foodEx12, foodEx13, foodEx14, foodEx15);
-        Quiz foodSec = new Quiz(null, "Jedzenie", exercises,15,3);
+        Quiz foodSec = new Quiz(null, "Jedzenie", exercises,15,3, dodohow);
+        foodSec.setQuizClass(dodohow);
         exercises.forEach(e -> e.setQuiz(foodSec));
-        quizRepository.save(foodSec);
+
+        dodohow.setQuizzes(Sets.newHashSet(basicsSec, animalsSec, foodSec));
+
+        classRepository.save(dodohow);
 
         System.out.println("--------------------------------------------------------------------------------------------");
         System.out.println("Użytkownicy:");
@@ -149,6 +156,8 @@ public class DbInit implements CommandLineRunner {
         exerciseRepository.findAll().forEach(e -> {
             System.out.println(e.toString());
         });
+
+
 
     }
 }

@@ -4,9 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lorenc.dodohow.entities.QuizClass;
+import pl.lorenc.dodohow.entities.User;
 import pl.lorenc.dodohow.repositories.ClassRepository;
 
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class ClassService {
@@ -43,6 +45,10 @@ public class ClassService {
     @Transactional
     public void delete(QuizClass quizClass) {
         repository.delete(quizClass);
+    }
+
+    public Set<QuizClass> findAllByUser(User user) {
+        return repository.findAllByStudentsContaining(user);
     }
 
 }

@@ -23,6 +23,8 @@ public class Quiz {
     private Set<Exercise> exercises;
     private Integer maxScore;
     private Integer numberInClass;
+    @ManyToOne
+    private QuizClass quizClass;
 
     @Override
     public String toString() {

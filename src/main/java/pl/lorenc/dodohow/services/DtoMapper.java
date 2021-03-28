@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.lorenc.dodohow.dtos.*;
 import pl.lorenc.dodohow.entities.*;
+import pl.lorenc.dodohow.repositories.ClassRepository;
 import pl.lorenc.dodohow.repositories.ExerciseRepository;
 import pl.lorenc.dodohow.repositories.UserRepository;
 
@@ -19,14 +20,16 @@ public class DtoMapper {
     private QuizService quizService;
     private UserRepository userRepository;
     private ScoreService scoreService;
+    private ClassRepository classRepository;
 
 
     @Autowired
-    public DtoMapper(ExerciseRepository exerciseRepository, QuizService quizService, UserRepository userRepository, ScoreService scoreService) {
+    public DtoMapper(ExerciseRepository exerciseRepository, QuizService quizService, UserRepository userRepository, ScoreService scoreService, ClassRepository classRepository) {
         this.exerciseRepository = exerciseRepository;
         this.quizService = quizService;
         this.userRepository = userRepository;
         this.scoreService = scoreService;
+        this.classRepository = classRepository;
     }
 
     public User map(UserDto userDto) {
@@ -63,7 +66,12 @@ public class DtoMapper {
             if (exercises == null || exercises.isEmpty()) {
                 log.error("Quiz: " + quizDto.getTitle() + " with id: " + quizDto.getId() + " has wrong list of exercises");
             } else {
-                return new Quiz(quizDto.getId(), quizDto.getTitle(), exercises, quizDto.getMaxScore(), quizDto.getNumberInClass());
+                Optional<QuizClass> classOpt = classRepository.findById(quizDto.getClassId());
+                if(classOpt.isEmpty()){
+                    log.error("QuizClass with id: " + quizDto.getId() + " not found");
+                } else {
+                    return new Quiz(quizDto.getId(), quizDto.getTitle(), exercises, quizDto.getMaxScore(), quizDto.getNumberInClass(), classOpt.get());
+                }
             }
         }
         return null;
@@ -73,7 +81,7 @@ public class DtoMapper {
         Set<ExerciseDto> exercises = quiz.getExercises().stream()
                 .map(this::map)
                 .collect(Collectors.toSet());
-        return new QuizDto(quiz.getId(), quiz.getTitle(), exercises, quiz.getMaxScore(), quiz.getNumberInClass());
+        return new QuizDto(quiz.getId(), quiz.getTitle(), exercises, quiz.getMaxScore(), quiz.getNumberInClass(), quiz.getQuizClass().getId());
     }
 
     public QuizWithScoreDto map(Quiz quiz, User user) {
@@ -173,7 +181,7 @@ public class DtoMapper {
                     .collect(Collectors.toSet());
         }
 
-        return new QuizClassDto(quizClass.getId(), quizClass.getTeacher().getId(), students, quizzes);
+        return new QuizClassDto(quizClass.getId(), quizClass.getTeacher().getId(), students, quizzes, quizClass.getTitle(), quizClass.getDescription());
     }
 
     public QuizClass map(QuizClassDto quizClassDto) {
@@ -188,7 +196,7 @@ public class DtoMapper {
         if (teacherOpt.isEmpty())
             log.error("User with id: " + quizClassDto.getTeacherId() + " doesn't exist!");
 
-        return new QuizClass(quizClassDto.getId(), teacherOpt.orElse(null), students, quizzes);
+        return new QuizClass(quizClassDto.getId(), teacherOpt.orElse(null), students, quizzes, quizClassDto.getTitle(), quizClassDto.getDescription());
 
     }
 

@@ -3,15 +3,14 @@ package pl.lorenc.dodohow.services;
 import com.google.common.collect.Lists;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import pl.lorenc.dodohow.dtos.ExerciseDto;
 import pl.lorenc.dodohow.dtos.ExerciseRefferenceDto;
 import pl.lorenc.dodohow.dtos.PointsDto;
 import pl.lorenc.dodohow.dtos.ScoreDto;
 import pl.lorenc.dodohow.entities.*;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,15 +21,75 @@ public class CourseFacade {
     private ExerciseService exerciseService;
     private PointsService pointsService;
     private ScoreService scoreService;
+    private ClassService classService;
     private DtoMapper mapper;
 
-    public CourseFacade(UserService userService, QuizService quizService, ExerciseService exerciseService, PointsService pointsService, ScoreService scoreService, DtoMapper mapper) {
+    public CourseFacade(UserService userService, QuizService quizService, ExerciseService exerciseService, PointsService pointsService, ScoreService scoreService, ClassService classService, DtoMapper mapper) {
         this.userService = userService;
         this.quizService = quizService;
         this.exerciseService = exerciseService;
         this.pointsService = pointsService;
         this.scoreService = scoreService;
+        this.classService = classService;
         this.mapper = mapper;
+    }
+
+    public String getClasses(Model model) {
+        try {
+            return userService.getUserFromSession().map(u -> {
+                Set<QuizClass> classes = classService.findAllByUser(u);
+                if (classes == null)
+                    classes = new HashSet<>();
+                model.addAttribute("classes", classes);
+                return "course/classes";
+
+            }).orElse("redirect:/login");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "redirect:/";
+        }
+    }
+
+    public String getQuizzes(@PathVariable Long id, Model model) {
+        try {
+            Optional<User> userOptional = userService.getUserFromSession();
+            return userOptional.map(user -> {
+                Set<Quiz> userQuizs = quizService.findAllByClassId(id); //znajduje sekcje w danej klasie
+                if (userQuizs.isEmpty()) {
+                    quizService.getFirstQuiz().ifPresent(userQuizs::add); //jesli nie ma zadnych przerobionych to przypisuje pierwsza sekcje
+                } else {
+                    quizService.findNextQuiz(user).ifPresent(userQuizs::add); //jesli ma jakas przerobiona to dodaje kolejna
+                }
+                user.setQuizzes(userQuizs);
+                userService.saveRegisteredUser(user);
+                model.addAttribute("user", mapper.map(user));
+                model.addAttribute("quizzes", userQuizs.stream().sorted(Comparator.comparing(Quiz::getNumberInClass)).map(quiz -> mapper.map(quiz, user)).collect(Collectors.toList()));
+                model.addAttribute("scores", scoreService.getScores(user));
+                return "course/quizzes";
+            }).orElse("redirect:/login");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "redirect:/";
+        }
+    }
+
+    public String getQuiz(Model model, @PathVariable Long id) {
+        try {
+            Optional<User> userOptional = userService.getUserFromSession();
+            return userOptional.map(user -> {
+                if (quizService.existsById(id)) {
+                    model.addAttribute("quiz", mapper.mapToQuiz(user, id));
+                    return "course/quiz";         //jeśli znalazło quiz i uzytkownika to zwraca dobry template
+                } else {
+                    return "redirect:/classes";
+                }
+            }).orElse("redirect:/login");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "redirect:/";
+        }
     }
 
     public String newQuiz(Long id, Model model) {
@@ -56,16 +115,15 @@ public class CourseFacade {
                     model.addAttribute("map", getUserPoints(user, quizOpt.get().getId()));
 
                     return firstExercise.map(e -> getExerciseTemplate(model, e))
-                            .orElse("redirect:/quizzes");
+                            .orElse("redirect:/classes");
                 }
-
-                return "redirect:/quizzes";
-            }).orElse("redirect:/quizzes");
+                return "redirect:/classes";
+            }).orElse("redirect:/classes");
 
 
         } catch (Exception e) {
             e.printStackTrace();
-            return "redirect:/quizzes";
+            return "redirect:/classes";
         }
     }
 
@@ -74,7 +132,7 @@ public class CourseFacade {
         try {
 
             if (exercise.getId() == null) {
-                return "redirect:/quizzes";
+                return "redirect:/classes";
             }
 
             //find exercise by id
@@ -129,10 +187,10 @@ public class CourseFacade {
                     return "redirect:/next-exercise?id=" + exercise.getId();
                 }
             }
-            return "redirect:/quizzes";
+            return "redirect:/classes";
         } catch (Exception e) {
             e.printStackTrace();
-            return "redirect:/quizzes";
+            return "redirect:/classes";
         }
     }
 
@@ -141,7 +199,7 @@ public class CourseFacade {
             Optional<Exercise> exerciseOpt = exerciseService.findById(id);
 
             if (exerciseOpt.isEmpty()) {
-                return "redirect:/quizzes";
+                return "redirect:/classes";
             }
 
             userService.getUserFromSession()
@@ -151,7 +209,7 @@ public class CourseFacade {
 
         } catch (Exception e) {
             e.printStackTrace();
-            return "redirect:/quizzes";
+            return "redirect:/classes";
         }
     }
 
@@ -161,14 +219,14 @@ public class CourseFacade {
             Optional<Exercise> exerciseOpt = exerciseService.findById(id);
 
             if (exerciseOpt.isEmpty()) {
-                return "redirect:/quizzes";
+                return "redirect:/classes";
             }
 
             Exercise currentExercise = exerciseOpt.get();
             Optional<Exercise> next = exerciseService.findByQuizIdAndNumber(currentExercise.getQuiz().getId(), currentExercise.getNumber() + 1);
             if (next.isEmpty()) {
                 Optional<Quiz> quizOpt = quizService.findById(currentExercise.getQuiz().getId());
-                return quizOpt.map(quiz -> summary(model, quiz)).orElse("redirect:/quizzes");
+                return quizOpt.map(quiz -> summary(model, quiz)).orElse("redirect:/classes");
             }
 
             userService.getUserFromSession()
@@ -177,7 +235,7 @@ public class CourseFacade {
             return getExerciseTemplate(model, next.get());
         } catch (Exception e) {
             e.printStackTrace();
-            return "redirect:/quizzes";
+            return "redirect:/classes";
         }
     }
 
@@ -186,7 +244,7 @@ public class CourseFacade {
             Optional<Exercise> exerciseOpt = exerciseService.findById(id);
 
             if (exerciseOpt.isEmpty()) {
-                return "redirect:/quizzes";
+                return "redirect:/classes";
             }
 
             Exercise currentExercise = exerciseOpt.get();
@@ -205,7 +263,7 @@ public class CourseFacade {
 
         } catch (Exception e) {
             e.printStackTrace();
-            return "redirect:/quizzes";
+            return "redirect:/classes";
         }
     }
 
@@ -237,9 +295,9 @@ public class CourseFacade {
             model.addAttribute("points", points);
             model.addAttribute("quiz", mapper.map(quiz));
 
-            return "quizzes/summary";
+            return "course/summary";
         }
-        return "redirect:/quizzes";
+        return "redirect:/classes";
     }
 
     private List<PointsDto> getUserPoints(User user, Long quizId) {

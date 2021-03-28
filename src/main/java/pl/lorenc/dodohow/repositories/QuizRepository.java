@@ -12,4 +12,5 @@ import java.util.Set;
 public interface QuizRepository extends CrudRepository<Quiz, Long> {
     Set<Quiz> findAllByIdIn(Collection<Long> id);
     Optional<Quiz> findByNumberInClass(Integer numberInClass);
+    Set<Quiz> findAllByQuizClassId(Long id);
 }

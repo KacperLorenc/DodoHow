@@ -17,13 +17,45 @@ public class CourseController {
         this.courseFacade = courseFacade;
     }
 
+    @GetMapping("/quizzes/{id}")
+    public String getQuizzes(@PathVariable Long id, Model model) {
+        try {
+            return courseFacade.getQuizzes(id, model);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "redirect:/";
+        }
+    }
+
+    @GetMapping("/quizzes/quiz/{id}")
+    public String getQuiz(@PathVariable Long id, Model model) {
+        try {
+            return courseFacade.getQuiz(model, id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "redirect:/";
+        }
+    }
+
+    @GetMapping("/classes")
+    public String getClasses(Model model) {
+        try {
+
+            return courseFacade.getClasses(model);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "redirect:/";
+        }
+    }
+
     @GetMapping("/course/{id}")
     public String newQuiz(@PathVariable Long id, Model model) {
         try {
             return courseFacade.newQuiz(id, model);
         } catch (Exception e) {
             e.printStackTrace();
-            return "redirect:/quizzes";
+            return "redirect:/";
         }
     }
 
@@ -33,7 +65,7 @@ public class CourseController {
             return courseFacade.nextExercise(exercise);
         } catch (Exception e) {
             e.printStackTrace();
-            return "redirect:/quizzes";
+            return "redirect:/";
         }
     }
 
@@ -43,7 +75,7 @@ public class CourseController {
             return courseFacade.getExercise(id, model);
         } catch (Exception e) {
             e.printStackTrace();
-            return "redirect:/quizzes";
+            return "redirect:/";
         }
     }
 
@@ -53,7 +85,7 @@ public class CourseController {
             return courseFacade.getNextExercise(id, model);
         } catch (Exception e) {
             e.printStackTrace();
-            return "redirect:/quizzes";
+            return "redirect:/";
         }
     }
 
@@ -63,7 +95,7 @@ public class CourseController {
             return courseFacade.getPreviousExercise(id, model);
         } catch (Exception e) {
             e.printStackTrace();
-            return "redirect:/quizzes";
+            return "redirect:/";
         }
     }
 }
