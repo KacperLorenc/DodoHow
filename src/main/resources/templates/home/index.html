@@ -9,7 +9,7 @@
         <!-- Masthead Avatar Image-->
         <img class="masthead-avatar mb-5" src="../../assets/img/avataaars.png" alt=""/>
         <!-- Masthead Heading-->
-        <h1 class="masthead-heading text-uppercase mb-0">DodoHow</h1>
+        <h1 class="masthead-heading mb-0">DodoHow</h1>
         <!-- Icon Divider-->
         <div class="divider-custom divider-light">
             <div class="divider-custom-line"></div>
@@ -21,16 +21,16 @@
     </div>
 </header>
 <!-- Portfolio Section-->
-<section class="page-section portfolio" id="portfolio">
+<section class="portfolio" id="portfolio" style="padding-top: 5rem; padding-bottom: 5rem">
     <div class="container">
         <!-- Portfolio Section Heading-->
 
-        <h2 sec:authorize="isAnonymous() || hasRole('ROLE_USER') "
-            class="page-section-heading text-center text-uppercase text-secondary mb-0">Nauka</h2>
-        <h2 sec:authorize="hasRole('ROLE_TEACHER') "
-            class="page-section-heading text-center text-uppercase text-secondary mb-0">Klasy</h2>
-        <h2 sec:authorize="hasRole('ROLE_ADMIN') "
-            class="page-section-heading text-center text-uppercase text-secondary mb-0">Zarządzaj</h2>
+        <h1 sec:authorize="isAnonymous() || hasRole('ROLE_USER') "
+            class="page-section-heading text-center text-secondary mb-0" style="font-size: 3.3rem">Nauka</h1>
+        <h1 sec:authorize="hasRole('ROLE_TEACHER') "
+            class="page-section-heading text-center text-secondary mb-0" style="font-size: 3.3rem">Klasy</h1>
+        <h1 sec:authorize="hasRole('ROLE_ADMIN') "
+            class="page-section-heading text-center text-secondary mb-0" style="font-size: 3.3rem">Zarządzaj</h1>
         <!-- Icon Divider-->
         <div class="divider-custom">
             <div class="divider-custom-line"></div>
@@ -69,7 +69,7 @@
 <section class="page-section bg-main-green text-white mb-0" id="about">
     <div class="container">
         <!-- About Section Heading-->
-        <h2 class="page-section-heading text-center text-uppercase text-white">O nas</h2>
+        <h2 class="page-section-heading text-center  text-white">O nas</h2>
         <!-- Icon Divider-->
         <div class="divider-custom divider-light">
             <div class="divider-custom-line"></div>

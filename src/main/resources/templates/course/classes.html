@@ -22,10 +22,25 @@
 <div th:if="${!classes?.isEmpty()}" class="container class-container justify-content-center">
     <th:block th:each="class, i : ${classes}" th:insert="course/class-card"></th:block>
 </div>
-<div sec:authorize="hasRole('ROLE_ADMIN') || hasRole('ROLE_TEACHER')" class="page-section">
-    <div th:if="${classes?.isEmpty()}" class="container d-flex text-secondary mb-4" style="justify-content: center">
+<div th:if="${classes?.isEmpty()}" sec:authorize="hasRole('ROLE_ADMIN') || hasRole('ROLE_TEACHER')" class="page-section">
+    <div  class="container d-flex text-secondary mb-4" style="justify-content: center">
         <h3>Brak klas do wyświetlenia.</h3>
     </div>
+    <div class="row">
+        <div class="col-md-6 text-right">
+            <a th:href="@{/}">
+                <button class="btn btn-danger btn-xl " style="width: 14rem;">Powrót</button>
+            </a>
+        </div>
+        <div class="col-md-6 text-left">
+            <a th:href="@{/new-class}">
+                <button class="btn btn-success btn-xl " style="width: 14rem;">Stwórz klasę</button>
+            </a>
+        </div>
+    </div>
+</div>
+
+<div th:if="${!classes?.isEmpty()}" sec:authorize="hasRole('ROLE_ADMIN') || hasRole('ROLE_TEACHER')" class="mt-5 mb-3">
     <div class="row">
         <div class="col-md-6 text-right">
             <a th:href="@{/}">
