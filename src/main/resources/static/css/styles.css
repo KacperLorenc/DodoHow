@@ -10978,15 +10978,24 @@ form .row:first-child .floating-label-form-group {
     display: flex;
     -ms-flex-wrap: wrap;
     flex-wrap: wrap;
+    min-width: 75%;
 }
 
 .class-card {
+    margin: 10px 10px;
+    -ms-flex-negative: 0;
+    flex-shrink: 0;
+    min-width: 18rem;
+    max-width: 18rem;
+    padding: 10px;
+}
+
+.class-card-teacher {
     width: calc(100% / 6 - 40px);
     margin: 10px 10px;
     -ms-flex-negative: 0;
     flex-shrink: 0;
-    height: 200px;
-    min-width: 18rem;
-    max-width: 18rem;
+    min-width: 25rem;
+    max-width: 25rem;
     padding: 10px;
 }

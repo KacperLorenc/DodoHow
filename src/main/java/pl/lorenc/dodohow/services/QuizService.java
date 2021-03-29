@@ -7,8 +7,10 @@ import pl.lorenc.dodohow.entities.User;
 import pl.lorenc.dodohow.repositories.QuizRepository;
 import pl.lorenc.dodohow.repositories.ScoreRepository;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class QuizService {
@@ -22,34 +24,38 @@ public class QuizService {
         this.scoreRepository = scoreRepository;
     }
 
-    public Set<Quiz> findUsersQuizzes(User user) {
-        Set<Quiz> quizzes = user.getQuizzes();
-        if (quizzes == null) {
+    public Set<Quiz> findUsersQuizzes(User user, Long quizClassId) {
+
+        if (user.getClasses() == null || user.getClasses().isEmpty()) {
             return new HashSet<>();
         }
-        Set<Long> ids = quizzes.stream()
-                .map(Quiz::getId)
-                .collect(Collectors.toSet());
-        return quizRepository.findAllByIdIn(ids);
+        if (user.getClasses().stream().anyMatch(c -> c.getId().equals(quizClassId))) {
+            Set<Quiz> quizzes = quizRepository.findAllByQuizClassId(quizClassId);
+            if (quizzes == null) {
+                return new HashSet<>();
+            }
+            return quizzes;
+        }
+        return new HashSet<>();
     }
 
-    public Optional<Quiz> findNextQuiz(User user) {
-        Set<Quiz> quizzes = findUsersQuizzes(user);
+    public Optional<Quiz> findNextQuiz(User user, Long quizClassId) {
+        Set<Quiz> quizzes = findUsersQuizzes(user, quizClassId);
         Optional<Quiz> currentLastQuiz = quizzes.stream()
                 .map(Quiz::getNumberInClass)
                 .max(Integer::compareTo)
-                .flatMap(number -> quizRepository.findByNumberInClass(number));
+                .flatMap(number -> quizRepository.findByNumberInClassAndQuizClassId(number, quizClassId));
         if (currentLastQuiz.isPresent()) {
             if (existsByQuizAndUser(currentLastQuiz.get(), user)) {
-                return quizRepository.findByNumberInClass(currentLastQuiz.get().getNumberInClass() + 1);
+                return quizRepository.findByNumberInClassAndQuizClassId(currentLastQuiz.get().getNumberInClass() + 1, quizClassId);
             }
         }
 
         return Optional.empty();
     }
 
-    public Optional<Quiz> getFirstQuiz() {
-        return quizRepository.findByNumberInClass(1);
+    public Optional<Quiz> getFirstQuiz(Long classId) {
+        return quizRepository.findByNumberInClassAndQuizClassId(1, classId);
     }
 
     public Set<Quiz> findAllByIds(Collection<Long> ids) {

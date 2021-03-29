@@ -30,7 +30,7 @@
         <h2 sec:authorize="hasRole('ROLE_TEACHER') "
             class="page-section-heading text-center text-uppercase text-secondary mb-0">Klasy</h2>
         <h2 sec:authorize="hasRole('ROLE_ADMIN') "
-            class="page-section-heading text-center text-uppercase text-secondary mb-0">Nauczyciele</h2>
+            class="page-section-heading text-center text-uppercase text-secondary mb-0">Zarządzaj</h2>
         <!-- Icon Divider-->
         <div class="divider-custom">
             <div class="divider-custom-line"></div>
@@ -40,17 +40,26 @@
 
         <div class="divider-custom">
             <a sec:authorize="isAnonymous()" th:href="@{/login}">
-                <button class="btn btn-primary btn-xl" id="loginButton">Zaczynajmy!</button>
+                <button class="btn btn-primary btn-xl">Zaczynajmy!</button>
             </a>
             <a sec:authorize="hasRole('ROLE_USER')" th:href="@{/classes}">
-                <button class="btn btn-primary btn-xl" id="playButton">Zaczynajmy!</button>
+                <button class="btn btn-primary btn-xl">Zaczynajmy!</button>
             </a>
-            <a sec:authorize="hasRole('ROLE_TEACHER')">
-                <button class="btn btn-primary btn-xl" id="teacherButton">Zarządzaj</button>
+            <a sec:authorize="hasRole('ROLE_TEACHER')" th:href="@{/classes}">
+                <button class="btn btn-primary btn-xl">Zarządzaj</button>
             </a>
-            <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/teachers}">
-                <button class="btn btn-primary btn-xl" id="adminButton">Zarządzaj</button>
-            </a>
+            <div sec:authorize="hasRole('ROLE_ADMIN')" class="row w-100">
+                <div class="col-md-6 text-right">
+                    <a th:href="@{/teachers}">
+                        <button class="btn btn-primary btn-xl " style="width: 14rem;">Nauczyciele</button>
+                    </a>
+                </div>
+                <div class="col-md-6 text-left">
+                    <a th:href="@{/classes}">
+                        <button class="btn btn-primary btn-xl " style="width: 14rem;">Klasa</button>
+                    </a>
+                </div>
+            </div>
         </div>
 
         <!-- Portfolio Grid Items-->

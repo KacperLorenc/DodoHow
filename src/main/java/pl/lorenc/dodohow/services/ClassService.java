@@ -48,6 +48,9 @@ public class ClassService {
     }
 
     public Set<QuizClass> findAllByUser(User user) {
+        if(user.getRoleList().contains("ROLE_TEACHER") || user.getRoleList().contains("ROLE_ADMIN"))
+            return repository.findAllByTeacherId(user.getId());
+
         return repository.findAllByStudentsContaining(user);
     }
 

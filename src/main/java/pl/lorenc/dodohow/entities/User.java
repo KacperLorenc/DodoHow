@@ -32,8 +32,13 @@ public class User {
     private String roles = "";
     @OneToMany
     private Set<VerificationToken> verificationToken;
-    @OneToMany(fetch = FetchType.EAGER)
-    private Set<Quiz> quizzes;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name="studentsInClasses",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "class_id")
+    )
+    private Set<QuizClass> classes;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private Set<Score> scores;
 

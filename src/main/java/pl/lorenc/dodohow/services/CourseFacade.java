@@ -34,34 +34,16 @@ public class CourseFacade {
         this.mapper = mapper;
     }
 
-    public String getClasses(Model model) {
-        try {
-            return userService.getUserFromSession().map(u -> {
-                Set<QuizClass> classes = classService.findAllByUser(u);
-                if (classes == null)
-                    classes = new HashSet<>();
-                model.addAttribute("classes", classes);
-                return "course/classes";
-
-            }).orElse("redirect:/login");
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "redirect:/";
-        }
-    }
-
     public String getQuizzes(@PathVariable Long id, Model model) {
         try {
             Optional<User> userOptional = userService.getUserFromSession();
             return userOptional.map(user -> {
-                Set<Quiz> userQuizs = quizService.findAllByClassId(id); //znajduje sekcje w danej klasie
+                Set<Quiz> userQuizs = quizService.findAllByClassId(id); //znajduje quizy w danej klasie
                 if (userQuizs.isEmpty()) {
-                    quizService.getFirstQuiz().ifPresent(userQuizs::add); //jesli nie ma zadnych przerobionych to przypisuje pierwsza sekcje
+                    quizService.getFirstQuiz(id).ifPresent(userQuizs::add); //jesli nie ma zadnych przerobionych to przypisuje pierwszy quiz w klasie
                 } else {
-                    quizService.findNextQuiz(user).ifPresent(userQuizs::add); //jesli ma jakas przerobiona to dodaje kolejna
+                    quizService.findNextQuiz(user, id).ifPresent(userQuizs::add); //jesli ma jakis przerobiony to dodaje kolejny
                 }
-                user.setQuizzes(userQuizs);
                 userService.saveRegisteredUser(user);
                 model.addAttribute("user", mapper.map(user));
                 model.addAttribute("quizzes", userQuizs.stream().sorted(Comparator.comparing(Quiz::getNumberInClass)).map(quiz -> mapper.map(quiz, user)).collect(Collectors.toList()));

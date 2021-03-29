@@ -35,10 +35,10 @@ public class DtoMapper {
     public User map(UserDto userDto) {
         User user = new User(userDto.getId(), userDto.getLogin(), userDto.getPassword(), userDto.getEmail(), userDto.getActive(), userDto.getRoles());
 
-        Set<QuizDto> quizzes = userDto.getQuizList();
+        Set<QuizClassDto> quizzes = userDto.getClassList();
         if (quizzes != null && !quizzes.isEmpty()) {
-            Set<Long> ids = userDto.getQuizList().stream().map(QuizDto::getId).collect(Collectors.toSet());
-            user.setQuizzes(quizService.findAllByIds(ids));
+            Set<Long> ids = userDto.getClassList().stream().map(QuizClassDto::getId).collect(Collectors.toSet());
+            user.setClasses(classRepository.findAllByIdIn(ids));
         }
         return user;
     }
@@ -49,9 +49,9 @@ public class DtoMapper {
                 .contains("ROLE_TEACHER");
 
         UserDto userDto = new UserDto(user.getId(), user.getUsername(), user.getPassword(), user.getEmail(), user.getActive(), user.getRoles(), teacher);
-        Set<Quiz> quizzes = quizService.findUsersQuizzes(user);
-        if (quizzes != null) {
-            userDto.setQuizList(quizzes.stream()
+        Set<QuizClass> quizClasses = classRepository.findAllByStudentsContaining(user);
+        if (quizClasses != null) {
+            userDto.setClassList(quizClasses.stream()
                     .map(this::map)
                     .collect(Collectors.toSet()));
         }
@@ -181,7 +181,7 @@ public class DtoMapper {
                     .collect(Collectors.toSet());
         }
 
-        return new QuizClassDto(quizClass.getId(), quizClass.getTeacher().getId(), students, quizzes, quizClass.getTitle(), quizClass.getDescription());
+        return new QuizClassDto(quizClass.getId(), quizClass.getTeacherId(), students, quizzes, quizClass.getTitle(), quizClass.getDescription());
     }
 
     public QuizClass map(QuizClassDto quizClassDto) {
@@ -196,7 +196,7 @@ public class DtoMapper {
         if (teacherOpt.isEmpty())
             log.error("User with id: " + quizClassDto.getTeacherId() + " doesn't exist!");
 
-        return new QuizClass(quizClassDto.getId(), teacherOpt.orElse(null), students, quizzes, quizClassDto.getTitle(), quizClassDto.getDescription());
+        return new QuizClass(quizClassDto.getId(), quizClassDto.getTeacherId(), students, quizzes, quizClassDto.getTitle(), quizClassDto.getDescription());
 
     }
 

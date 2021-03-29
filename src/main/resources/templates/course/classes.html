@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:insert="course/navigationbar.html :: headerfiles"></head>
 <body class="whole-screen" id="page-top">
 <div th:insert="course/navigationbar.html :: nav"></div>
@@ -18,19 +18,45 @@
         </div>
     </div>
 </header>
-<div class="container class-container justify-content-between" th:each="class : ${classes}">
-    <th:block th:insert="course/class-card"></th:block>
-    <th:block th:insert="course/class-card"></th:block>
-    <th:block th:insert="course/class-card"></th:block>
-    <th:block th:insert="course/class-card"></th:block> <th:block th:insert="course/class-card"></th:block>
-    <th:block th:insert="course/class-card"></th:block>
-    <th:block th:insert="course/class-card"></th:block>
-    <th:block th:insert="course/class-card"></th:block>
-    <th:block th:insert="course/class-card"></th:block>
-    <th:block th:insert="course/class-card"></th:block>
-    <th:block th:insert="course/class-card"></th:block>
 
+<div th:if="${!classes?.isEmpty()}" class="container class-container justify-content-center">
+    <th:block th:each="class, i : ${classes}" th:insert="course/class-card"></th:block>
+</div>
+<div sec:authorize="hasRole('ROLE_ADMIN') || hasRole('ROLE_TEACHER')" class="page-section">
+    <div th:if="${classes?.isEmpty()}" class="container d-flex text-secondary mb-4" style="justify-content: center">
+        <h3>Brak klas do wyświetlenia.</h3>
+    </div>
+    <div class="row">
+        <div class="col-md-6 text-right">
+            <a th:href="@{/}">
+                <button class="btn btn-danger btn-xl " style="width: 14rem;">Powrót</button>
+            </a>
+        </div>
+        <div class="col-md-6 text-left">
+            <a th:href="@{/new-class}">
+                <button class="btn btn-success btn-xl " style="width: 14rem;">Stwórz klasę</button>
+            </a>
+        </div>
+    </div>
+</div>
 
+<div th:if="${classes?.isEmpty()}" sec:authorize="hasRole('ROLE_USER')" class="page-section">
+    <div  class="container d-flex text-secondary mb-4" style="justify-content: center">
+        <h3>Brak klas do wyświetlenia.</h3>
+    </div>
+    <div class="container d-flex" style="justify-content: center">
+        <a th:href="@{/}">
+            <button class="btn btn-primary btn-xl" style="width: 14rem;">Powrót</button>
+        </a>
+    </div>
+</div>
+
+<div th:if="${!classes?.isEmpty()}" sec:authorize="hasRole('ROLE_USER')" class="mt-5 mb-3">
+    <div class="container d-flex" style="justify-content: center">
+        <a th:href="@{/}">
+            <button class="btn btn-primary btn-xl" style="width: 14rem;">Powrót</button>
+        </a>
+    </div>
 </div>
 
 <div class="masthead bg-main-green text-white text-center mt-5">

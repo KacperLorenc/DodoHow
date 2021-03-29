@@ -36,7 +36,7 @@ public class UserDto {
     private String email;
     private Boolean active;
     private String roles;
-    private Set<QuizDto> quizList;
+    private Set<QuizClassDto> classList;
     private Boolean teacher;
 
     public UserDto(Long id, @NotNull(message = "*Pole musi być uzupełnione") @NotEmpty(message = "*Pole musi być uzupełnione") @Size(min = 5, max = 100, message = "Login musi mieć przynajmniej 5 znaków") String login, @NotNull(message = "*Pole musi być uzupełnione") @NotEmpty(message = "*Pole musi być uzupełnione") @Size(min = 5, max = 100, message = "Hasło musi mieć przynajmniej 5 znaków") String password,  @NotNull(message = "*Pole musi być uzupełnione") @NotEmpty(message = "*Pole musi być uzupełnione") String email, Boolean active, String roles, Boolean teacher) {

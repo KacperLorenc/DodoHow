@@ -22,6 +22,14 @@
                        class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger"
                        href="#page-top">Wyloguj</a>
                 </li>
+                <li  sec:authorize="isAuthenticated()" class="nav-item mx-2 mx-lg-5">
+                    <div class="row">
+                        <img src="../../assets/img/avataaars.png" alt="" style="width: 45px; height: auto;"/>
+                        <div class="nav-link mt-2 px-0 rounded text-white">
+                            <span th:text="${#authentication.getName()}"></span>
+                        </div>
+                    </div>
+                </li>
             </ul>
         </div>
     </div>

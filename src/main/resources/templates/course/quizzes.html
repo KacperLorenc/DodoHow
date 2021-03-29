@@ -9,18 +9,16 @@
         <a th:href="@{/}">
         <img class="masthead-avatar mb-5" src="../../assets/img/avataaars.png" alt=""/>
         </a>
-    </div>
-</header>
-<div class="container d-flex align-items-center flex-column ">
-    <div class="container">
-        <h2 class="page-section-heading text-center text-uppercase text-secondary">Wybór sekcji</h2>
-        <div class="divider-custom">
+
+        <h1 class="masthead-heading text-uppercase mb-0">Wybór quizów</h1>
+
+        <div class="divider-custom divider-light">
             <div class="divider-custom-line"></div>
             <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
             <div class="divider-custom-line"></div>
         </div>
     </div>
-</div>
+</header>
 <div class="container"  style="margin-bottom: 7rem">
     <th:block th:each="quiz, i : ${quizzes}">
         <div class="row align-items-center mb-1">

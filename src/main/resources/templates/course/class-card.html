@@ -1,15 +1,34 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body th:fragment="class-card">
-<div class="card class-card">
+<div sec:authorize="hasRole('ROLE_USER')" class="card class-card d-flex flex-column flex-md-row">
     <div class="card-body">
         <h5 th:text="${class?.getTitle()}" class="card-title text-secondary">Card title</h5>
-        <p th:text="${class?.getDescription()}" class="card-text text-secondary">Text</p>
-        <a th:href="@{/quizzes/{id}(id=${class.getId()})}" href="#" class="btn btn-primary btn-thin">Rozpocznij</a>
+        <p th:text="${class?.getDescription()}" class="card-text text-secondary mb-1">Text</p>
+        <a  th:href="@{/quizzes/{id}(id=${class.getId()})}" href="#"
+           class="btn btn-primary btn-thin mt-auto">Rozpocznij</a>
+    </div>
+</div>
+
+<div sec:authorize="hasRole('ROLE_TEACHER') || hasRole('ROLE_ADMIN')"
+     class="card class-card-teacher d-flex flex-column flex-md-row">
+    <div class="card-body">
+        <h5 th:text="${class?.getTitle()}" class="card-title text-secondary">Card title</h5>
+        <p th:text="${class?.getDescription()}" class="card-text text-secondary mb-1">Text</p>
+        <div class="row w-100">
+            <div class="col-6">
+                <a th:href="@{/classes/users/{id}(id=${class.getId()})}" href="#"
+                   class="btn btn-primary btn-table mt-auto">Uczniowie</a>
+            </div>
+            <div class="col-6">
+                <a th:href="@{/classes/quizzes/{id}(id=${class.getId()})}" href="#"
+                   class="btn btn-primary btn-table mt-auto">Quizy</a>
+            </div>
+        </div>
     </div>
 </div>
 </body>

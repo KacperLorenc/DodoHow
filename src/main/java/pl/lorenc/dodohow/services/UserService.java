@@ -12,6 +12,7 @@ import pl.lorenc.dodohow.repositories.UserRepository;
 import pl.lorenc.dodohow.security.IAuthenticationFacade;
 import pl.lorenc.dodohow.security.VerificationToken;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -85,6 +86,10 @@ public class UserService {
         return userRepository.findById(id);
     }
 
+    public Optional<User> findByIdWithClasses(Long id) {
+        return  userRepository.findByIdWithClasses(id);
+    }
+
     public Set<User> findUsersBy(boolean active, String role, String username) {
         return userRepository.findAllByActiveAndRolesContainsAndUsernameContaining(active, role, username);
     }
@@ -103,7 +108,11 @@ public class UserService {
     }
 
     @Transactional
-    public void deleteUser(Long id){
+    public void deleteUser(Long id) {
         userRepository.deleteById(id);
+    }
+
+    public Set<User> findAllById(List<Long> idList) {
+        return userRepository.findAllByIdIn(idList);
     }
 }

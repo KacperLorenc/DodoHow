@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import pl.lorenc.dodohow.dtos.TeachersSetDto;
+import pl.lorenc.dodohow.dtos.UserSetDto;
 import pl.lorenc.dodohow.dtos.UserDto;
 import pl.lorenc.dodohow.services.DtoMapper;
 import pl.lorenc.dodohow.services.QuizService;
@@ -43,7 +43,7 @@ public class ViewsController {
                     .stream()
                     .map(mapper::map)
                     .collect(Collectors.toSet());
-            model.addAttribute("teacherSet", new TeachersSetDto(teachers));
+            model.addAttribute("teacherSet", new UserSetDto(teachers));
             model.addAttribute("search", new UserDto());
             return "home/teachers";
 

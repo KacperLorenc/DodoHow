@@ -6,8 +6,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
-import pl.lorenc.dodohow.dtos.TeachersSetDto;
 import pl.lorenc.dodohow.dtos.UserDto;
+import pl.lorenc.dodohow.dtos.UserSetDto;
 import pl.lorenc.dodohow.entities.User;
 import pl.lorenc.dodohow.security.OnRegistrationCompleteEvent;
 import pl.lorenc.dodohow.security.VerificationToken;
@@ -108,7 +108,7 @@ public class CredentialsController {
                     .stream()
                     .map(mapper::map)
                     .collect(Collectors.toSet());
-            model.addAttribute("teacherSet", new TeachersSetDto(t));
+            model.addAttribute("teacherSet", new UserSetDto(t));
             return "home/teachers";
 
         } catch (Exception e) {
@@ -126,7 +126,7 @@ public class CredentialsController {
                     .stream()
                     .map(mapper::map)
                     .collect(Collectors.toSet());
-            model.addAttribute("teacherSet", new TeachersSetDto(t));
+            model.addAttribute("teacherSet", new UserSetDto(t));
             return "home/teachers";
 
         } catch (Exception e) {
@@ -136,14 +136,14 @@ public class CredentialsController {
     }
 
     @GetMapping("/teachers/search")
-    public String getTeachers(
-            @RequestParam(value = "username", required = true) String username,
-            @ModelAttribute("teacherSet") TeachersSetDto teacherSet,
-            Model model
-    ) {
+    public String getTeachers(@RequestParam(value = "username") String username, Model model) {
         try {
             if (username == null || username.trim().isEmpty()) {
-                model.addAttribute("teacherSet", teacherSet);
+                Set<UserDto> t = userService.findUsersBy(false, "ROLE_TEACHER")
+                        .stream()
+                        .map(mapper::map)
+                        .collect(Collectors.toSet());
+                model.addAttribute("teacherSet", t);
                 return "home/teachers";
             }
 
@@ -152,7 +152,7 @@ public class CredentialsController {
                     .map(mapper::map)
                     .collect(Collectors.toSet());
 
-            model.addAttribute("teacherSet", new TeachersSetDto(t));
+            model.addAttribute("teacherSet", new UserSetDto(t));
 
             return "home/teachers";
 

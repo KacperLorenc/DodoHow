@@ -5,12 +5,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Set;
-
 @AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
-public class TeachersSetDto {
-   private Set<UserDto> teachers;
+@NoArgsConstructor
+public class SearchDto {
+    private String username;
+    private Long classId;
 }

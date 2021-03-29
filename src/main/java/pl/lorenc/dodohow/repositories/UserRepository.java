@@ -30,4 +30,7 @@ public interface UserRepository extends CrudRepository<User, Long> {
     @Query("update User u set u.active = :active where u.id = :id")
     void updateUser(@Param(value = "id") Long id, @Param(value = "active") boolean active);
 
+    @Query("SELECT u FROM User u LEFT JOIN FETCH u.classes WHERE u.id = :id")
+    Optional<User> findByIdWithClasses(@Param(value = "id") Long id);
+
 }

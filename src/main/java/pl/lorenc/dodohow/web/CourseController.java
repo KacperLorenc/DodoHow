@@ -37,18 +37,6 @@ public class CourseController {
         }
     }
 
-    @GetMapping("/classes")
-    public String getClasses(Model model) {
-        try {
-
-            return courseFacade.getClasses(model);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "redirect:/";
-        }
-    }
-
     @GetMapping("/course/{id}")
     public String newQuiz(@PathVariable Long id, Model model) {
         try {

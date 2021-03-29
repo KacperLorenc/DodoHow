@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:insert="course/navigationbar.html :: headerfiles"></head>
+<body class="whole-screen" id="page-top">
+<div th:insert="course/navigationbar.html :: nav"></div>
+<header class="masthead bg-primary text-white text-center mb-5" style="padding-bottom: 1rem; padding-top: 12.5rem;">
+    <div class="container d-flex align-items-center flex-column">
+        <a th:href="@{/}">
+            <img class="masthead-avatar mb-5" src="../../assets/img/avataaars.png" alt=""/>
+        </a>
+
+        <h1 class="masthead-heading text-uppercase mb-0">Nowa klasa</h1>
+
+        <div class="divider-custom divider-light">
+            <div class="divider-custom-line"></div>
+            <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
+            <div class="divider-custom-line"></div>
+        </div>
+    </div>
+</header>
+<div class="container d-flex pt-4 pb-4" style="justify-content: center">
+    <form name="search" th:object="${class}" th:action="@{/classes}" method="post" class="w-50">
+        <div class="form-group">
+            <label for="title">Tytuł</label>
+            <input th:field="${class.title}" th:required="required" type="text" name="title" id="title"
+                   class="form-control"
+                   placeholder="tytuł">
+            <span class="validationError text-danger"
+                  th:if="${#fields.hasErrors('title')}"
+                  th:errors="*{class.title}">Title error</span>
+        </div>
+        <div class="form-group">
+            <label for="description">Opis</label>
+            <input th:field="${class.description}" th:required="required" type="text" name="description"
+                   id="description"
+                   class="form-control"
+                   placeholder="krótki opis">
+            <span class="validationError text-danger"
+                  th:if="${#fields.hasErrors('description')}"
+                  th:errors="*{class.description}">Title error</span>
+        </div>
+        <input class="btn btn-primary btn-thin" type="submit" value="Dodaj klasę">
+    </form>
+</div>
+<div class="container d-flex mt-4 mb-4" style="justify-content: center">
+    <a th:href="@{/classes}">
+        <button class="btn btn-danger btn-thin">Powrót</button>
+    </a>
+</div>
+
+<div class="masthead bg-main-green text-white text-center mt-7">
+</div>
+<div class="footer-bottom" th:insert="home/footer :: foot"></div>
+</body>
+</html>
