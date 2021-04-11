@@ -14,4 +14,5 @@ public class QuizWithScoreDto {
     private String title;
     private Integer maxScore;
     private Integer userScore;
+    private String username;
 }

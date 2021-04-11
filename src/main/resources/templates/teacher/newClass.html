@@ -24,7 +24,8 @@
             <label for="title">Tytuł</label>
             <input th:field="${class.title}" th:required="required" type="text" name="title" id="title"
                    class="form-control"
-                   placeholder="tytuł">
+                   placeholder="tytuł"
+                   autocomplete="off">
             <span class="validationError text-danger"
                   th:if="${#fields.hasErrors('title')}"
                   th:errors="*{class.title}">Title error</span>
@@ -34,7 +35,8 @@
             <input th:field="${class.description}" th:required="required" type="text" name="description"
                    id="description"
                    class="form-control"
-                   placeholder="krótki opis">
+                   placeholder="krótki opis"
+                   autocomplete="off">
             <span class="validationError text-danger"
                   th:if="${#fields.hasErrors('description')}"
                   th:errors="*{class.description}">Title error</span>

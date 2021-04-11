@@ -5,14 +5,11 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.lorenc.dodohow.entities.Quiz;
 import pl.lorenc.dodohow.entities.Score;
 import pl.lorenc.dodohow.entities.User;
-import pl.lorenc.dodohow.repositories.ScoreRepository;
 import pl.lorenc.dodohow.repositories.QuizRepository;
+import pl.lorenc.dodohow.repositories.ScoreRepository;
 import pl.lorenc.dodohow.repositories.UserRepository;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class ScoreService {
@@ -39,8 +36,8 @@ public class ScoreService {
         });
     }
 
-    public List<Score> getScores(User user) {
-        return scoreRepository.findAllByUser(user);
+    public Set<Score> getScores(User user, Collection<Quiz> quizzes) {
+        return scoreRepository.findAllByQuizInAndUser( quizzes, user);
     }
 
     public List<Score> getScores(User user, Quiz quiz) {
@@ -59,5 +56,13 @@ public class ScoreService {
     public boolean checkIfScoreExists(Quiz quiz, User user) {
         return scoreRepository.findByUserAndQuiz(user, quiz)
                 .isPresent();
+    }
+
+    public Set<Score> findAllByQuizzesAndUser(Collection<Quiz> quizzes, User user) {
+        return scoreRepository.findAllByQuizInAndUser(quizzes, user);
+    }
+
+    public List<Score> findAllByUser(User user) {
+        return scoreRepository.findAllByUser(user);
     }
 }

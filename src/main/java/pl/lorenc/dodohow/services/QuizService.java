@@ -2,13 +2,14 @@ package pl.lorenc.dodohow.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.lorenc.dodohow.entities.Quiz;
+import pl.lorenc.dodohow.entities.QuizClass;
 import pl.lorenc.dodohow.entities.User;
 import pl.lorenc.dodohow.repositories.QuizRepository;
 import pl.lorenc.dodohow.repositories.ScoreRepository;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
@@ -24,30 +25,15 @@ public class QuizService {
         this.scoreRepository = scoreRepository;
     }
 
-    public Set<Quiz> findUsersQuizzes(User user, Long quizClassId) {
-
-        if (user.getClasses() == null || user.getClasses().isEmpty()) {
-            return new HashSet<>();
-        }
-        if (user.getClasses().stream().anyMatch(c -> c.getId().equals(quizClassId))) {
-            Set<Quiz> quizzes = quizRepository.findAllByQuizClassId(quizClassId);
-            if (quizzes == null) {
-                return new HashSet<>();
-            }
-            return quizzes;
-        }
-        return new HashSet<>();
-    }
-
     public Optional<Quiz> findNextQuiz(User user, Long quizClassId) {
-        Set<Quiz> quizzes = findUsersQuizzes(user, quizClassId);
+        Set<Quiz> quizzes = findAllByClassId(quizClassId, true);
         Optional<Quiz> currentLastQuiz = quizzes.stream()
                 .map(Quiz::getNumberInClass)
                 .max(Integer::compareTo)
-                .flatMap(number -> quizRepository.findByNumberInClassAndQuizClassId(number, quizClassId));
+                .flatMap(number -> quizRepository.findByNumberInClassAndQuizClassIdAndActive(number, quizClassId, true));
         if (currentLastQuiz.isPresent()) {
             if (existsByQuizAndUser(currentLastQuiz.get(), user)) {
-                return quizRepository.findByNumberInClassAndQuizClassId(currentLastQuiz.get().getNumberInClass() + 1, quizClassId);
+                return quizRepository.findByNumberInClassAndQuizClassIdAndActive(currentLastQuiz.get().getNumberInClass() + 1, quizClassId, true);
             }
         }
 
@@ -55,11 +41,15 @@ public class QuizService {
     }
 
     public Optional<Quiz> getFirstQuiz(Long classId) {
-        return quizRepository.findByNumberInClassAndQuizClassId(1, classId);
+        return quizRepository.findByNumberInClassAndQuizClassIdAndActive(1, classId, true);
     }
 
     public Set<Quiz> findAllByIds(Collection<Long> ids) {
         return quizRepository.findAllByIdIn(ids);
+    }
+
+    public Set<Quiz> findAll(Collection<Long> ids, QuizClass quizClass, boolean active) {
+        return quizRepository.findAllByIdInAndQuizClassAndActive(ids, quizClass, active);
     }
 
     public Optional<Quiz> findById(Long id) {
@@ -76,5 +66,14 @@ public class QuizService {
 
     public Set<Quiz> findAllByClassId(Long classId) {
         return quizRepository.findAllByQuizClassId(classId);
+    }
+
+    public Set<Quiz> findAllByClassId(Long classId, boolean active) {
+        return quizRepository.findAllByQuizClassIdAndActive(classId, active);
+    }
+
+    @Transactional
+    public void save(Quiz quiz) {
+        quizRepository.save(quiz);
     }
 }

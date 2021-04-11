@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body th:fragment="quiz-card">
+<div  class="card class-card d-flex flex-column flex-md-row" style="min-width: 25rem;">
+    <div class="card-body">
+        <h5 th:text="${quiz?.getTitle()}" class="card-title text-secondary">Card title</h5>
+        <div class="row w-100">
+            <div class="col-6">
+                <a th:href="@{/classes/scores?quiz={id}(id=${quiz?.getId()})}" href="#"
+                   class="btn btn-primary btn-table mt-auto">Wyniki</a>
+            </div>
+            <div th:if="${quiz?.getActive()!=null && quiz?.getActive()}" class="col-6">
+                <a th:href="@{/classes/activate?quiz={id}(id=${quiz?.getId()})}" href="#"
+                   class="btn btn-primary btn-table mt-auto">Wyłącz</a>
+            </div>
+            <div th:if="${quiz?.getActive()==null || !quiz?.getActive()}" class="col-6">
+                <a th:href="@{/classes/activate?quiz={id}(id=${quiz?.getId()})}" href="#"
+                   class="btn btn-primary btn-table mt-auto">Włącz</a>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

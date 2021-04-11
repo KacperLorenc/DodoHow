@@ -7,8 +7,10 @@ import pl.lorenc.dodohow.entities.Score;
 import pl.lorenc.dodohow.entities.User;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface ScoreRepository extends CrudRepository<Score, Long> {
@@ -19,5 +21,6 @@ public interface ScoreRepository extends CrudRepository<Score, Long> {
     void deleteByUserAndQuiz(User user, Quiz quiz);
     Optional<Score> findByUserAndQuiz(User user, Quiz quiz);
     boolean existsByUserAndQuiz(User user, Quiz quiz);
-
+    Set<Score> findAllByQuizInAndUser(Collection<Quiz> quizzes, User user);
+    Set<Score> findAllByQuiz(Quiz quiz);
 }

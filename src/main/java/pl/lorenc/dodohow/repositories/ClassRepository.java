@@ -11,7 +11,9 @@ import java.util.Set;
 @Repository
 public interface ClassRepository extends CrudRepository<QuizClass, Long> {
     Set<QuizClass> findAllByStudentsContaining(User user);
+
     Set<QuizClass> findAllByTeacherId(Long id);
+
     Set<QuizClass> findAllByIdIn(Collection<Long> ids);
 
 }

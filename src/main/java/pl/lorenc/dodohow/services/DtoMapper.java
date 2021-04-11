@@ -16,12 +16,11 @@ import java.util.stream.Collectors;
 @Slf4j
 public class DtoMapper {
 
-    private ExerciseRepository exerciseRepository;
-    private QuizService quizService;
-    private UserRepository userRepository;
-    private ScoreService scoreService;
-    private ClassRepository classRepository;
-
+    private final ExerciseRepository exerciseRepository;
+    private final QuizService quizService;
+    private final UserRepository userRepository;
+    private final ScoreService scoreService;
+    private final ClassRepository classRepository;
 
     @Autowired
     public DtoMapper(ExerciseRepository exerciseRepository, QuizService quizService, UserRepository userRepository, ScoreService scoreService, ClassRepository classRepository) {
@@ -60,17 +59,17 @@ public class DtoMapper {
 
     public Quiz map(QuizDto quizDto) {
         if (quizDto.getExercises() == null || quizDto.getExercises().isEmpty()) {
-            log.error("Quiz: " + quizDto.getTitle() + " with id: " + quizDto.getId() + " has no exercises");
+            log.error("Quiz: " + quizDto.getTitle() + " with id: " + quizDto.getId() + " has empty list of exercises");
         } else {
             Set<Exercise> exercises = exerciseRepository.findAllByIdIn(quizDto.getExercises().stream().map(ExerciseDto::getId).collect(Collectors.toSet()));
             if (exercises == null || exercises.isEmpty()) {
-                log.error("Quiz: " + quizDto.getTitle() + " with id: " + quizDto.getId() + " has wrong list of exercises");
+                log.error("Quiz: " + quizDto.getTitle() + " with id: " + quizDto.getId() + " has empty list of exercises");
             } else {
                 Optional<QuizClass> classOpt = classRepository.findById(quizDto.getClassId());
-                if(classOpt.isEmpty()){
+                if (classOpt.isEmpty()) {
                     log.error("QuizClass with id: " + quizDto.getId() + " not found");
                 } else {
-                    return new Quiz(quizDto.getId(), quizDto.getTitle(), exercises, quizDto.getMaxScore(), quizDto.getNumberInClass(), classOpt.get());
+                    return new Quiz(quizDto.getId(), quizDto.getTitle(), exercises, quizDto.getMaxScore(), quizDto.getNumberInClass(), classOpt.get(), quizDto.getActive());
                 }
             }
         }
@@ -81,17 +80,17 @@ public class DtoMapper {
         Set<ExerciseDto> exercises = quiz.getExercises().stream()
                 .map(this::map)
                 .collect(Collectors.toSet());
-        return new QuizDto(quiz.getId(), quiz.getTitle(), exercises, quiz.getMaxScore(), quiz.getNumberInClass(), quiz.getQuizClass().getId());
+        return new QuizDto(quiz.getId(), quiz.getTitle(), exercises, quiz.getMaxScore(), quiz.getNumberInClass(), quiz.getQuizClass().getId(), quiz.getActive());
     }
 
     public QuizWithScoreDto map(Quiz quiz, User user) {
         List<Score> scores = scoreService.getScores(user, quiz);
         if (scores != null && !scores.isEmpty()) {
             Optional<Score> scoreOpt = scores.stream().max(Comparator.comparing(Score::getScore));
-            return scoreOpt.map(s -> new QuizWithScoreDto(quiz.getId(), quiz.getTitle(), quiz.getMaxScore(), s.getScore()))
-                    .orElse(new QuizWithScoreDto(quiz.getId(), quiz.getTitle(), quiz.getMaxScore(), 0));
+            return scoreOpt.map(s -> new QuizWithScoreDto(quiz.getId(), quiz.getTitle(), quiz.getMaxScore(), s.getScore(), user.getUsername()))
+                    .orElse(new QuizWithScoreDto(quiz.getId(), quiz.getTitle(), quiz.getMaxScore(), 0, user.getUsername()));
         }
-        return new QuizWithScoreDto(quiz.getId(), quiz.getTitle(), quiz.getMaxScore(), 0);
+        return new QuizWithScoreDto(quiz.getId(), quiz.getTitle(), quiz.getMaxScore(), 0, user.getUsername());
     }
 
     public Exercise map(ExerciseDto exerciseDto) {
@@ -193,10 +192,12 @@ public class DtoMapper {
         Set<User> students = userRepository.findAllByIdIn(quizClassDto.getStudents());
         Set<Quiz> quizzes = quizService.findAllByIds(quizClassDto.getQuizList());
 
-        if (teacherOpt.isEmpty())
+        if (teacherOpt.isEmpty()) {
             log.error("User with id: " + quizClassDto.getTeacherId() + " doesn't exist!");
+            return null;
+        }
 
-        return new QuizClass(quizClassDto.getId(), quizClassDto.getTeacherId(), students, quizzes, quizClassDto.getTitle(), quizClassDto.getDescription());
+        return new QuizClass(quizClassDto.getId(), teacherOpt.get().getId(), students, quizzes, quizClassDto.getTitle(), quizClassDto.getDescription());
 
     }
 

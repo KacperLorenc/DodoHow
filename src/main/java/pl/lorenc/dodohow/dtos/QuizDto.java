@@ -18,4 +18,5 @@ public class QuizDto {
     private Integer maxScore;
     private Integer numberInClass;
     private Long classId;
+    private Boolean active;
 }

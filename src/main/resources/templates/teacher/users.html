@@ -20,21 +20,21 @@
 </header>
 <div th:if="${!userSet?.getUsers()?.isEmpty()}" class="container mt-5"
      style="margin-bottom: 3rem; max-height: 60%; min-width: 80%; overflow-y: auto;">
-    <th:block th:each="userSet, i : ${userSet?.getUsers()}">
+    <th:block th:each="user, i : ${userSet?.getUsers()}">
         <div class="row align-items-center mb-1">
             <div style="font-size: 1rem" class="col-md-3 text-center text-uppercase text-secondary"
-                 th:text="${userSet?.getLogin()}">
+                 th:text="${user?.getLogin()}">
             </div>
             <div style="font-size: 1rem" class="col-md-3 text-center text-uppercase text-secondary"
-                 th:text="${userSet?.getEmail()}">
+                 th:text="${user?.getEmail()}">
             </div>
             <div class="col-md-3 d-flex flex-row-reverse">
-                <a th:href="@{/teachers/{id}(id=${teacher?.getId()})}">
+                <a th:href="${'/classes/add-users/' + {class?.getId()} + '/scores/' + {user?.getId()}}">
                     <button class="btn btn-success btn-table" style="width: 60%; height: auto;">Wyniki</button>
                 </a>
             </div>
             <div class="col-md-3 d-flex flex-row">
-                <a th:href="@{/delete-teacher/{id}(id=${teacher?.getId()})}">
+                <a th:href="@{/classes/delete-user(class= ${class?.getId()},user = ${user?.getId()})}">
                     <button class="btn btn-success btn-table btn-danger">Usuń</button>
                 </a>
             </div>

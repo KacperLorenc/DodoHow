@@ -6,6 +6,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lorenc.dodohow.dtos.UserDto;
+import pl.lorenc.dodohow.entities.QuizClass;
 import pl.lorenc.dodohow.entities.User;
 import pl.lorenc.dodohow.repositories.TokenRepository;
 import pl.lorenc.dodohow.repositories.UserRepository;
@@ -114,5 +115,9 @@ public class UserService {
 
     public Set<User> findAllById(List<Long> idList) {
         return userRepository.findAllByIdIn(idList);
+    }
+
+    public Set<User> findAllByClass(QuizClass quizClass) {
+        return userRepository.findAllByClassesContaining(quizClass);
     }
 }

@@ -25,6 +25,7 @@ public class Quiz {
     private Integer numberInClass;
     @ManyToOne
     private QuizClass quizClass;
+    private Boolean active;
 
     @Override
     public String toString() {

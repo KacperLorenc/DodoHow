@@ -37,17 +37,30 @@ public class CourseFacade {
     public String getQuizzes(@PathVariable Long id, Model model) {
         try {
             Optional<User> userOptional = userService.getUserFromSession();
+            Optional<QuizClass> classOpt = classService.findById(id);
+
+            if (classOpt.isEmpty())
+                return "redirect:/";
+
             return userOptional.map(user -> {
-                Set<Quiz> userQuizs = quizService.findAllByClassId(id); //znajduje quizy w danej klasie
-                if (userQuizs.isEmpty()) {
-                    quizService.getFirstQuiz(id).ifPresent(userQuizs::add); //jesli nie ma zadnych przerobionych to przypisuje pierwszy quiz w klasie
+
+                QuizClass quizClass = classOpt.get();
+
+                List<Long> quizIds = scoreService.findAllByUser(user)
+                        .stream()
+                        .map(s -> s.getQuiz().getId())
+                        .distinct()
+                        .collect(Collectors.toList());
+
+                Set<Quiz> userQuizzes = quizService.findAll(quizIds, quizClass, true); //znajduje quizy w danej klasie
+                if (userQuizzes.isEmpty()) {
+                    quizService.getFirstQuiz(id).ifPresent(userQuizzes::add); //jesli nie ma zadnych przerobionych to przypisuje pierwszy quiz w klasie
                 } else {
-                    quizService.findNextQuiz(user, id).ifPresent(userQuizs::add); //jesli ma jakis przerobiony to dodaje kolejny
+                    quizService.findNextQuiz(user, id).ifPresent(userQuizzes::add); //jesli ma jakis przerobiony to dodaje kolejny
                 }
                 userService.saveRegisteredUser(user);
                 model.addAttribute("user", mapper.map(user));
-                model.addAttribute("quizzes", userQuizs.stream().sorted(Comparator.comparing(Quiz::getNumberInClass)).map(quiz -> mapper.map(quiz, user)).collect(Collectors.toList()));
-                model.addAttribute("scores", scoreService.getScores(user));
+                model.addAttribute("quizzes", userQuizzes.stream().sorted(Comparator.comparing(Quiz::getNumberInClass)).map(quiz -> mapper.map(quiz, user)).collect(Collectors.toList()));
                 return "course/quizzes";
             }).orElse("redirect:/login");
         } catch (Exception e) {

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:insert="course/navigationbar.html :: headerfiles"></head>
+<body class="whole-screen" id="page-top">
+<div th:insert="course/navigationbar.html :: nav"></div>
+<header class="masthead bg-primary text-white text-center mb-5" style="padding-bottom: 1rem; padding-top: 12.5rem;">
+    <div class="container d-flex align-items-center flex-column">
+        <a th:href="@{/}">
+            <img class="masthead-avatar mb-5" src="../../assets/img/avataaars.png" alt=""/>
+        </a>
+
+        <h1 class="masthead-heading text-uppercase mb-0" th:text="${'Quizy klasy ' + class?.getTitle()}"></h1>
+
+        <div class="divider-custom divider-light">
+            <div class="divider-custom-line"></div>
+            <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
+            <div class="divider-custom-line"></div>
+        </div>
+    </div>
+</header>
+
+<div th:if="${!quizzes?.isEmpty()}" class="container class-container justify-content-center">
+    <th:block th:each="quiz, i : ${quizzes}" th:insert="course/quiz-card"></th:block>
+</div>
+<div th:if="${quizzes?.isEmpty()}" sec:authorize="hasRole('ROLE_ADMIN') || hasRole('ROLE_TEACHER')" class="page-section">
+    <div  class="container d-flex text-secondary mb-4" style="justify-content: center">
+        <h3>Brak quizów do wyświetlenia.</h3>
+    </div>
+    <div class="row">
+        <div class="col-md-6 text-right">
+            <a th:href="@{/classes}">
+                <button class="btn btn-danger btn-xl " style="width: 14rem;">Powrót</button>
+            </a>
+        </div>
+        <div class="col-md-6 text-left">
+            <a th:href="@{/new-quizz}">
+                <button class="btn btn-success btn-xl " style="width: 14rem;">Stwórz quiz</button>
+            </a>
+        </div>
+    </div>
+</div>
+
+<div th:if="${!quizzes?.isEmpty()}" sec:authorize="hasRole('ROLE_ADMIN') || hasRole('ROLE_TEACHER')" class="mt-5 mb-3">
+    <div class="row">
+        <div class="col-md-6 text-right">
+            <a th:href="@{/classes}">
+                <button class="btn btn-danger btn-xl " style="width: 14rem;">Powrót</button>
+            </a>
+        </div>
+        <div class="col-md-6 text-left">
+            <a th:href="@{/new-class}">
+                <button class="btn btn-success btn-xl " style="width: 14rem;">Stwórz quiz</button>
+            </a>
+        </div>
+    </div>
+</div>
+<div class="masthead bg-main-green text-white text-center mt-5">
+</div>
+<div class="footer-bottom" th:insert="home/footer :: foot"></div>
+</body>
+</html>

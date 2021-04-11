@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import pl.lorenc.dodohow.entities.QuizClass;
 import pl.lorenc.dodohow.entities.User;
 
 import java.util.Collection;
@@ -26,11 +27,15 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
     Set<User> findAllByActiveAndRolesContains(boolean active, String role);
 
+    Set<User> findAllByClassesContaining(QuizClass quizClass);
+
     @Modifying
     @Query("update User u set u.active = :active where u.id = :id")
     void updateUser(@Param(value = "id") Long id, @Param(value = "active") boolean active);
 
     @Query("SELECT u FROM User u LEFT JOIN FETCH u.classes WHERE u.id = :id")
     Optional<User> findByIdWithClasses(@Param(value = "id") Long id);
+
+
 
 }

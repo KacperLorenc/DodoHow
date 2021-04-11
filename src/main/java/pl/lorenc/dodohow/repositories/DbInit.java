@@ -92,7 +92,7 @@ public class DbInit implements CommandLineRunner {
         Exercise basic1Ex15 = new Exercise(null, 1, "We ... women", "are", "are;is;am;be", null, ExerciseType.FILL_THE_BLANK, 10);
 
         Set<Exercise> exercisesBasic1 = Sets.newHashSet(basic1Ex1, basic1Ex2, basic1Ex3, basic1Ex4, basic1Ex5, basic1Ex6, basic1Ex7, basic1Ex8, basic1Ex9, basic1Ex10, basic1Ex11, basic1Ex12, basic1Ex13, basic1Ex14, basic1Ex15);
-        Quiz basicsSec = new Quiz(null, "Podstawy", exercisesBasic1, 15, 1, dodohow);
+        Quiz basicsSec = new Quiz(null, "Podstawy", exercisesBasic1, 15, 1, dodohow, true);
         basicsSec.setQuizClass(dodohow);
         exercisesBasic1.forEach(e -> e.setQuiz(basicsSec));
 
@@ -114,7 +114,7 @@ public class DbInit implements CommandLineRunner {
         Exercise animalsEx15 = new Exercise(null, 1, "... purr", "Cats", "Elephants;Dogs;Cats", null, ExerciseType.FILL_THE_BLANK, 15);
 
         Set<Exercise> exercisesAnimals = Sets.newHashSet(animalsEx1, animalsEx2, animalsEx3, animalsEx4, animalsEx5, animalsEx6, animalsEx7, animalsEx8, animalsEx9, animalsEx10, animalsEx11, animalsEx12, animalsEx13, animalsEx14, animalsEx15);
-        Quiz animalsSec = new Quiz(null, "Zwierzęta", exercisesAnimals, 15, 2, dodohow);
+        Quiz animalsSec = new Quiz(null, "Zwierzęta", exercisesAnimals, 15, 2, dodohow, true);
         animalsSec.setQuizClass(dodohow);
         exercisesAnimals.forEach(e -> e.setQuiz(animalsSec));
 
@@ -136,7 +136,7 @@ public class DbInit implements CommandLineRunner {
         Exercise foodEx15 = new Exercise(null, 1, "They ... beer", "drink", "eat;drink;are;is", null, ExerciseType.FILL_THE_BLANK, 2);
 
         Set<Exercise> exercises = Sets.newHashSet(foodEx1, foodEx2, foodEx3, foodEx4, foodEx5, foodEx6, foodEx7, foodEx8, foodEx9, foodEx10, foodEx11, foodEx12, foodEx13, foodEx14, foodEx15);
-        Quiz foodSec = new Quiz(null, "Jedzenie", exercises, 15, 3, dodohow);
+        Quiz foodSec = new Quiz(null, "Jedzenie", exercises, 15, 3, dodohow, true);
         foodSec.setQuizClass(dodohow);
         exercises.forEach(e -> e.setQuiz(foodSec));
 
