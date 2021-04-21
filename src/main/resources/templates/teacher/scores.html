@@ -61,11 +61,11 @@
         </div>
     </div>
 </header>
-<div th:if="${!quizzes?.isEmpty()}"  class="container"  style="margin-bottom: 5rem; margin-top: 5rem">
+<div th:if="${!quizzes?.isEmpty()}"  class="container table-overflow mt-5 mb-5">
     <th:block th:each="quiz, i : ${quizzes}">
         <div class="row align-items-center mb-1">
-            <div style="font-size: 2rem" class="col-md-6 text-center text-uppercase text-secondary" th:text="${quiz?.title}"></div>
-            <div style="font-size: 2rem" class="col-md-6 text-center text-uppercase text-secondary" >
+            <div style="font-size: 1.8rem" class="col-md-6 text-center text-uppercase text-secondary" th:text="${quiz?.title}"></div>
+            <div style="font-size: 1.8rem" class="col-md-6 text-center text-uppercase text-secondary" >
                 <span th:text="${quiz?.getUserScore()}"></span>
                 <span>/</span>
                 <span th:text="${quiz?.getMaxScore()}"></span>

@@ -9,9 +9,7 @@ import pl.lorenc.dodohow.entities.User;
 import pl.lorenc.dodohow.repositories.QuizRepository;
 import pl.lorenc.dodohow.repositories.ScoreRepository;
 
-import java.util.Collection;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class QuizService {
@@ -25,18 +23,17 @@ public class QuizService {
         this.scoreRepository = scoreRepository;
     }
 
-    public Optional<Quiz> findNextQuiz(User user, Long quizClassId) {
-        Set<Quiz> quizzes = findAllByClassId(quizClassId, true);
-        Optional<Quiz> currentLastQuiz = quizzes.stream()
+    public Optional<Quiz> findNextQuiz(Collection<Quiz> quizzes, Long quizClassId) {
+        Set<Quiz> quizzesInClass = findAllByClassId(quizClassId, true);
+        int highestNumber = quizzes.stream()
                 .map(Quiz::getNumberInClass)
                 .max(Integer::compareTo)
-                .flatMap(number -> quizRepository.findByNumberInClassAndQuizClassIdAndActive(number, quizClassId, true));
-        if (currentLastQuiz.isPresent()) {
-            if (existsByQuizAndUser(currentLastQuiz.get(), user)) {
-                return quizRepository.findByNumberInClassAndQuizClassIdAndActive(currentLastQuiz.get().getNumberInClass() + 1, quizClassId, true);
-            }
+                .orElse(-1);
+        if (highestNumber > 0) {
+            return quizzesInClass.stream()
+                    .filter(q -> q.getNumberInClass() > highestNumber)
+                    .min(Comparator.comparing(Quiz::getNumberInClass));
         }
-
         return Optional.empty();
     }
 

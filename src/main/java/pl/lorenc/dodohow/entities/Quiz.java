@@ -26,6 +26,7 @@ public class Quiz {
     @ManyToOne
     private QuizClass quizClass;
     private Boolean active;
+    private Boolean repeatable;
 
     @Override
     public String toString() {

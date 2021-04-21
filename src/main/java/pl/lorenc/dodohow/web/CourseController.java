@@ -86,4 +86,24 @@ public class CourseController {
             return "redirect:/";
         }
     }
+
+    @GetMapping("/redirect-summary")
+    public String redirectToSummary(@RequestParam Long id) {
+        try {
+            return courseFacade.redirectSummary(id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "redirect:/";
+        }
+    }
+
+    @GetMapping("/summary")
+    public String getSummary(@RequestParam(name = "quiz") Long id, Model model) {
+        try {
+            return courseFacade.summary(model, id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "redirect:/";
+        }
+    }
 }

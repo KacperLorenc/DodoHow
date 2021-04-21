@@ -19,4 +19,5 @@ public class QuizDto {
     private Integer numberInClass;
     private Long classId;
     private Boolean active;
+    private Boolean repeatable;
 }

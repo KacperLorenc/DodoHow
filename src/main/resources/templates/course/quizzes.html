@@ -7,7 +7,7 @@
 <header class="masthead bg-primary text-white text-center" style="padding-bottom: 1rem; padding-top: 12.5rem;">
     <div class="container d-flex align-items-center flex-column">
         <a th:href="@{/}">
-        <img class="masthead-avatar mb-5" src="../../assets/img/avataaars.png" alt=""/>
+            <img class="masthead-avatar mb-5" src="../../assets/img/avataaars.png" alt=""/>
         </a>
 
         <h1 class="masthead-heading text-uppercase mb-0">Wybór quizów</h1>
@@ -19,19 +19,27 @@
         </div>
     </div>
 </header>
-<div th:if="${!quizzes?.isEmpty()}"  class="container"  style="margin-bottom: 5rem; margin-top: 5rem">
+<div th:if="${!quizzes?.isEmpty()}" class="container table-overflow mt-5 mb-5">
     <th:block th:each="quiz, i : ${quizzes}">
         <div class="row align-items-center mb-1">
-            <div style="font-size: 2rem" class="col-md-4 text-center text-uppercase text-secondary" th:text="${quiz?.title}"></div>
-            <div style="font-size: 2rem" class="col-md-4 text-center text-uppercase text-secondary" >
+            <div style="font-size: 2rem" class="col-md-4 text-center text-uppercase text-secondary"
+                 th:text="${quiz?.title}"></div>
+            <div style="font-size: 2rem" class="col-md-4 text-center text-uppercase text-secondary">
                 <span th:text="${quiz?.getUserScore()}"></span>
                 <span>/</span>
                 <span th:text="${quiz?.getMaxScore()}"></span>
             </div>
             <div class="col-md-4 text-center">
-                <a  th:href="@{/course/{id}(id=${quiz.getId()})}">
-                    <button th:if="${quiz?.getUserScore() > 0}" class="btn btn-primary btn-thin" id="loginButton1">Powtórz quiz</button>
-                    <button th:if="${quiz?.getUserScore() == 0}" class="btn btn-primary btn-thin" id="loginButton2">Rozpocznij quiz</button>
+                <button th:if="${quiz?.isFinished() && !quiz?.isRepeatable()}" class="btn btn-light btn-thin">
+                    Quiz zakończony
+                </button>
+                <a th:href="@{/course/{id}(id=${quiz.getId()})}">
+                    <button th:if="${quiz?.isFinished() && quiz?.isRepeatable()}" class="btn btn-primary btn-thin">
+                        Powtórz quiz
+                    </button>
+                    <button th:if="${!quiz?.isFinished()}" class="btn btn-primary btn-thin">
+                        Rozpocznij quiz
+                    </button>
                 </a>
             </div>
         </div>
@@ -41,7 +49,7 @@
     </th:block>
 </div>
 <div th:if="${quizzes?.isEmpty()}" class="page-section">
-    <div  class="container d-flex text-secondary mb-4" style="justify-content: center">
+    <div class="container d-flex text-secondary mb-4" style="justify-content: center">
         <h3>Brak quizzów do wyświetlenia.</h3>
     </div>
     <div class="container d-flex" style="justify-content: center">

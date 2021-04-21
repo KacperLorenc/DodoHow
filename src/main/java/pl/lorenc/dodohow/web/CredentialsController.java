@@ -7,7 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import pl.lorenc.dodohow.dtos.UserDto;
-import pl.lorenc.dodohow.dtos.UserSetDto;
+import pl.lorenc.dodohow.dtos.UserListDto;
 import pl.lorenc.dodohow.entities.User;
 import pl.lorenc.dodohow.security.OnRegistrationCompleteEvent;
 import pl.lorenc.dodohow.security.VerificationToken;
@@ -17,6 +17,8 @@ import pl.lorenc.dodohow.services.UserService;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.time.LocalDate;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -104,11 +106,12 @@ public class CredentialsController {
         try {
             if (id != null)
                 userService.activateUser(id);
-            Set<UserDto> t = userService.findUsersBy(false, "ROLE_TEACHER")
+            List<UserDto> t = userService.findUsersBy(false, "ROLE_TEACHER")
                     .stream()
                     .map(mapper::map)
-                    .collect(Collectors.toSet());
-            model.addAttribute("teacherSet", new UserSetDto(t));
+                    .sorted(Comparator.comparing(UserDto::getLogin))
+                    .collect(Collectors.toList());
+            model.addAttribute("teacherSet", new UserListDto(t));
             return "home/teachers";
 
         } catch (Exception e) {
@@ -122,11 +125,12 @@ public class CredentialsController {
         try {
             if (id != null)
                 userService.deleteUser(id);
-            Set<UserDto> t = userService.findUsersBy(false, "ROLE_TEACHER")
+            List<UserDto> t = userService.findUsersBy(false, "ROLE_TEACHER")
                     .stream()
                     .map(mapper::map)
-                    .collect(Collectors.toSet());
-            model.addAttribute("teacherSet", new UserSetDto(t));
+                    .sorted(Comparator.comparing(UserDto::getLogin))
+                    .collect(Collectors.toList());
+            model.addAttribute("teacherSet", new UserListDto(t));
             return "home/teachers";
 
         } catch (Exception e) {
@@ -139,20 +143,22 @@ public class CredentialsController {
     public String getTeachers(@RequestParam(value = "username") String username, Model model) {
         try {
             if (username == null || username.trim().isEmpty()) {
-                Set<UserDto> t = userService.findUsersBy(false, "ROLE_TEACHER")
+                List<UserDto> t = userService.findUsersBy(false, "ROLE_TEACHER")
                         .stream()
                         .map(mapper::map)
-                        .collect(Collectors.toSet());
-                model.addAttribute("teacherSet", t);
+                        .sorted(Comparator.comparing(UserDto::getLogin))
+                        .collect(Collectors.toList());
+                model.addAttribute("teacherSet", new UserListDto(t));
                 return "home/teachers";
             }
 
-            Set<UserDto> t = userService.findInactiveTeachersByUsername(username.trim())
+            List<UserDto> t = userService.findInactiveTeachersByUsername(username.trim())
                     .stream()
                     .map(mapper::map)
-                    .collect(Collectors.toSet());
+                    .sorted(Comparator.comparing(UserDto::getLogin))
+                    .collect(Collectors.toList());
 
-            model.addAttribute("teacherSet", new UserSetDto(t));
+            model.addAttribute("teacherSet", new UserListDto(t));
 
             return "home/teachers";
 

@@ -10,7 +10,10 @@ import pl.lorenc.dodohow.dtos.PointsDto;
 import pl.lorenc.dodohow.dtos.ScoreDto;
 import pl.lorenc.dodohow.entities.*;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -56,7 +59,7 @@ public class CourseFacade {
                 if (userQuizzes.isEmpty()) {
                     quizService.getFirstQuiz(id).ifPresent(userQuizzes::add); //jesli nie ma zadnych przerobionych to przypisuje pierwszy quiz w klasie
                 } else {
-                    quizService.findNextQuiz(user, id).ifPresent(userQuizzes::add); //jesli ma jakis przerobiony to dodaje kolejny
+                    quizService.findNextQuiz(userQuizzes, id).ifPresent(userQuizzes::add); //jesli ma jakis przerobiony to dodaje kolejny
                 }
                 userService.saveRegisteredUser(user);
                 model.addAttribute("user", mapper.map(user));
@@ -96,6 +99,11 @@ public class CourseFacade {
                 ScoreDto scoreDto = new ScoreDto(null, user.getId(), id, 0);
                 Optional<Quiz> quizOpt = quizService.findById(id);
                 if (quizOpt.isPresent()) {
+
+                    Quiz quiz = quizOpt.get();
+
+                    if (scoreService.checkIfScoreExists(quiz, user) && (quiz.getRepeatable() == null || !quiz.getRepeatable()))
+                        return "redirect:/classes";
 
                     scoreService.deleteScore(user, quizOpt.get());
                     scoreService.saveScore(mapper.map(scoreDto));
@@ -139,7 +147,6 @@ public class CourseFacade {
                 Optional<User> userOpt = userService.getUserFromSession();
                 Optional<Quiz> quizOpt = quizService.findById(currentExercise.getQuiz().getId());
                 if (userOpt.isPresent() && quizOpt.isPresent()) {
-
                     //Check if user already submitted answer to question during this quiz
                     User user = userOpt.get();
                     Optional<Points> oldPointsOpt = pointsService.findByUserAndExercise(user, currentExercise);
@@ -166,7 +173,6 @@ public class CourseFacade {
                         }
                         pointsService.save(oldPoints);
                     } else {
-
                         //action if user answered this question for the first time
                         Points points = new Points(null, 0, currentExercise.getMaxScore(), user, currentExercise);
                         if (exercise.getUserAnswer() != null && exercise.getUserAnswer().equals(currentExercise.getAnswer())) {
@@ -221,7 +227,7 @@ public class CourseFacade {
             Optional<Exercise> next = exerciseService.findByQuizIdAndNumber(currentExercise.getQuiz().getId(), currentExercise.getNumber() + 1);
             if (next.isEmpty()) {
                 Optional<Quiz> quizOpt = quizService.findById(currentExercise.getQuiz().getId());
-                return quizOpt.map(quiz -> summary(model, quiz)).orElse("redirect:/classes");
+                return quizOpt.map(quiz -> "redirect:/redirect-summary?id=" + quiz.getId()).orElse("redirect:/classes");
             }
 
             userService.getUserFromSession()
@@ -243,12 +249,11 @@ public class CourseFacade {
             }
 
             Exercise currentExercise = exerciseOpt.get();
-
             Optional<Exercise> previous = exerciseService.findByQuizIdAndNumber(currentExercise.getQuiz().getId(), currentExercise.getNumber() - 1);
 
             if (previous.isEmpty()) {
                 Optional<Quiz> quizOpt = quizService.findById(currentExercise.getId());
-                return quizOpt.map(quiz -> summary(model, quiz)).orElse("redirect:/quizzes");
+                return quizOpt.map(quiz -> "redirect:/redirect-summary?id=" + quiz.getId()).orElse("redirect:/quizzes");
             }
 
             userService.getUserFromSession()
@@ -277,20 +282,28 @@ public class CourseFacade {
 
         model.addAttribute("booleans", booleans);
 
-        return "exercises/" + nextExercise.getType();
+        return "exercises/" + exercise.getType().getLabel();
     }
 
-    private String summary(Model model, Quiz quiz) {
+    public String redirectSummary(Long quizId) {
+        Optional<Quiz> quizOpt = quizService.findById(quizId);
+        if (quizOpt.isPresent()) {
+            return "redirect:/summary?quiz=" + quizId;
+        }
+        return "redirect:/classes";
+    }
 
+    public String summary(Model model, Long quizId) {
         Optional<User> user = userService.getUserFromSession();
         if (user.isPresent()) {
+            Optional<Quiz> quizOpt = quizService.findById(quizId);
+            if (quizOpt.isPresent()) {
+                List<PointsDto> points = getUserPoints(user.get(), quizId);
+                model.addAttribute("points", points);
+                model.addAttribute("quiz", mapper.map(quizOpt.get()));
 
-            List<PointsDto> points = getUserPoints(user.get(), quiz.getId());
-
-            model.addAttribute("points", points);
-            model.addAttribute("quiz", mapper.map(quiz));
-
-            return "course/summary";
+                return "course/summary";
+            }
         }
         return "redirect:/classes";
     }

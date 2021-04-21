@@ -69,7 +69,7 @@ public class DtoMapper {
                 if (classOpt.isEmpty()) {
                     log.error("QuizClass with id: " + quizDto.getId() + " not found");
                 } else {
-                    return new Quiz(quizDto.getId(), quizDto.getTitle(), exercises, quizDto.getMaxScore(), quizDto.getNumberInClass(), classOpt.get(), quizDto.getActive());
+                    return new Quiz(quizDto.getId(), quizDto.getTitle(), exercises, quizDto.getMaxScore(), quizDto.getNumberInClass(), classOpt.get(), quizDto.getActive(), quizDto.getRepeatable());
                 }
             }
         }
@@ -80,17 +80,18 @@ public class DtoMapper {
         Set<ExerciseDto> exercises = quiz.getExercises().stream()
                 .map(this::map)
                 .collect(Collectors.toSet());
-        return new QuizDto(quiz.getId(), quiz.getTitle(), exercises, quiz.getMaxScore(), quiz.getNumberInClass(), quiz.getQuizClass().getId(), quiz.getActive());
+        return new QuizDto(quiz.getId(), quiz.getTitle(), exercises, quiz.getMaxScore(), quiz.getNumberInClass(), quiz.getQuizClass().getId(), quiz.getActive(), quiz.getRepeatable());
     }
 
     public QuizWithScoreDto map(Quiz quiz, User user) {
         List<Score> scores = scoreService.getScores(user, quiz);
+        boolean repeatable = quiz.getRepeatable()!= null && quiz.getRepeatable();
         if (scores != null && !scores.isEmpty()) {
             Optional<Score> scoreOpt = scores.stream().max(Comparator.comparing(Score::getScore));
-            return scoreOpt.map(s -> new QuizWithScoreDto(quiz.getId(), quiz.getTitle(), quiz.getMaxScore(), s.getScore(), user.getUsername()))
-                    .orElse(new QuizWithScoreDto(quiz.getId(), quiz.getTitle(), quiz.getMaxScore(), 0, user.getUsername()));
+            return scoreOpt.map(s -> new QuizWithScoreDto(quiz.getId(), quiz.getTitle(), quiz.getMaxScore(), s.getScore(), user.getUsername(), repeatable, true))
+                    .orElse(new QuizWithScoreDto(quiz.getId(), quiz.getTitle(), quiz.getMaxScore(), 0, user.getUsername(), repeatable, true));
         }
-        return new QuizWithScoreDto(quiz.getId(), quiz.getTitle(), quiz.getMaxScore(), 0, user.getUsername());
+        return new QuizWithScoreDto(quiz.getId(), quiz.getTitle(), quiz.getMaxScore(), 0, user.getUsername(), true, false);
     }
 
     public Exercise map(ExerciseDto exerciseDto) {

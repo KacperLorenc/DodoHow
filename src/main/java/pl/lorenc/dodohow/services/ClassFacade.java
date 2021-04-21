@@ -43,15 +43,16 @@ public class ClassFacade {
             return classService.findById(classId).map(c -> {
 
                 QuizClassDto quizClassDto = mapper.map(c);
-                Set<UserDto> users = userService.findAllById(c.getStudents().stream().map(User::getId).collect(Collectors.toList()))
+                List<UserDto> users = userService.findAllById(c.getStudents().stream().map(User::getId).collect(Collectors.toList()))
                         .stream()
                         .map(mapper::map)
-                        .collect(Collectors.toSet());
+                        .sorted(Comparator.comparing(UserDto::getLogin))
+                        .collect(Collectors.toList());
 
-                UserSetDto userSetDto = new UserSetDto(users);
+                UserListDto userListDto = new UserListDto(users);
 
                 model.addAttribute("class", quizClassDto);
-                model.addAttribute("userSet", userSetDto);
+                model.addAttribute("userSet", userListDto);
 
                 return "teacher/users";
 
@@ -80,7 +81,6 @@ public class ClassFacade {
     }
 
     public String addUserToClass(Long classId, Long userId) {
-
         if (authenticateUser(classId)) {
             return userService.findByIdWithClasses(userId).map(user ->
                     classService.findById(classId).map(c -> {
@@ -98,7 +98,6 @@ public class ClassFacade {
     }
 
     public String getViewWithAllUsers(Long id, Model model) {
-
         if (authenticateUser(id)) {
             return classService.findById(id).map(c -> {
 
@@ -107,16 +106,17 @@ public class ClassFacade {
                         .map(User::getId)
                         .collect(Collectors.toList());
 
-                Set<UserDto> users = userService.findUsersBy(true, "ROLE_USER").stream()
+                List<UserDto> users = userService.findUsersBy(true, "ROLE_USER").stream()
                         .filter(u -> !ids.contains(u.getId()))
                         .map(mapper::map)
-                        .collect(Collectors.toSet());
+                        .sorted(Comparator.comparing(UserDto::getLogin))
+                        .collect(Collectors.toList());
 
                 SearchDto searchDto = new SearchDto();
                 searchDto.setClassId(c.getId());
 
                 model.addAttribute("search", searchDto);
-                model.addAttribute("userSet", new UserSetDto(users));
+                model.addAttribute("userSet", new UserListDto(users));
                 model.addAttribute("classId", id);
 
                 return "teacher/allUsers";
@@ -127,7 +127,6 @@ public class ClassFacade {
 
 
     public String searchForUsers(SearchDto searchDto, Model model) {
-
         Optional<QuizClass> quizClass = classService.findById(searchDto.getClassId());
 
         if (quizClass.isEmpty())
@@ -139,29 +138,29 @@ public class ClassFacade {
                 .map(User::getId)
                 .collect(Collectors.toList());
 
+        List<UserDto> t;
         if (searchDto.getUsername() != null && !searchDto.getUsername().trim().isEmpty()) {
-            Set<UserDto> t = userService.findUsersBy(true, "ROLE_USER", searchDto.getUsername().trim())
+            t = userService.findUsersBy(true, "ROLE_USER", searchDto.getUsername().trim())
                     .stream()
                     .filter(u -> !ids.contains(u.getId()))
                     .map(mapper::map)
-                    .collect(Collectors.toSet());
-            model.addAttribute("userSet", new UserSetDto(t));
+                    .sorted(Comparator.comparing(UserDto::getLogin))
+                    .collect(Collectors.toList());
         } else {
-            Set<UserDto> t = userService.findUsersBy(true, "ROLE_USER")
+            t = userService.findUsersBy(true, "ROLE_USER")
                     .stream()
                     .filter(u -> !ids.contains(u.getId()))
                     .map(mapper::map)
-                    .collect(Collectors.toSet());
-            model.addAttribute("userSet", new UserSetDto(t));
+                    .sorted(Comparator.comparing(UserDto::getLogin))
+                    .collect(Collectors.toList());
         }
+        model.addAttribute("userSet", new UserListDto(t));
 
         model.addAttribute("search", searchDto);
         return "teacher/allUsers";
     }
 
     public String getsScores(Long classId, Long userId, Model model) {
-
-
         if (authenticateUser(classId)) {
             return userService.findById(userId).map(u -> classService.findById(classId).map(c -> {
                 Set<Quiz> userQuizzes = quizService.findAllByClassId(classId);
@@ -184,8 +183,6 @@ public class ClassFacade {
     }
 
     public String removeUserFromClass(Long userId, Long classId) {
-
-
         Optional<QuizClass> quizClass = classService.findById(classId);
 
         if (quizClass.isPresent() && authenticateUser(classId)) {

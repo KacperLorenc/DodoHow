@@ -31,7 +31,6 @@ public class QuizFacade {
     }
 
     public String getScores(Long quizId, Model model) {
-
         return quizService.findById(quizId).map(quiz ->
                 classService.findById(quiz.getQuizClass().getId()).map(c -> {
                     if (authenticateUser(c.getId())) {

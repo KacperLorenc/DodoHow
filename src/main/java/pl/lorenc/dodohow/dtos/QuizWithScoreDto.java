@@ -15,4 +15,6 @@ public class QuizWithScoreDto {
     private Integer maxScore;
     private Integer userScore;
     private String username;
+    private boolean repeatable;
+    private boolean finished;
 }
