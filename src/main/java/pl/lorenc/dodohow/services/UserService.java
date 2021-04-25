@@ -88,11 +88,31 @@ public class UserService {
     }
 
     public Optional<User> findByIdWithClasses(Long id) {
-        return  userRepository.findByIdWithClasses(id);
+        return userRepository.findByIdWithClasses(id);
     }
+
+    /* ----- Ids not in ------ */
+
+    public Set<User> findUsersByIdsNotIn(boolean active, String role, String username, List<Long> idsNotIn) {
+        return userRepository.findAllByActiveAndRolesContainsAndUsernameContainingAndIdNotIn(active, role, username, idsNotIn);
+    }
+
+    public Set<User> findUsersByIdsNotIn(boolean active, String role, List<Long> idsNotIn) {
+        return userRepository.findAllByActiveAndRolesContainsAndIdNotIn(active, role, idsNotIn);
+    }
+
+    /* ----- Ids in ------ */
 
     public Set<User> findUsersBy(boolean active, String role, String username) {
         return userRepository.findAllByActiveAndRolesContainsAndUsernameContaining(active, role, username);
+    }
+
+    public Set<User> findUsersBy(boolean active, String role, String username, List<Long> ids) {
+        return userRepository.findAllByActiveAndRolesContainsAndUsernameContainingAndIdIn(active, role, username, ids);
+    }
+
+    public Set<User> findUsersBy(boolean active, String role, List<Long> ids) {
+        return userRepository.findAllByActiveAndRolesContainingAndIdIn(active, role, ids);
     }
 
     public Set<User> findInactiveTeachersByUsername(String username) {

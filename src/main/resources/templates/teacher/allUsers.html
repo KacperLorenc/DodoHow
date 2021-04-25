@@ -20,14 +20,14 @@
 </header>
 <div th:if="${!userSet?.getUsers()?.isEmpty()}" class="container d-flex align-items-center flex-column ">
     <form name="search" th:object="${search}" th:action="@{/classes/add-users/{id}(id=${search.getClassId()})}" method="post" class="w-100">
-        <div class="row p-1 mb-2 mt-2">
-            <div class="col-md-8 p-0">
+        <div class="row p-1 mb-2 mt-2 text-center">
+            <div class="col-md-8 p-0 text-right">
                 <input th:required="required" th:field="*{username}" type="text" name="username" id="username"
                        class="form-control"
                        placeholder="login">
             </div>
             <input type="hidden" th:field="*{classId}" name="classId" id="classId"/>
-            <div class="col-md-3 p-0 ml-1">
+            <div class="col-md-3 p-0 ml-1 text-left">
                 <input style="height: 42px;" class="btn btn-primary btn-thin" type="submit" value="Szukaj">
             </div>
         </div>

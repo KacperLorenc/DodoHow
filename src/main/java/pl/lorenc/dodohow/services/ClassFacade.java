@@ -38,11 +38,28 @@ public class ClassFacade {
         }).orElse("redirect:/login");
     }
 
+    public String findUser(SearchDto searchDto, Model model) {
+        if (authenticateUser(searchDto.getClassId())) {
+            return classService.findById(searchDto.getClassId()).map(c -> {
+                List<Long> ids = getIdsFromClass(searchDto.getClassId());
+
+                UserListDto userList = searchForUsersIdsIn(searchDto.getUsername(), ids);
+
+                model.addAttribute("userSet", userList);
+                model.addAttribute("search", searchDto);
+                model.addAttribute("class", mapper.map(c));
+
+                return "teacher/users";
+
+            }).orElse("redirect:/classes");
+        }
+        return "redirect:/classes";
+    }
+
     public String getUsers(Long classId, Model model) {
         if (authenticateUser(classId)) {
             return classService.findById(classId).map(c -> {
 
-                QuizClassDto quizClassDto = mapper.map(c);
                 List<UserDto> users = userService.findAllById(c.getStudents().stream().map(User::getId).collect(Collectors.toList()))
                         .stream()
                         .map(mapper::map)
@@ -51,7 +68,10 @@ public class ClassFacade {
 
                 UserListDto userListDto = new UserListDto(users);
 
-                model.addAttribute("class", quizClassDto);
+                SearchDto searchDto = new SearchDto();
+                searchDto.setClassId(classId);
+                model.addAttribute("class", mapper.map(c));
+                model.addAttribute("search", searchDto);
                 model.addAttribute("userSet", userListDto);
 
                 return "teacher/users";
@@ -97,6 +117,19 @@ public class ClassFacade {
         return "redirect:/classes";
     }
 
+    private List<Long> getIdsFromClass(Long classId) {
+        Optional<QuizClass> quizClass = classService.findById(classId);
+
+        if (quizClass.isEmpty())
+            return new ArrayList<>();
+
+        return quizClass.get()
+                .getStudents()
+                .stream()
+                .map(User::getId)
+                .collect(Collectors.toList());
+    }
+
     public String getViewWithAllUsers(Long id, Model model) {
         if (authenticateUser(id)) {
             return classService.findById(id).map(c -> {
@@ -106,7 +139,8 @@ public class ClassFacade {
                         .map(User::getId)
                         .collect(Collectors.toList());
 
-                List<UserDto> users = userService.findUsersBy(true, "ROLE_USER").stream()
+                List<UserDto> users = userService.findUsersBy(true, "ROLE_USER")
+                        .stream()
                         .filter(u -> !ids.contains(u.getId()))
                         .map(mapper::map)
                         .sorted(Comparator.comparing(UserDto::getLogin))
@@ -126,38 +160,19 @@ public class ClassFacade {
     }
 
 
-    public String searchForUsers(SearchDto searchDto, Model model) {
-        Optional<QuizClass> quizClass = classService.findById(searchDto.getClassId());
+    public String searchForUsersIdsNotIn(SearchDto searchDto, Model model) {
+        if (authenticateUser(searchDto.getClassId())) {
 
-        if (quizClass.isEmpty())
-            return "redirect:/classes";
+            return classService.findById(searchDto.getClassId()).map(c -> {
 
-        List<Long> ids = quizClass.get()
-                .getStudents()
-                .stream()
-                .map(User::getId)
-                .collect(Collectors.toList());
-
-        List<UserDto> t;
-        if (searchDto.getUsername() != null && !searchDto.getUsername().trim().isEmpty()) {
-            t = userService.findUsersBy(true, "ROLE_USER", searchDto.getUsername().trim())
-                    .stream()
-                    .filter(u -> !ids.contains(u.getId()))
-                    .map(mapper::map)
-                    .sorted(Comparator.comparing(UserDto::getLogin))
-                    .collect(Collectors.toList());
-        } else {
-            t = userService.findUsersBy(true, "ROLE_USER")
-                    .stream()
-                    .filter(u -> !ids.contains(u.getId()))
-                    .map(mapper::map)
-                    .sorted(Comparator.comparing(UserDto::getLogin))
-                    .collect(Collectors.toList());
+                List<Long> ids = getIdsFromClass(searchDto.getClassId());
+                UserListDto userListDto = searchForUsersIdsNotIn(searchDto.getUsername(), ids);
+                model.addAttribute("userSet", userListDto);
+                model.addAttribute("search", searchDto);
+                return "teacher/allUsers";
+            }).orElse("redirect:/classes");
         }
-        model.addAttribute("userSet", new UserListDto(t));
-
-        model.addAttribute("search", searchDto);
-        return "teacher/allUsers";
+        return "redirect:/classes";
     }
 
     public String getsScores(Long classId, Long userId, Model model) {
@@ -201,7 +216,6 @@ public class ClassFacade {
     }
 
     public String getClassQuizzes(Model model, Long classId) {
-
         if (authenticateUser(classId)) {
             return classService.findById(classId).map(c -> {
                 List<QuizDto> quizzes = quizService.findAllByClassId(classId).stream()
@@ -217,6 +231,47 @@ public class ClassFacade {
         }
         return "redirect:/classes";
     }
+
+    private UserListDto searchForUsersIdsNotIn(String username, List<Long> ids) {
+        List<UserDto> users;
+        if (username != null && !username.trim().isEmpty()) {
+            users = userService.findUsersBy(true, "ROLE_USER", username.trim())
+                    .stream()
+                    .filter(user -> !ids.contains(user.getId()))
+                    .map(mapper::map)
+                    .sorted(Comparator.comparing(UserDto::getLogin))
+                    .collect(Collectors.toList());
+        } else {
+            users = userService.findUsersBy(true, "ROLE_USER")
+                    .stream()
+                    .filter(user -> !ids.contains(user.getId()))
+                    .map(mapper::map)
+                    .sorted(Comparator.comparing(UserDto::getLogin))
+                    .collect(Collectors.toList());
+        }
+
+        return new UserListDto(users);
+    }
+
+    private UserListDto searchForUsersIdsIn(String username, List<Long> ids) {
+        List<UserDto> users;
+        if (username != null && !username.trim().isEmpty()) {
+            users = userService.findUsersBy(true, "ROLE_USER", username.trim(), ids)
+                    .stream()
+                    .map(mapper::map)
+                    .sorted(Comparator.comparing(UserDto::getLogin))
+                    .collect(Collectors.toList());
+        } else {
+            users = userService.findUsersBy(true, "ROLE_USER", ids)
+                    .stream()
+                    .map(mapper::map)
+                    .sorted(Comparator.comparing(UserDto::getLogin))
+                    .collect(Collectors.toList());
+        }
+
+        return new UserListDto(users);
+    }
+
 
     private boolean authenticateUser(Long classId) {
         Optional<QuizClass> quizClass = classService.findById(classId);

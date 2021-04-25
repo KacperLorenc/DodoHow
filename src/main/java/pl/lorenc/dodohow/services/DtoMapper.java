@@ -118,7 +118,7 @@ public class DtoMapper {
         if (user.isPresent()) {
             Optional<Quiz> quiz = quizService.findById(scoreDto.getQuizId());
             if (quiz.isPresent()) {
-                return new Score(scoreDto.getId(), user.get(), quiz.get(), scoreDto.getScore());
+                return new Score(scoreDto.getId(), user.get(), quiz.get(), scoreDto.getScore(), scoreDto.isQuizFinished());
             } else {
                 log.error("Quiz with id: " + scoreDto.getQuizId() + " doesn't exist!");
             }
@@ -129,7 +129,8 @@ public class DtoMapper {
     }
 
     public ScoreDto map(Score score) {
-        return new ScoreDto(score.getId(), score.getUser().getId(), score.getQuiz().getId(), score.getScore());
+        boolean quizFinished = score.getQuizFinished() != null && score.getQuizFinished();
+        return new ScoreDto(score.getId(), score.getUser().getId(), score.getQuiz().getId(), score.getScore(), quizFinished);
     }
 
     public UserQuizDto mapToQuiz(User user, Long quizId) {

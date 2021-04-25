@@ -14,12 +14,12 @@
                 <div>.</div>
             </div>
             <div class="col-md-5 text-left" style="padding: 0;">
-                <a th:href="@{/exercise?id={exerciseId}(exerciseId=${point?.exerciseId})}">
+                <a th:href="@{/exercise?number={exerciseId}(exerciseId=${point?.exerciseId})}">
                     <img style="width: 50%; height: auto " th:if="${!point?.skipped}"
                          src="../../assets/images/maybe-ok.png"
                          alt="Visited"/>
                 </a>
-                <a th:href="@{/exercise?id={exerciseId}(exerciseId=${point?.exerciseId})}">
+                <a th:href="@{/exercise?number={exerciseId}(exerciseId=${point?.exerciseId})}">
                     <img style="width: 50%; height: auto" th:if="${point?.skipped}"
                          src="../../assets/images/cancel-64.png"
                          alt="Not visited"/>

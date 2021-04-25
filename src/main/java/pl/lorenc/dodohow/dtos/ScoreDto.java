@@ -14,4 +14,5 @@ public class ScoreDto {
     private Long userId;
     private Long quizId;
     private Integer score;
+    private boolean quizFinished;
 }

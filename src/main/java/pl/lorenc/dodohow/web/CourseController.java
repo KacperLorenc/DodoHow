@@ -58,7 +58,7 @@ public class CourseController {
     }
 
     @GetMapping("/exercise")
-    public String getExercise(@RequestParam Long id, Model model) {
+    public String getExercise(@RequestParam(name = "number") Long id, Model model) {
         try {
             return courseFacade.getExercise(id, model);
         } catch (Exception e) {
@@ -68,9 +68,9 @@ public class CourseController {
     }
 
     @GetMapping("/next-exercise")
-    public String getNextExercise(@RequestParam Long id, Model model) {
+    public String getNextExercise(@RequestParam Long id) {
         try {
-            return courseFacade.getNextExercise(id, model);
+            return courseFacade.getNextExercise(id);
         } catch (Exception e) {
             e.printStackTrace();
             return "redirect:/";
@@ -78,9 +78,9 @@ public class CourseController {
     }
 
     @GetMapping("/previous-exercise")
-    public String getPreviousExercise(@RequestParam Long id, Model model) {
+    public String getPreviousExercise(@RequestParam Long id) {
         try {
-            return courseFacade.getPreviousExercise(id, model);
+            return courseFacade.getPreviousExercise(id);
         } catch (Exception e) {
             e.printStackTrace();
             return "redirect:/";

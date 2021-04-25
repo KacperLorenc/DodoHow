@@ -43,6 +43,17 @@ public class ClassControler {
         }
     }
 
+    @PostMapping("/classes/users/{id}")
+    public String searchUsers(@ModelAttribute("search") SearchDto searchDto, @PathVariable Long id, Model model) {
+        try {
+            return classFacade.findUser(searchDto, model);
+
+        }catch (Exception e) {
+            e.printStackTrace();
+            return "redirect:/classes";
+        }
+    }
+
     @GetMapping("/new-class")
     public String newClass(Model model) {
         try {
@@ -94,7 +105,7 @@ public class ClassControler {
     public String searchForUsers(@ModelAttribute("search") SearchDto searchDto, @PathVariable Long classId, Model model) {
 
         try {
-            return classFacade.searchForUsers(searchDto, model);
+            return classFacade.searchForUsersIdsNotIn(searchDto, model);
         } catch (Exception e) {
             e.printStackTrace();
             return "redirect:/classes";

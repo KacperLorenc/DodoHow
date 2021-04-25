@@ -24,12 +24,14 @@ public class Score {
     private Quiz quiz;
     private Integer score;
     private LocalDateTime dateTime;
+    private Boolean quizFinished;
 
-    public Score(Long id, User user, Quiz quiz, Integer score) {
+    public Score(Long id, User user, Quiz quiz, Integer score, boolean quizFinished) {
         this.id = id;
         this.user = user;
         this.quiz = quiz;
         this.score = score;
         this.dateTime = LocalDateTime.now();
+        this.quizFinished = quizFinished;
     }
 }

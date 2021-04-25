@@ -9,6 +9,7 @@ import pl.lorenc.dodohow.entities.QuizClass;
 import pl.lorenc.dodohow.entities.User;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -25,7 +26,15 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
     Set<User> findAllByActiveAndRolesContainsAndUsernameContaining(boolean active, String role, String username);
 
+    Set<User> findAllByActiveAndRolesContainsAndUsernameContainingAndIdNotIn(boolean active, String role, String username, List<Long> ids);
+
+    Set<User> findAllByActiveAndRolesContainsAndUsernameContainingAndIdIn(boolean active, String role, String username, List<Long> ids);
+
+    Set<User> findAllByActiveAndRolesContainingAndIdIn(boolean active, String role, List<Long> ids);
+
     Set<User> findAllByActiveAndRolesContains(boolean active, String role);
+
+    Set<User> findAllByActiveAndRolesContainsAndIdNotIn(boolean active, String role, List<Long> ids);
 
     Set<User> findAllByClassesContaining(QuizClass quizClass);
 

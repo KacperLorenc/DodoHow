@@ -96,7 +96,7 @@ public class CourseFacade {
             Optional<User> userOpt = userService.getUserFromSession();
 
             return userOpt.map(user -> {
-                ScoreDto scoreDto = new ScoreDto(null, user.getId(), id, 0);
+                ScoreDto scoreDto = new ScoreDto(null, user.getId(), id, 0, false);
                 Optional<Quiz> quizOpt = quizService.findById(id);
                 if (quizOpt.isPresent()) {
 
@@ -195,18 +195,23 @@ public class CourseFacade {
         }
     }
 
-    public String getExercise(Long id, Model model) {
+    public String getExercise(Long exerciseId, Model model) {
         try {
-            Optional<Exercise> exerciseOpt = exerciseService.findById(id);
+            Optional<Exercise> exerciseOpt = exerciseService.findById(exerciseId);
 
             if (exerciseOpt.isEmpty()) {
                 return "redirect:/classes";
             }
 
-            userService.getUserFromSession()
-                    .ifPresent(u -> model.addAttribute("map", getUserPoints(u, exerciseOpt.get().getQuiz().getId())));
+            return userService.getUserFromSession()
+                    .map(u -> {
+                        Long quizId = exerciseOpt.get().getQuiz().getId();
+                        if (quizFinished(u, quizId))
+                            return "redirect:/classes";
 
-            return getExerciseTemplate(model, exerciseOpt.get());
+                        model.addAttribute("map", getUserPoints(u, exerciseOpt.get().getQuiz().getId()));
+                        return getExerciseTemplate(model, exerciseOpt.get());
+                    }).orElse("redirect:/classes");
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -215,7 +220,7 @@ public class CourseFacade {
     }
 
 
-    public String getNextExercise(Long id, Model model) {
+    public String getNextExercise(Long id) {
         try {
             Optional<Exercise> exerciseOpt = exerciseService.findById(id);
 
@@ -227,20 +232,24 @@ public class CourseFacade {
             Optional<Exercise> next = exerciseService.findByQuizIdAndNumber(currentExercise.getQuiz().getId(), currentExercise.getNumber() + 1);
             if (next.isEmpty()) {
                 Optional<Quiz> quizOpt = quizService.findById(currentExercise.getQuiz().getId());
-                return quizOpt.map(quiz -> "redirect:/redirect-summary?id=" + quiz.getId()).orElse("redirect:/classes");
+                return quizOpt.map(quiz -> {
+                    userService.getUserFromSession().flatMap(u -> scoreService.findScore(u, quiz))
+                            .ifPresent(s -> {
+                                s.setQuizFinished(true);
+                                scoreService.saveScore(s);
+                            });
+                    return "redirect:/redirect-summary?id=" + quiz.getId();
+                }).orElse("redirect:/classes");
             }
 
-            userService.getUserFromSession()
-                    .ifPresent(u -> model.addAttribute("map", getUserPoints(u, next.get().getQuiz().getId())));
-
-            return getExerciseTemplate(model, next.get());
+            return "redirect:/exercise?number=" + next.get().getId();
         } catch (Exception e) {
             e.printStackTrace();
             return "redirect:/classes";
         }
     }
 
-    public String getPreviousExercise(Long id, Model model) {
+    public String getPreviousExercise(Long id) {
         try {
             Optional<Exercise> exerciseOpt = exerciseService.findById(id);
 
@@ -253,13 +262,17 @@ public class CourseFacade {
 
             if (previous.isEmpty()) {
                 Optional<Quiz> quizOpt = quizService.findById(currentExercise.getId());
-                return quizOpt.map(quiz -> "redirect:/redirect-summary?id=" + quiz.getId()).orElse("redirect:/quizzes");
+                return quizOpt.map(quiz -> {
+                    userService.getUserFromSession().flatMap(u -> scoreService.findScore(u, quiz))
+                            .ifPresent(s -> {
+                                s.setQuizFinished(true);
+                                scoreService.saveScore(s);
+                            });
+                    return "redirect:/redirect-summary?id=" + quiz.getId();
+                }).orElse("redirect:/quizzes");
             }
 
-            userService.getUserFromSession()
-                    .ifPresent(u -> model.addAttribute("map", getUserPoints(u, previous.get().getQuiz().getId())));
-
-            return getExerciseTemplate(model, previous.get());
+            return "redirect:/exercise?number=" + previous.get().getId();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -327,6 +340,18 @@ public class CourseFacade {
         points.sort(Comparator.comparing(PointsDto::getExerciseNumber));
 
         return points;
+    }
+
+    private boolean quizFinished(User user, Long quizId) {
+        Optional<Quiz> quizOpt = quizService.findById(quizId);
+        if (quizOpt.isEmpty())
+            return true;
+
+        return quizOpt.map(quiz ->
+                scoreService.findScore(user, quiz)
+                        .map(score -> score.getQuizFinished() != null && score.getQuizFinished())
+                        .orElse(true)
+        ).orElse(true);
     }
 
 }
