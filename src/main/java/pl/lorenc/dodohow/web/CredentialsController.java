@@ -1,5 +1,6 @@
 package pl.lorenc.dodohow.web;
 
+import com.google.common.collect.Sets;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Controller;
@@ -11,6 +12,7 @@ import pl.lorenc.dodohow.dtos.UserListDto;
 import pl.lorenc.dodohow.entities.User;
 import pl.lorenc.dodohow.security.OnRegistrationCompleteEvent;
 import pl.lorenc.dodohow.security.VerificationToken;
+import pl.lorenc.dodohow.services.ClassService;
 import pl.lorenc.dodohow.services.DtoMapper;
 import pl.lorenc.dodohow.services.UserService;
 
@@ -26,12 +28,14 @@ import java.util.stream.Collectors;
 public class CredentialsController {
 
     private UserService userService;
+    private ClassService classService;
     private ApplicationEventPublisher eventPublisher;
     private DtoMapper mapper;
 
     @Autowired
-    public CredentialsController(UserService userService, ApplicationEventPublisher eventPublisher, DtoMapper mapper) {
+    public CredentialsController(UserService userService, ClassService classService, ApplicationEventPublisher eventPublisher, DtoMapper mapper) {
         this.userService = userService;
+        this.classService = classService;
         this.eventPublisher = eventPublisher;
         this.mapper = mapper;
     }
@@ -89,6 +93,13 @@ public class CredentialsController {
         }
 
         user.setActive(true);
+
+        classService.findById(1L).ifPresent(dodohow -> {
+            dodohow.getStudents().add(user);
+            user.setClasses(Sets.newHashSet(dodohow));
+            classService.save(dodohow);
+        });
+
         userService.saveRegisteredUser(user);
         return "redirect:/login";
     }
