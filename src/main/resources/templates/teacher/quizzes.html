@@ -33,7 +33,7 @@
             </a>
         </div>
         <div class="col-md-6 text-left">
-            <a th:href="@{/new-quizz}">
+            <a th:href="@{/classes/new-quiz?class={id}(id=${class?.getId()})}">
                 <button class="btn btn-success btn-xl " style="width: 14rem;">Stwórz quiz</button>
             </a>
         </div>
@@ -48,7 +48,7 @@
             </a>
         </div>
         <div class="col-md-6 text-left">
-            <a th:href="@{/new-class}">
+            <a th:href="@{/classes/new-quiz?class={id}(id=${class?.getId()})}">
                 <button class="btn btn-success btn-xl " style="width: 14rem;">Stwórz quiz</button>
             </a>
         </div>

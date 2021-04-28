@@ -16,4 +16,6 @@ public interface ClassRepository extends CrudRepository<QuizClass, Long> {
 
     Set<QuizClass> findAllByIdIn(Collection<Long> ids);
 
+    boolean existsByTitle(String title);
+
 }

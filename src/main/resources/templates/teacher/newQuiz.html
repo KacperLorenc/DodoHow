@@ -9,7 +9,7 @@
             <img class="masthead-avatar mb-5" src="../../assets/img/avataaars.png" alt=""/>
         </a>
 
-        <h1 class="masthead-heading text-uppercase mb-0">Nowa klasa</h1>
+        <h1 class="masthead-heading text-uppercase mb-0">Nowy quiz</h1>
 
         <div class="divider-custom divider-light">
             <div class="divider-custom-line"></div>
@@ -19,7 +19,7 @@
     </div>
 </header>
 <div class="container d-flex pt-4 pb-4" style="justify-content: center">
-    <form th:object="${class}" th:action="@{/classes}" method="post" class="w-50">
+    <form th:object="${quiz}" th:action="@{/classes/new-quiz?class={id}(id=${classId})}" method="post" class="w-50">
         <div class="form-group">
             <label for="title">Tytuł</label>
             <input th:field="*{title}" th:required="required" type="text" name="title" id="title"
@@ -31,21 +31,26 @@
                   th:errors="*{title}">Title error</span>
         </div>
         <div class="form-group">
-            <label for="description">Opis</label>
-            <input th:field="*{description}" th:required="required" type="text" name="description"
-                   id="description"
+            <label for="numberInClass">Numer w klasie</label>
+            <input th:field="*{numberInClass}" th:required="required" type="number" name="numberInClass"
+                   id="numberInClass"
                    class="form-control"
-                   placeholder="krótki opis"
+                   placeholder="lp"
                    autocomplete="off">
             <span class="validationError text-danger"
-                  th:if="${#fields.hasErrors('description')}"
-                  th:errors="*{description}">Title error</span>
+                  th:if="${#fields.hasErrors('numberInClass')}"
+                  th:errors="*{numberInClass}">Number in class error</span>
         </div>
-        <input class="btn btn-primary btn-thin" type="submit" value="Dodaj klasę">
+        <input th:type="hidden" id="classId" name="classId" th:field="*{classId}">
+        <div class="form-check">
+            <input th:field="*{repeatable}" type="checkbox" class="form-check-input" id="repeatable" name="repeatable">
+            <label class="repeatable" for="repeatable">Quiz powtarzalny</label>
+        </div>
+        <input class="btn btn-primary btn-thin" type="submit" value="Dodaj quiz">
     </form>
 </div>
 <div class="container d-flex mt-4 mb-4" style="justify-content: center">
-    <a th:href="@{/classes}">
+    <a th:href="@{/classes/quizzes?class={id}(id=${classId})}">
         <button class="btn btn-danger btn-thin">Powrót</button>
     </a>
 </div>

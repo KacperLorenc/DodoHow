@@ -21,10 +21,10 @@ public class QuizClassDto {
     private Set<Long> quizList;
     @NotNull(message = "*Pole musi być uzupełnione")
     @NotEmpty(message = "*Pole musi być uzupełnione")
-    @Size(min = 5, max = 100, message = "Pole musi mieć od 5 do 100 znaków")
+    @Size(min = 5, max = 100, message = "*Pole musi mieć od 5 do 100 znaków")
     private String title;
     @NotNull(message = "*Pole musi być uzupełnione")
     @NotEmpty(message = "*Pole musi być uzupełnione")
-    @Size(min = 5, max = 100, message = "Pole musi mieć od 5 do 100 znaków")
+    @Size(min = 5, max = 100, message = "*Pole musi mieć od 5 do 100 znaków")
     private String description;
 }

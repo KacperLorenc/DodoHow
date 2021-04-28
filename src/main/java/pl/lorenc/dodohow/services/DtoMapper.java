@@ -58,34 +58,50 @@ public class DtoMapper {
     }
 
     public Quiz map(QuizDto quizDto) {
+
+        Set<Exercise> exercises;
+
         if (quizDto.getExercises() == null || quizDto.getExercises().isEmpty()) {
-            log.error("Quiz: " + quizDto.getTitle() + " with id: " + quizDto.getId() + " has empty list of exercises");
+            exercises = new HashSet<>();
         } else {
-            Set<Exercise> exercises = exerciseRepository.findAllByIdIn(quizDto.getExercises().stream().map(ExerciseDto::getId).collect(Collectors.toSet()));
-            if (exercises == null || exercises.isEmpty()) {
-                log.error("Quiz: " + quizDto.getTitle() + " with id: " + quizDto.getId() + " has empty list of exercises");
-            } else {
-                Optional<QuizClass> classOpt = classRepository.findById(quizDto.getClassId());
-                if (classOpt.isEmpty()) {
-                    log.error("QuizClass with id: " + quizDto.getId() + " not found");
-                } else {
-                    return new Quiz(quizDto.getId(), quizDto.getTitle(), exercises, quizDto.getMaxScore(), quizDto.getNumberInClass(), classOpt.get(), quizDto.getActive(), quizDto.getRepeatable());
-                }
-            }
+            exercises = exerciseRepository.findAllByIdIn(quizDto.getExercises().stream().map(ExerciseDto::getId).collect(Collectors.toSet()));
         }
-        return null;
+
+        Optional<QuizClass> classOpt = classRepository.findById(quizDto.getClassId());
+        return Quiz.builder().id(quizDto.getId())
+                .title(quizDto.getTitle())
+                .exercises(exercises)
+                .maxScore(quizDto.getMaxScore())
+                .numberInClass(quizDto.getNumberInClass())
+                .quizClass(classOpt.orElse(null))
+                .active(quizDto.getActive())
+                .build();
     }
 
     public QuizDto map(Quiz quiz) {
-        Set<ExerciseDto> exercises = quiz.getExercises().stream()
-                .map(this::map)
-                .collect(Collectors.toSet());
-        return new QuizDto(quiz.getId(), quiz.getTitle(), exercises, quiz.getMaxScore(), quiz.getNumberInClass(), quiz.getQuizClass().getId(), quiz.getActive(), quiz.getRepeatable());
+        Set<ExerciseDto> exercises;
+
+        if (quiz.getExercises() == null || quiz.getExercises().isEmpty())
+            exercises = new HashSet<>();
+
+        else
+            exercises = quiz.getExercises().stream()
+                    .map(this::map)
+                    .collect(Collectors.toSet());
+
+        return QuizDto.builder().id(quiz.getId())
+                .title(quiz.getTitle())
+                .exercises(exercises)
+                .maxScore(quiz.getMaxScore())
+                .numberInClass(quiz.getNumberInClass())
+                .classId(quiz.getQuizClass() == null ? null : quiz.getQuizClass().getId())
+                .active(quiz.getActive())
+                .build();
     }
 
     public QuizWithScoreDto map(Quiz quiz, User user) {
         List<Score> scores = scoreService.getScores(user, quiz);
-        boolean repeatable = quiz.getRepeatable()!= null && quiz.getRepeatable();
+        boolean repeatable = quiz.getRepeatable() != null && quiz.getRepeatable();
         if (scores != null && !scores.isEmpty()) {
             Optional<Score> scoreOpt = scores.stream().max(Comparator.comparing(Score::getScore));
             return scoreOpt.map(s -> new QuizWithScoreDto(quiz.getId(), quiz.getTitle(), quiz.getMaxScore(), s.getScore(), user.getUsername(), repeatable, true))

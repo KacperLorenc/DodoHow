@@ -3,6 +3,7 @@ package pl.lorenc.dodohow.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
+import pl.lorenc.dodohow.dtos.QuizDto;
 import pl.lorenc.dodohow.dtos.QuizWithScoreDto;
 import pl.lorenc.dodohow.entities.Quiz;
 import pl.lorenc.dodohow.entities.QuizClass;
@@ -69,6 +70,27 @@ public class QuizFacade {
         quizService.save(quiz);
 
         return "redirect:/classes/quizzes?class=" + quiz.getQuizClass().getId();
+    }
+
+    public String newQuiz(Long classId, Model model) {
+        if (!authenticateUser(classId))
+            return "redirect:/classes";
+        QuizDto quizDto = new QuizDto();
+        quizDto.setClassId(classId);
+        model.addAttribute("quiz", quizDto);
+        model.addAttribute("classId", classId);
+
+        return "teacher/newQuiz";
+    }
+
+    public String addQuiz(QuizDto quizDto, Long classId) {
+        if (!authenticateUser(classId) || quizDto.getClassId() == null || !authenticateUser(quizDto.getClassId()))
+            return "redirect:/classes";
+        quizDto.setClassId(classId);
+        quizDto.setActive(false);
+        Quiz quiz = mapper.map(quizDto);
+        quizService.save(quiz);
+        return "redirect:/classes/quizzes?class=" + classId;
     }
 
     private boolean authenticateUser(Long classId) {
