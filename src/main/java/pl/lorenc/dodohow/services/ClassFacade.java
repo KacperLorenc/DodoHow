@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import pl.lorenc.dodohow.dtos.*;
+import pl.lorenc.dodohow.entities.Exercise;
 import pl.lorenc.dodohow.entities.Quiz;
 import pl.lorenc.dodohow.entities.QuizClass;
 import pl.lorenc.dodohow.entities.User;
@@ -18,13 +19,15 @@ public class ClassFacade {
     private final UserService userService;
     private final ClassService classService;
     private final QuizService quizService;
+    private final ExerciseService exerciseService;
     private final DtoMapper mapper;
 
     @Autowired
-    public ClassFacade(UserService userService, ClassService classService, QuizService quizService, DtoMapper mapper) {
+    public ClassFacade(UserService userService, ClassService classService, QuizService quizService, ExerciseService exerciseService, DtoMapper mapper) {
         this.userService = userService;
         this.classService = classService;
         this.quizService = quizService;
+        this.exerciseService = exerciseService;
         this.mapper = mapper;
     }
 
@@ -133,7 +136,6 @@ public class ClassFacade {
     public String getViewWithAllUsers(Long id, Model model) {
         if (authenticateUser(id)) {
             return classService.findById(id).map(c -> {
-
                 List<Long> ids = c.getStudents()
                         .stream()
                         .map(User::getId)
@@ -162,9 +164,7 @@ public class ClassFacade {
 
     public String searchForUsersIdsNotIn(SearchDto searchDto, Model model) {
         if (authenticateUser(searchDto.getClassId())) {
-
             return classService.findById(searchDto.getClassId()).map(c -> {
-
                 List<Long> ids = getIdsFromClass(searchDto.getClassId());
                 UserListDto userListDto = searchForUsersIdsNotIn(searchDto.getUsername(), ids);
                 model.addAttribute("userSet", userListDto);
@@ -228,6 +228,28 @@ public class ClassFacade {
                 return "teacher/quizzes";
 
             }).orElse("redirect:/classes");
+        }
+        return "redirect:/classes";
+    }
+
+    public String getExercises(Model model, Long quizId) {
+        Optional<Quiz> quizOpt = quizService.findById(quizId);
+        if (quizOpt.isEmpty())
+            return "redirect:/classes";
+        Quiz quiz = quizOpt.get();
+        if (authenticateUser(quiz.getQuizClass().getId())) {
+            List<ExerciseDto> exercises = exerciseService.findAllBy(quizId)
+                    .stream()
+                    .map(mapper::map)
+                    .sorted(Comparator.comparing(ExerciseDto::getNumber))
+                    .collect(Collectors.toList());
+
+            classService.findById(quiz.getQuizClass().getId())
+                    .ifPresent(c -> model.addAttribute("class", mapper.map(c)));
+            model.addAttribute("exercises", exercises);
+            model.addAttribute("quiz", mapper.map(quiz));
+
+            return "teacher/exercises";
         }
         return "redirect:/classes";
     }

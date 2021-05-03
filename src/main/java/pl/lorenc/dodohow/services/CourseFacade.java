@@ -4,16 +4,10 @@ import com.google.common.collect.Lists;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
-import pl.lorenc.dodohow.dtos.ExerciseDto;
-import pl.lorenc.dodohow.dtos.ExerciseRefferenceDto;
-import pl.lorenc.dodohow.dtos.PointsDto;
-import pl.lorenc.dodohow.dtos.ScoreDto;
+import pl.lorenc.dodohow.dtos.*;
 import pl.lorenc.dodohow.entities.*;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -295,7 +289,7 @@ public class CourseFacade {
 
         model.addAttribute("booleans", booleans);
 
-        return "exercises/" + exercise.getType().getLabel();
+        return "exercises/" + exercise.getType().getName();
     }
 
     public String redirectSummary(Long quizId) {
@@ -320,6 +314,142 @@ public class CourseFacade {
         }
         return "redirect:/classes";
     }
+
+    public String newExercise(String exerciseType, Long quizId, Model model) {
+        Optional<Quiz> quizOpt = quizService.findById(quizId);
+        if (quizOpt.isEmpty())
+            return "redirect:/classes";
+        if (!ExerciseType.getAllNames().contains(exerciseType))
+            return "redirect:/classes";
+        Quiz quiz = quizOpt.get();
+        if (authenticateUser(quiz.getQuizClass().getId())) {
+
+            model.addAttribute("quizId", quizId);
+            model.addAttribute("type", exerciseType);
+            model.addAttribute("exercise", new ExerciseDto());
+
+            return "exercises/" + exerciseType + "form";
+        }
+        return "redirect:/classes";
+    }
+
+    public String chooseExerciseType(ExerciseTypeDto exerciseType) {
+        Optional<Quiz> quizOpt = quizService.findById(exerciseType.getQuizId());
+        if (quizOpt.isEmpty())
+            return "redirect:/classes";
+        Quiz quiz = quizOpt.get();
+        if (authenticateUser(quiz.getQuizClass().getId())) {
+
+            Optional<ExerciseType> typeOpt = ExerciseType.findByLabel(exerciseType.getType());
+            return typeOpt
+                    .map(type -> "redirect:/exercises/new-exercise?type=" + type.getName() + "&quiz=" + exerciseType.getQuizId())
+                    .orElse("redirect:/classes");
+        }
+        return "redirect:/classes";
+    }
+
+    public String chooseType(Long quizId, Model model) {
+        Optional<Quiz> quizOpt = quizService.findById(quizId);
+        if (quizOpt.isEmpty())
+            return "redirect:/classes";
+        Quiz quiz = quizOpt.get();
+        if (authenticateUser(quiz.getQuizClass().getId())) {
+            ExerciseTypeDto exerciseType = new ExerciseTypeDto();
+            exerciseType.setQuizId(quizId);
+            model.addAttribute("typeobject", exerciseType);
+            model.addAttribute("quizId", quizId);
+            return "exercises/chooseexercisetype";
+        }
+        return "redirect:/classes";
+    }
+
+    public String addExerciseTranslateWord(ExerciseDto exerciseDto, Long quizId) {
+        Optional<Quiz> quizOpt = quizService.findById(quizId);
+        if (quizOpt.isEmpty())
+            return "redirect:/classes";
+        Exercise exercise = mapper.map(exerciseDto);
+        exercise.setType(ExerciseType.TRANSLATE_WORD);
+
+        return addExercise(exercise, quizOpt.get());
+    }
+
+    public String addExerciseTypeIn(ExerciseDto exerciseDto, Long quizId) {
+        Optional<Quiz> quizOpt = quizService.findById(quizId);
+        if (quizOpt.isEmpty())
+            return "redirect:/classes";
+        Exercise exercise = mapper.map(exerciseDto);
+        exercise.setType(ExerciseType.TYPE_SENTENCE);
+
+        return addExercise(exercise, quizOpt.get());
+    }
+
+    public String addExerciseFillBlank(ExerciseDto exerciseDto, Long quizId) {
+        Optional<Quiz> quizOpt = quizService.findById(quizId);
+        if (quizOpt.isEmpty())
+            return "redirect:/classes";
+        Exercise exercise = mapper.map(exerciseDto);
+        exercise.setType(ExerciseType.FILL_THE_BLANK);
+
+        return addExercise(exercise, quizOpt.get());
+    }
+
+    public String addExerciseChooseAnswer(ExerciseDto exerciseDto, Long quizId) {
+        Optional<Quiz> quizOpt = quizService.findById(quizId);
+        if (quizOpt.isEmpty())
+            return "redirect:/classes";
+        Exercise exercise = mapper.map(exerciseDto);
+        exercise.setType(ExerciseType.CHOOSE_ANSWER);
+
+        return addExercise(exercise, quizOpt.get());
+    }
+
+    public String addExerciseTrueFalse(ExerciseDto exerciseDto, Long quizId) {
+        Optional<Quiz> quizOpt = quizService.findById(quizId);
+        if (quizOpt.isEmpty())
+            return "redirect:/classes";
+        Exercise exercise = mapper.map(exerciseDto);
+        exercise.setType(ExerciseType.TRUTH_FALSE);
+
+        return addExercise(exercise, quizOpt.get());
+    }
+
+    private String addExercise(Exercise exercise, Quiz quiz) {
+
+        if (!authenticateUser(quiz.getQuizClass().getId()))
+            return "redirect:/classes";
+
+        List<Exercise> quizExercises = exerciseService.findAllBy(quiz.getId());
+
+        if (quizExercises == null || quizExercises.isEmpty()) {
+            quiz.setExercises(new HashSet<>());
+            exercise.setNumber(1);
+        } else {
+            int number = quizExercises.stream()
+                    .map(Exercise::getNumber)
+                    .max(Integer::compareTo)
+                    .orElse(0);
+            exercise.setNumber(number + 1);
+        }
+
+        if (quiz.getMaxScore() == null)
+            quiz.setMaxScore(0);
+
+        StringBuilder builder = new StringBuilder();
+        String answers = exercise.getWrongAnswers();
+        builder.append(answers);
+        if (answers.charAt(answers.length() - 1) != ';')
+            builder.append(";");
+        builder.append(exercise.getAnswer());
+        exercise.setWrongAnswers(builder.toString());
+
+        quiz.setMaxScore(quiz.getMaxScore() + exercise.getMaxScore());
+        quiz.getExercises().add(exercise);
+        exercise.setQuiz(quiz);
+        quizService.save(quiz);
+
+        return "redirect:/classes/exercises?quiz=" + quiz.getId();
+    }
+
 
     private List<PointsDto> getUserPoints(User user, Long quizId) {
         List<Exercise> exercises = exerciseService.findAllBy(quizId);
@@ -352,6 +482,19 @@ public class CourseFacade {
                         .map(score -> score.getQuizFinished() != null && score.getQuizFinished())
                         .orElse(true)
         ).orElse(true);
+    }
+
+    private boolean authenticateUser(Long classId) {
+        Optional<QuizClass> quizClass = classService.findById(classId);
+        if (quizClass.isPresent()) {
+            Optional<User> teacherOpt = userService.getUserFromSession();
+            if (teacherOpt.isPresent()) {
+                QuizClass c = quizClass.get();
+                User teacher = teacherOpt.get();
+                return c.getTeacherId().equals(teacher.getId());
+            }
+        }
+        return false;
     }
 
 }

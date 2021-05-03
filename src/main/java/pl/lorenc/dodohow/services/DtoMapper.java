@@ -111,18 +111,17 @@ public class DtoMapper {
     }
 
     public Exercise map(ExerciseDto exerciseDto) {
-        Optional<ExerciseType> exerciseTypeOptional = ExerciseType.findByLabel(exerciseDto.getType());
-        if (exerciseTypeOptional.isPresent()) {
-            Optional<Quiz> quizOptional = quizService.findById(exerciseDto.getQuizId());
-            if (quizOptional.isPresent()) {
-                return new Exercise(exerciseDto.getId(), exerciseDto.getMaxScore(), exerciseDto.getQuestion(), exerciseDto.getAnswer(), exerciseDto.getWrongAnswers(), quizOptional.get(), exerciseTypeOptional.get(), exerciseDto.getNumber());
-            } else {
-                log.error("Quiz with id: " + exerciseDto.getQuizId() + " doesn't exist!");
-            }
-        } else {
-            log.error("Exercise type: " + exerciseDto.getType() + " doesn't exist!");
-        }
-        return null;
+        Optional<ExerciseType> typeOpt;
+        if (exerciseDto.getType() != null)
+            typeOpt = ExerciseType.findByName(exerciseDto.getType());
+        else
+            typeOpt = Optional.empty();
+        Optional<Quiz> quizOpt;
+        if (exerciseDto.getQuizId() != null)
+            quizOpt = quizService.findById(exerciseDto.getQuizId());
+        else
+            quizOpt = Optional.empty();
+        return new Exercise(exerciseDto.getId(), exerciseDto.getMaxScore(), exerciseDto.getQuestion(), exerciseDto.getAnswer(), exerciseDto.getWrongAnswers(), quizOpt.orElse(null), typeOpt.orElse(null), exerciseDto.getNumber());
     }
 
     public ExerciseDto map(Exercise exercise) {

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:insert="course/navigationbar.html :: headerfiles"></head>
+<body class="whole-screen" id="page-top">
+<div th:insert="course/navigationbar.html :: nav"></div>
+<header class="masthead bg-primary text-white text-center mb-5" style="padding-bottom: 1rem; padding-top: 12.5rem;">
+  <div class="container d-flex align-items-center flex-column">
+    <a th:href="@{/}">
+      <img class="masthead-avatar mb-5" src="../../assets/img/avataaars.png" alt=""/>
+    </a>
+
+    <h1 class="masthead-heading text-uppercase mb-0" th:text="'Zadanie typu ' + ${type}"> </h1>
+
+    <div class="divider-custom divider-light">
+      <div class="divider-custom-line"></div>
+      <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
+      <div class="divider-custom-line"></div>
+    </div>
+  </div>
+</header>
+<div class="container d-flex pt-4 pb-4" style="justify-content: center">
+  <form th:object="${exercise}" th:action="@{/exercises/choose?quiz={id}(id=${quizId})}" method="post"
+        class="w-50">
+    <div class="form-group">
+      <label for="title">Pytanie</label>
+      <input th:field="*{question}" th:required="required" type="text" name="title" id="title"
+             class="form-control"
+             placeholder="pytanie"
+             autocomplete="off">
+      <span class="validationError text-danger"
+            th:if="${#fields.hasErrors('question')}"
+            th:errors="*{question}">Question error</span>
+    </div>
+    <div class="form-group">
+      <label for="maxScore">Ilość punktów</label>
+      <input th:field="*{maxScore}" th:required="required" type="number" name="maxScore"
+             id="maxScore"
+             class="form-control"
+             placeholder="lp"
+             autocomplete="off">
+      <span class="validationError text-danger"
+            th:if="${#fields.hasErrors('maxScore')}"
+            th:errors="*{maxScore}">Score error</span>
+    </div>
+    <div class="form-group">
+      <label for="answer">Poprawna odpowiedź</label>
+      <input th:field="*{answer}" th:required="required" type="text" name="answer" id="answer"
+             class="form-control"
+             placeholder="odpowiedź"
+             autocomplete="off">
+      <span class="validationError text-danger"
+            th:if="${#fields.hasErrors('answer')}"
+            th:errors="*{answer}">Answer error</span>
+    </div>
+    <div class="form-group mytooltip">
+      <label for="wrongAnswers">Niepoprawne odpowiedzi</label>
+      <input th:field="*{wrongAnswers}" th:required="required" type="text" name="wrongAnswers" id="wrongAnswers"
+             class="form-control"
+             placeholder="odpowiedź"
+             autocomplete="off">
+      <span class="validationError text-danger"
+            th:if="${#fields.hasErrors('wrongAnswers')}"
+            th:errors="*{wrongAnswers}">Answer error</span>
+      <span>Oddziel złe odpowiedzi średnikami.</span>
+      <span class="tooltiptext">Przykład: Zła odpowiedź;Bardzo zła odpowiedź;Źle</span>
+    </div>
+    <input class="btn btn-primary btn-thin" type="submit" value="Dodaj zadanie">
+  </form>
+</div>
+<div class="masthead bg-main-green text-white text-center mt-7">
+</div>
+<div class="footer-bottom" th:insert="home/footer :: foot"></div>
+</body>
+</html>

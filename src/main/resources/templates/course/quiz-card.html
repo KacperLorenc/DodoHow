@@ -5,21 +5,47 @@
     <title>Title</title>
 </head>
 <body th:fragment="quiz-card">
-<div  class="card class-card d-flex flex-column flex-md-row" style="min-width: 25rem;">
-    <div class="card-body">
-        <h5 th:text="${quiz?.getTitle()}" class="card-title text-secondary">Card title</h5>
-        <div class="row w-100">
+<div class="card class-card d-flex flex-column flex-md-row" style="min-width: 25rem;">
+    <div class="card-body pt-2">
+        <div class="row w-100 mb-2">
+            <div class="col-10 p-0  pl-5 pr-0 pt-0 pb-0">
+                <h5 th:text="${quiz?.getNumberInClass()} + '. ' + ${quiz?.getTitle()}"
+                    class="text-secondary mb-0 mt-2">
+                    Card
+                    title</h5>
+            </div>
+            <div th:if="${quiz?.getActive()!=null && quiz?.getActive()}"
+                 class="col-1 mytooltip pl-3 pr-0 pt-0 pb-0 mr-2">
+                <a th:href="@{/classes/activate?quiz={id}(id=${quiz?.getId()})}">
+                    <img style="height: 40px; width: auto"
+                         src="../../assets/images/ok_icon.png"
+                         alt="Turned off"/>
+                </a>
+                <span class="tooltiptext p-2">
+                    Quiz jest włączony. Kliknij aby wyłączyć.
+                </span>
+            </div>
+            <div th:if="${quiz?.getActive()==null || !quiz?.getActive()}"
+                 class="col-1 mytooltip pl-3 pr-0 pt-0 pb-0 mr-2"
+                 style="margin-bottom: 0.35rem">
+                <a th:href="@{/classes/activate?quiz={id}(id=${quiz?.getId()})}">
+                    <img style="height: 35px; width: auto"
+                         src="../../assets/images/cancel-64.png"
+                         alt="Turned off"/>
+                </a>
+                <span class="tooltiptext p-2">
+                    Quiz jest wyłączony. Kliknij aby włączyć.
+                </span>
+            </div>
+        </div>
+        <div class="row w-100 mt-3">
             <div class="col-6">
                 <a th:href="@{/classes/scores?quiz={id}(id=${quiz?.getId()})}" href="#"
                    class="btn btn-primary btn-table mt-auto">Wyniki</a>
             </div>
-            <div th:if="${quiz?.getActive()!=null && quiz?.getActive()}" class="col-6">
-                <a th:href="@{/classes/activate?quiz={id}(id=${quiz?.getId()})}" href="#"
-                   class="btn btn-primary btn-table mt-auto">Wyłącz</a>
-            </div>
-            <div th:if="${quiz?.getActive()==null || !quiz?.getActive()}" class="col-6">
-                <a th:href="@{/classes/activate?quiz={id}(id=${quiz?.getId()})}" href="#"
-                   class="btn btn-primary btn-table mt-auto">Włącz</a>
+            <div class="col-6">
+                <a th:href="@{/classes/exercises?quiz={id}(id=${quiz?.getId()}) }" href="#"
+                   class="btn btn-primary btn-table mt-auto">Zadania</a>
             </div>
         </div>
     </div>

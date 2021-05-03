@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:insert="course/navigationbar.html :: headerfiles"></head>
+<body class="whole-screen" id="page-top">
+<div th:insert="course/navigationbar.html :: nav"></div>
+<header class="masthead bg-primary text-white text-center mb-5" style="padding-bottom: 1rem; padding-top: 12.5rem;">
+    <div class="container d-flex align-items-center flex-column">
+        <a th:href="@{/}">
+            <img class="masthead-avatar mb-5" src="../../assets/img/avataaars.png" alt=""/>
+        </a>
+
+        <h1 class="masthead-heading text-uppercase mb-0">Tworzenie zadania</h1>
+
+        <div class="divider-custom divider-light">
+            <div class="divider-custom-line"></div>
+            <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
+            <div class="divider-custom-line"></div>
+        </div>
+    </div>
+</header>
+<div class="container d-flex pt-4 pb-4" style="justify-content: center">
+    <form th:object="${typeobject}" th:action="@{/exercises}" method="post" class="w-50">
+        <div class="form-group">
+            <label for="type">Wybierz typ zadania</label>
+            <select th:field="*{type}" class="form-control form-select form-select-lg w-75 mb-3"
+                    id="type"
+                    style="font-size: 30px"
+                    aria-label=".form-select-lg example">
+                <option th:each="a : ${typeobject.getTypes()}" th:value="${a}"
+                        th:text="${a}"></option>
+            </select>
+        </div>
+        <input type="hidden" th:field="*{quizId}" name="quizId" id="quizId"/>
+        <input class="btn btn-primary btn-thin" type="submit" value="Kontynuuj">
+    </form>
+</div>
+<div class="container d-flex mt-4 mb-4" style="justify-content: center">
+    <a th:href="@{/classes/exercises?quiz={id}(id=${quizId})}">
+        <button class="btn btn-danger btn-thin">Powrót</button>
+    </a>
+</div>
+
+<div class="masthead bg-main-green text-white text-center mt-7">
+</div>
+<div class="footer-bottom" th:insert="home/footer :: foot"></div>
+</body>
+</html>

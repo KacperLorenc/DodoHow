@@ -3,9 +3,13 @@ package pl.lorenc.dodohow.web;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import pl.lorenc.dodohow.dtos.ExerciseDto;
+import pl.lorenc.dodohow.dtos.ExerciseTypeDto;
 import pl.lorenc.dodohow.services.CourseFacade;
+
+import javax.validation.Valid;
 
 @Controller
 public class CourseController {
@@ -106,4 +110,105 @@ public class CourseController {
             return "redirect:/";
         }
     }
+
+    @GetMapping("/exercises/new-exercise")
+    public String newExercise(@RequestParam(name = "type") String type, @RequestParam(name = "quiz") Long id, Model model) {
+        try {
+            return courseFacade.newExercise(type, id, model);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "redirect:/";
+        }
+    }
+
+    @PostMapping("/exercises")
+    public String chooseExerciseType(@ModelAttribute("typeobject") ExerciseTypeDto exerciseType) {
+        try {
+            return courseFacade.chooseExerciseType(exerciseType);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "redirect:/";
+        }
+    }
+
+    @GetMapping("/exercises/choose-type")
+    public String chooseType(@RequestParam(name = "quiz") Long id, Model model) {
+        try {
+            return courseFacade.chooseType(id, model);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "redirect:/";
+        }
+    }
+
+    @PostMapping("/exercises/translate")
+    public String addExerciseTranslateWord(@ModelAttribute("exercise") @Valid ExerciseDto exerciseDto, Errors errors, @RequestParam(name = "quiz") Long id) {
+        try {
+            if (errors.hasErrors()) {
+                return "exercises/translateWordform";
+            }
+            return courseFacade.addExerciseTranslateWord(exerciseDto, id);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "redirect:/";
+        }
+    }
+
+    @PostMapping("/exercises/typein")
+    public String addExerciseTypeIn(@ModelAttribute("exercise") @Valid ExerciseDto exerciseDto, Errors errors, @RequestParam(name = "quiz") Long id) {
+        try {
+            if (errors.hasErrors()) {
+                return "exercises/typeSentenceform";
+            }
+            return courseFacade.addExerciseTypeIn(exerciseDto, id);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "redirect:/";
+        }
+    }
+
+    @PostMapping("/exercises/fillblank")
+    public String addExerciseFillBlank(@ModelAttribute("exercise") @Valid ExerciseDto exerciseDto, Errors errors, @RequestParam(name = "quiz") Long id) {
+        try {
+            if (errors.hasErrors()) {
+                return "exercises/fillTheBlankform";
+            }
+            return courseFacade.addExerciseFillBlank(exerciseDto, id);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "redirect:/";
+        }
+    }
+
+    @PostMapping("/exercises/choose")
+    public String addExerciseChooseAnswer(@ModelAttribute("exercise") @Valid ExerciseDto exerciseDto, Errors errors, @RequestParam(name = "quiz") Long id) {
+        try {
+            if (errors.hasErrors()) {
+                return "exercises/chooseAnswerform";
+            }
+            return courseFacade.addExerciseChooseAnswer(exerciseDto, id);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "redirect:/";
+        }
+    }
+
+    @PostMapping("/exercises/truefalse")
+    public String addExerciseTrueFalse(@ModelAttribute("exercise") @Valid ExerciseDto exerciseDto, Errors errors, @RequestParam(name = "quiz") Long id) {
+        try {
+            if (errors.hasErrors()) {
+                return "exercises/truthFalseform";
+            }
+            return courseFacade.addExerciseTrueFalse(exerciseDto, id);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "redirect:/";
+        }
+    }
+
 }

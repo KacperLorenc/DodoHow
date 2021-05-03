@@ -88,6 +88,7 @@ public class QuizFacade {
             return "redirect:/classes";
         quizDto.setClassId(classId);
         quizDto.setActive(false);
+        quizDto.setMaxScore(0);
         Quiz quiz = mapper.map(quizDto);
         quizService.save(quiz);
         return "redirect:/classes/quizzes?class=" + classId;

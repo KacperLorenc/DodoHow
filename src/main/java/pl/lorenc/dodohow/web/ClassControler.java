@@ -48,7 +48,7 @@ public class ClassControler {
         try {
             return classFacade.findUser(searchDto, model);
 
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return "redirect:/classes";
         }
@@ -135,7 +135,17 @@ public class ClassControler {
     @GetMapping("/classes/quizzes")
     public String getClassQuizzes(Model model, @RequestParam(value = "class") Long classId) {
         try {
-                return classFacade.getClassQuizzes(model, classId);
+            return classFacade.getClassQuizzes(model, classId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "redirect:/classes";
+        }
+    }
+
+    @GetMapping("/classes/exercises")
+    public String getExercises(Model model, @RequestParam(value = "quiz") Long quizId) {
+        try {
+                return classFacade.getExercises(model, quizId);
         } catch (Exception e) {
             e.printStackTrace();
             return "redirect:/classes";
