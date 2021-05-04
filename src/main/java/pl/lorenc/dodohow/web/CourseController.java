@@ -142,9 +142,10 @@ public class CourseController {
     }
 
     @PostMapping("/exercises/translate")
-    public String addExerciseTranslateWord(@ModelAttribute("exercise") @Valid ExerciseDto exerciseDto, Errors errors, @RequestParam(name = "quiz") Long id) {
+    public String addExerciseTranslateWord(@ModelAttribute("exercise") @Valid ExerciseDto exerciseDto, Errors errors, @RequestParam(name = "quiz") Long id, Model model) {
         try {
             if (errors.hasErrors()) {
+                model.addAttribute("quizId", id);
                 return "exercises/translateWordform";
             }
             return courseFacade.addExerciseTranslateWord(exerciseDto, id);
@@ -156,9 +157,10 @@ public class CourseController {
     }
 
     @PostMapping("/exercises/typein")
-    public String addExerciseTypeIn(@ModelAttribute("exercise") @Valid ExerciseDto exerciseDto, Errors errors, @RequestParam(name = "quiz") Long id) {
+    public String addExerciseTypeIn(@ModelAttribute("exercise") @Valid ExerciseDto exerciseDto, Errors errors, @RequestParam(name = "quiz") Long id, Model model) {
         try {
             if (errors.hasErrors()) {
+                model.addAttribute("quizId", id);
                 return "exercises/typeSentenceform";
             }
             return courseFacade.addExerciseTypeIn(exerciseDto, id);
@@ -170,9 +172,10 @@ public class CourseController {
     }
 
     @PostMapping("/exercises/fillblank")
-    public String addExerciseFillBlank(@ModelAttribute("exercise") @Valid ExerciseDto exerciseDto, Errors errors, @RequestParam(name = "quiz") Long id) {
+    public String addExerciseFillBlank(@ModelAttribute("exercise") @Valid ExerciseDto exerciseDto, Errors errors, @RequestParam(name = "quiz") Long id, Model model) {
         try {
             if (errors.hasErrors()) {
+                model.addAttribute("quizId", id);
                 return "exercises/fillTheBlankform";
             }
             return courseFacade.addExerciseFillBlank(exerciseDto, id);
@@ -184,9 +187,10 @@ public class CourseController {
     }
 
     @PostMapping("/exercises/choose")
-    public String addExerciseChooseAnswer(@ModelAttribute("exercise") @Valid ExerciseDto exerciseDto, Errors errors, @RequestParam(name = "quiz") Long id) {
+    public String addExerciseChooseAnswer(@ModelAttribute("exercise") @Valid ExerciseDto exerciseDto, Errors errors, @RequestParam(name = "quiz") Long id, Model model) {
         try {
             if (errors.hasErrors()) {
+                model.addAttribute("quizId", id);
                 return "exercises/chooseAnswerform";
             }
             return courseFacade.addExerciseChooseAnswer(exerciseDto, id);
@@ -198,9 +202,11 @@ public class CourseController {
     }
 
     @PostMapping("/exercises/truefalse")
-    public String addExerciseTrueFalse(@ModelAttribute("exercise") @Valid ExerciseDto exerciseDto, Errors errors, @RequestParam(name = "quiz") Long id) {
+    public String addExerciseTrueFalse(@ModelAttribute("exercise") @Valid ExerciseDto exerciseDto, Errors errors, @RequestParam(name = "quiz") Long id, Model model) {
         try {
             if (errors.hasErrors()) {
+                exerciseDto.setWrongAnswers("true;false");
+                model.addAttribute("quizId", id);
                 return "exercises/truthFalseform";
             }
             return courseFacade.addExerciseTrueFalse(exerciseDto, id);

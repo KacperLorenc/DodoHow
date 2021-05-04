@@ -9,7 +9,7 @@
             <img class="masthead-avatar mb-5" src="../../assets/img/avataaars.png" alt=""/>
         </a>
 
-        <h1 class="masthead-heading text-uppercase mb-0" th:text="'Zadanie typu ' + ${type}">></h1>
+        <h1 class="masthead-heading text-uppercase mb-0">Przetłumacz zdanie</h1>
 
         <div class="divider-custom divider-light">
             <div class="divider-custom-line"></div>
@@ -43,7 +43,7 @@
                   th:errors="*{maxScore}">Score error</span>
         </div>
         <div class="form-group">
-            <label for="answer">Poprawna odpowiedź</label>
+            <label for="answer">Poprawna odpowiedź (wielkość liter ma znaczenie)</label>
             <input th:field="*{answer}" th:required="required" type="text" name="answer" id="answer"
                    class="form-control"
                    placeholder="odpowiedź"
@@ -55,7 +55,7 @@
         <input class="btn btn-primary btn-thin" type="submit" value="Dodaj zadanie">
     </form>
 </div>
-<div class="masthead bg-main-green text-white text-center mt-7">
+<div class="masthead bg-main-green text-white text-center mt-5">
 </div>
 <div class="footer-bottom" th:insert="home/footer :: foot"></div>
 </body>

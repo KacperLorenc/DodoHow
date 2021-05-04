@@ -9,7 +9,7 @@
             <img class="masthead-avatar mb-5" src="../../assets/img/avataaars.png" alt=""/>
         </a>
 
-        <h1 class="masthead-heading text-uppercase mb-0">Prawda lub fałsz</h1>
+        <h1 class="masthead-heading text-uppercase mb-0">Przetłumacz słowo</h1>
 
         <div class="divider-custom divider-light">
             <div class="divider-custom-line"></div>
@@ -19,7 +19,7 @@
     </div>
 </header>
 <div class="container d-flex pt-4 pb-4" style="justify-content: center">
-    <form th:object="${exercise}" th:action="@{/exercises/truefalse?quiz={id}(id=${quizId})}" method="post"
+    <form th:object="${exercise}" th:action="@{/exercises/translate?quiz={id}(id=${quizId})}" method="post"
           class="w-50">
         <div class="form-group">
             <label for="title">Pytanie</label>
@@ -43,13 +43,14 @@
                   th:errors="*{maxScore}">Score error</span>
         </div>
         <div class="form-group">
-            <label for="answer">Poprawna odpowiedź</label>
-            <select th:field="*{answer}" class="form-control form-select w-100"
-                    id="answer"
-                    aria-label=".form-select-lg example">
-                <option th:each="a : ${exercise.getListOfWrongAnswers()}" th:value="${a}"
-                        th:text="${a?.equals('true')} ? 'Tak' : 'Nie'"></option>
-            </select>
+            <label for="answer">Poprawna odpowiedź (wielkość liter ma znaczenie)</label>
+            <input th:field="*{answer}" th:required="required" type="text" name="answer" id="answer"
+                   class="form-control"
+                   placeholder="odpowiedź"
+                   autocomplete="off">
+            <span class="validationError text-danger"
+                  th:if="${#fields.hasErrors('answer')}"
+                  th:errors="*{answer}">Answer error</span>
         </div>
         <input class="btn btn-primary btn-thin" type="submit" value="Dodaj zadanie">
     </form>

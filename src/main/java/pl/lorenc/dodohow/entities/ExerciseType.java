@@ -12,26 +12,27 @@ import java.util.stream.Collectors;
 @Getter
 @AllArgsConstructor
 public enum ExerciseType {
-    CHOOSE_ANSWER("chooseAnswer", "Wybierz odpowiedź"),
     TRUTH_FALSE("truthFalse", "Prawda lub fałsz"),
+    CHOOSE_ANSWER("chooseAnswer", "Wybierz odpowiedź"),
     TYPE_SENTENCE("typeSentence", "Przetłumacz zdanie"),
     FILL_THE_BLANK("fillTheBlank", "Uzupełnij lukę"),
     TRANSLATE_WORD("translateWord", "Przetłumacz słowo");
 
     private final String name;
     private final String label;
-    public static Optional<ExerciseType> findByName(String name){
-        for(ExerciseType e : ExerciseType.values()){
-            if(e.getName().equals(name)){
+
+    public static Optional<ExerciseType> findByName(String name) {
+        for (ExerciseType e : ExerciseType.values()) {
+            if (e.getName().equals(name)) {
                 return Optional.of(e);
             }
         }
         return Optional.empty();
     }
 
-    public static Optional<ExerciseType> findByLabel(String label){
-        for(ExerciseType e : ExerciseType.values()){
-            if(e.getLabel().equals(label)){
+    public static Optional<ExerciseType> findByLabel(String label) {
+        for (ExerciseType e : ExerciseType.values()) {
+            if (e.getLabel().equals(label)) {
                 return Optional.of(e);
             }
         }

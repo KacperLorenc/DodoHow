@@ -323,10 +323,14 @@ public class CourseFacade {
             return "redirect:/classes";
         Quiz quiz = quizOpt.get();
         if (authenticateUser(quiz.getQuizClass().getId())) {
-
+            ExerciseDto exercise = new ExerciseDto();
+            ExerciseType.findByName(exerciseType).ifPresent(t -> {
+                model.addAttribute("type", t.getLabel());
+                if(t.equals(ExerciseType.TRUTH_FALSE))
+                    exercise.setWrongAnswers("true;false");
+            });
             model.addAttribute("quizId", quizId);
-            model.addAttribute("type", exerciseType);
-            model.addAttribute("exercise", new ExerciseDto());
+            model.addAttribute("exercise", exercise);
 
             return "exercises/" + exerciseType + "form";
         }
@@ -409,6 +413,7 @@ public class CourseFacade {
             return "redirect:/classes";
         Exercise exercise = mapper.map(exerciseDto);
         exercise.setType(ExerciseType.TRUTH_FALSE);
+        exercise.setWrongAnswers("true;false");
 
         return addExercise(exercise, quizOpt.get());
     }
@@ -434,13 +439,17 @@ public class CourseFacade {
         if (quiz.getMaxScore() == null)
             quiz.setMaxScore(0);
 
-        StringBuilder builder = new StringBuilder();
         String answers = exercise.getWrongAnswers();
-        builder.append(answers);
-        if (answers.charAt(answers.length() - 1) != ';')
-            builder.append(";");
-        builder.append(exercise.getAnswer());
-        exercise.setWrongAnswers(builder.toString());
+        if (answers != null) {
+            StringBuilder builder = new StringBuilder();
+            builder.append(answers);
+            if (answers.charAt(answers.length() - 1) != ';')
+                builder.append(";");
+            builder.append(exercise.getAnswer());
+            exercise.setWrongAnswers(builder.toString());
+        } else {
+            exercise.setWrongAnswers("");
+        }
 
         quiz.setMaxScore(quiz.getMaxScore() + exercise.getMaxScore());
         quiz.getExercises().add(exercise);

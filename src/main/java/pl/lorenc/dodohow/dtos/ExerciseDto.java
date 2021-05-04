@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.*;
 import java.util.List;
 
 @Getter
@@ -14,8 +15,17 @@ import java.util.List;
 @NoArgsConstructor
 public class ExerciseDto {
     private Long id;
+    @NotNull(message = "*Pole musi być uzupełnione")
+    @Min(value = 1, message = "*Punkty muszą być większe o zera")
+    @Max(value = 15, message = "*Maksymalna ilość punktów za zadanie to 15")
     private Integer maxScore;
+    @NotNull(message = "*Pole musi być uzupełnione")
+    @NotEmpty(message = "*Pole musi być uzupełnione")
+    @Size(min = 3, max = 100, message = "*Pole musi mieć od 3 do 100 znaków")
     private String question;
+    @NotNull(message = "*Pole musi być uzupełnione")
+    @NotEmpty(message = "*Pole musi być uzupełnione")
+    @Size(min = 3, max = 100, message = "*Pole musi mieć od 3 do 100 znaków")
     private String answer;
     private String wrongAnswers;
     private Long quizId;

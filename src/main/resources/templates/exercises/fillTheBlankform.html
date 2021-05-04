@@ -9,7 +9,7 @@
       <img class="masthead-avatar mb-5" src="../../assets/img/avataaars.png" alt=""/>
     </a>
 
-    <h1 class="masthead-heading text-uppercase mb-0" th:text="'Zadanie typu ' + ${type}"></h1>
+    <h1 class="masthead-heading text-uppercase mb-0">Uzupełnij lukę</h1>
 
     <div class="divider-custom divider-light">
       <div class="divider-custom-line"></div>
@@ -25,7 +25,7 @@
       <label for="title">Pytanie</label>
       <input th:field="*{question}" th:required="required" type="text" name="title" id="title"
              class="form-control"
-             placeholder="pytanie"
+             placeholder="uzupełnij lukę w ..."
              autocomplete="off">
       <span class="validationError text-danger"
             th:if="${#fields.hasErrors('question')}"
@@ -53,20 +53,19 @@
             th:errors="*{answer}">Answer error</span>
     </div>
     <div class="form-group">
-      <label for="wrongAnswers">Niepoprawne odpowiedzi</label>
+      <label for="wrongAnswers">Niepoprawne odpowiedzi (oddzielone średnikami)</label>
       <input th:field="*{wrongAnswers}" th:required="required" type="text" name="wrongAnswers" id="wrongAnswers"
              class="form-control"
-             placeholder="odpowiedź"
+             placeholder="źle;zła odpowiedź;bardzo niepoprawna odpowiedź"
              autocomplete="off">
       <span class="validationError text-danger"
             th:if="${#fields.hasErrors('wrongAnswers')}"
             th:errors="*{wrongAnswers}">Answer error</span>
-      <label for="wrongAnswers">Oddziel złe odpowiedzi średnikami. Przykład: Zła odpowiedź;Bardzo zła odpowiedź;Źle</label>
     </div>
     <input class="btn btn-primary btn-thin" type="submit" value="Dodaj zadanie">
   </form>
 </div>
-<div class="masthead bg-main-green text-white text-center mt-7">
+<div class="masthead bg-main-green text-white text-center mt-5">
 </div>
 <div class="footer-bottom" th:insert="home/footer :: foot"></div>
 </body>
