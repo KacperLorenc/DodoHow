@@ -45,6 +45,9 @@
             </a>
         </div>
     </div>
+    <div class="row w-100 m-0 text-center" th:if="${!booleans[0]?.exists && !booleans[1]?.exists}">
+            <th:block th:insert="exercises/quizConfirmation :: confirm"></th:block>
+    </div>
 </th:block>
 </body>
 </html>

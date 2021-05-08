@@ -75,6 +75,7 @@ public class DtoMapper {
                 .numberInClass(quizDto.getNumberInClass())
                 .quizClass(classOpt.orElse(null))
                 .active(quizDto.getActive())
+                .repeatable(quizDto.getRepeatable())
                 .build();
     }
 
@@ -94,6 +95,7 @@ public class DtoMapper {
                 .exercises(exercises)
                 .maxScore(quiz.getMaxScore())
                 .numberInClass(quiz.getNumberInClass())
+                .repeatable(quiz.getRepeatable())
                 .classId(quiz.getQuizClass() == null ? null : quiz.getQuizClass().getId())
                 .active(quiz.getActive())
                 .build();
