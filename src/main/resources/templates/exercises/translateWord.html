@@ -21,7 +21,7 @@
                     <input th:field="*{question}" type="hidden" class="form-control" name="id">
                 </div>
 
-                <p th:text="${exercise.getQuestion()}" class="extxt text-center text-uppercase text-secondary mb-0 mt-5"
+                <p th:text="${exercise.getQuestion()}" class="extxt text-center text-uppercase text-secondary mb-0 mt-2"
                    style="font-size: 45px"></p>
                 <div class="form-group d-flex justify-content-center mt-3">
                     <label for="translateWord"></label>
@@ -38,27 +38,7 @@
             </section>
         </form>
 
-        <div class="row" style="justify-content: space-between; width:100%; margin:0;"
-             th:if="${booleans[0]?.exists && booleans[1]?.exists}">
-            <a th:href="@{/previous-exercise?id={exerciseId}(exerciseId= ${booleans[0]?.exerciseId})}">
-                <button class="btn btn-primary btn-xl" style="width: 12rem !important;">Poprzednie</button>
-            </a>
-            <a th:href="@{/next-exercise?id={exerciseId}(exerciseId=${booleans[1]?.exerciseId})}">
-                <button class="btn btn-primary btn-xl" style="width: 12rem !important;">Następne</button>
-            </a>
-        </div>
-        <div class="row" style="justify-content: left; width: 100%; margin:0;"
-             th:if="${booleans[0]?.exists && !booleans[1]?.exists}">
-            <a th:href="@{/previous-exercise?id={exerciseId}(exerciseId= ${booleans[0]?.exerciseId})}">
-                <button class="btn btn-primary btn-xl" style="width: 12rem !important;">Poprzednie</button>
-            </a>
-        </div>
-        <div class="row" style="justify-content: right; width:100%; margin:0;"
-             th:if="${!booleans[0]?.exists && booleans[1]?.exists}">
-            <a th:href="@{/next-exercise?id={exerciseId}(exerciseId=${booleans[1]?.exerciseId})}">
-                <button class="btn btn-primary btn-xl" style="width: 12rem !important;">Następne</button>
-            </a>
-        </div>
+        <th:block th:insert="exercises/exerciseButtons :: buttons"></th:block>
     </div>
     <div class="questions-map" th:insert="exercises/questionMap :: map"></div>
 </div>

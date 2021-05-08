@@ -11,6 +11,7 @@ import java.util.List;
 @Setter
 public class ExerciseTypeDto {
 
+    private Long exerciseId;
     private String type;
     private Long quizId;
     @Setter(AccessLevel.NONE)

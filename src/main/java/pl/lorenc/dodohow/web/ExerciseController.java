@@ -7,24 +7,24 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import pl.lorenc.dodohow.dtos.ExerciseDto;
 import pl.lorenc.dodohow.dtos.ExerciseTypeDto;
-import pl.lorenc.dodohow.services.CourseFacade;
+import pl.lorenc.dodohow.services.ExerciseFacade;
 
 import javax.validation.Valid;
 
 @Controller
-public class CourseController {
+public class ExerciseController {
 
-    private CourseFacade courseFacade;
+    private ExerciseFacade exerciseFacade;
 
     @Autowired
-    public CourseController(CourseFacade courseFacade) {
-        this.courseFacade = courseFacade;
+    public ExerciseController(ExerciseFacade exerciseFacade) {
+        this.exerciseFacade = exerciseFacade;
     }
 
     @GetMapping("/quizzes/{id}")
     public String getQuizzes(@PathVariable Long id, Model model) {
         try {
-            return courseFacade.getQuizzes(id, model);
+            return exerciseFacade.getQuizzes(id, model);
         } catch (Exception e) {
             e.printStackTrace();
             return "redirect:/";
@@ -34,7 +34,7 @@ public class CourseController {
     @GetMapping("/quizzes/quiz/{id}")
     public String getQuiz(@PathVariable Long id, Model model) {
         try {
-            return courseFacade.getQuiz(model, id);
+            return exerciseFacade.getQuiz(model, id);
         } catch (Exception e) {
             e.printStackTrace();
             return "redirect:/";
@@ -44,7 +44,7 @@ public class CourseController {
     @GetMapping("/course/{id}")
     public String newQuiz(@PathVariable Long id, Model model) {
         try {
-            return courseFacade.newQuiz(id, model);
+            return exerciseFacade.newQuiz(id, model);
         } catch (Exception e) {
             e.printStackTrace();
             return "redirect:/";
@@ -54,7 +54,7 @@ public class CourseController {
     @PostMapping("/next-exercise")
     public String nextExercise(@ModelAttribute("exercise") ExerciseDto exercise) {
         try {
-            return courseFacade.nextExercise(exercise);
+            return exerciseFacade.nextExercise(exercise);
         } catch (Exception e) {
             e.printStackTrace();
             return "redirect:/";
@@ -64,7 +64,7 @@ public class CourseController {
     @GetMapping("/exercise")
     public String getExercise(@RequestParam(name = "number") Long id, Model model) {
         try {
-            return courseFacade.getExercise(id, model);
+            return exerciseFacade.getExercise(id, model);
         } catch (Exception e) {
             e.printStackTrace();
             return "redirect:/";
@@ -74,7 +74,7 @@ public class CourseController {
     @GetMapping("/next-exercise")
     public String getNextExercise(@RequestParam Long id) {
         try {
-            return courseFacade.getNextExercise(id);
+            return exerciseFacade.getNextExercise(id);
         } catch (Exception e) {
             e.printStackTrace();
             return "redirect:/";
@@ -84,7 +84,7 @@ public class CourseController {
     @GetMapping("/previous-exercise")
     public String getPreviousExercise(@RequestParam Long id) {
         try {
-            return courseFacade.getPreviousExercise(id);
+            return exerciseFacade.getPreviousExercise(id);
         } catch (Exception e) {
             e.printStackTrace();
             return "redirect:/";
@@ -94,7 +94,7 @@ public class CourseController {
     @GetMapping("/redirect-summary")
     public String redirectToSummary(@RequestParam Long id) {
         try {
-            return courseFacade.redirectSummary(id);
+            return exerciseFacade.redirectSummary(id);
         } catch (Exception e) {
             e.printStackTrace();
             return "redirect:/";
@@ -104,7 +104,7 @@ public class CourseController {
     @GetMapping("/summary")
     public String getSummary(@RequestParam(name = "quiz") Long id, Model model) {
         try {
-            return courseFacade.summary(model, id);
+            return exerciseFacade.summary(model, id);
         } catch (Exception e) {
             e.printStackTrace();
             return "redirect:/";
@@ -114,7 +114,7 @@ public class CourseController {
     @GetMapping("/exercises/new-exercise")
     public String newExercise(@RequestParam(name = "type") String type, @RequestParam(name = "quiz") Long id, Model model) {
         try {
-            return courseFacade.newExercise(type, id, model);
+            return exerciseFacade.newExercise(type, id, model);
         } catch (Exception e) {
             e.printStackTrace();
             return "redirect:/";
@@ -124,7 +124,17 @@ public class CourseController {
     @PostMapping("/exercises")
     public String chooseExerciseType(@ModelAttribute("typeobject") ExerciseTypeDto exerciseType) {
         try {
-            return courseFacade.chooseExerciseType(exerciseType);
+            return exerciseFacade.chooseExerciseType(exerciseType);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "redirect:/";
+        }
+    }
+
+    @GetMapping("exercises/update")
+    public String updateExercise(@RequestParam(name = "exercise") Long id, Model model) {
+        try {
+            return exerciseFacade.updateExercise(id, model);
         } catch (Exception e) {
             e.printStackTrace();
             return "redirect:/";
@@ -134,7 +144,17 @@ public class CourseController {
     @GetMapping("/exercises/choose-type")
     public String chooseType(@RequestParam(name = "quiz") Long id, Model model) {
         try {
-            return courseFacade.chooseType(id, model);
+            return exerciseFacade.chooseType(id, model);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "redirect:/";
+        }
+    }
+
+    @GetMapping("exercises/delete")
+    public String deleteExercise(@RequestParam(name = "exercise") Long id) {
+        try {
+            return exerciseFacade.deleteExercise(id);
         } catch (Exception e) {
             e.printStackTrace();
             return "redirect:/";
@@ -148,7 +168,7 @@ public class CourseController {
                 model.addAttribute("quizId", id);
                 return "exercises/translateWordform";
             }
-            return courseFacade.addExerciseTranslateWord(exerciseDto, id);
+            return exerciseFacade.addExerciseTranslateWord(exerciseDto, id);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -163,7 +183,7 @@ public class CourseController {
                 model.addAttribute("quizId", id);
                 return "exercises/typeSentenceform";
             }
-            return courseFacade.addExerciseTypeIn(exerciseDto, id);
+            return exerciseFacade.addExerciseTypeIn(exerciseDto, id);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -178,7 +198,7 @@ public class CourseController {
                 model.addAttribute("quizId", id);
                 return "exercises/fillTheBlankform";
             }
-            return courseFacade.addExerciseFillBlank(exerciseDto, id);
+            return exerciseFacade.addExerciseFillBlank(exerciseDto, id);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -193,7 +213,7 @@ public class CourseController {
                 model.addAttribute("quizId", id);
                 return "exercises/chooseAnswerform";
             }
-            return courseFacade.addExerciseChooseAnswer(exerciseDto, id);
+            return exerciseFacade.addExerciseChooseAnswer(exerciseDto, id);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -209,7 +229,7 @@ public class CourseController {
                 model.addAttribute("quizId", id);
                 return "exercises/truthFalseform";
             }
-            return courseFacade.addExerciseTrueFalse(exerciseDto, id);
+            return exerciseFacade.addExerciseTrueFalse(exerciseDto, id);
 
         } catch (Exception e) {
             e.printStackTrace();

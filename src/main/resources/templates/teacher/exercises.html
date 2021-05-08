@@ -25,14 +25,14 @@
                  th:text="${exercise?.getNumber()} + '. ' + ${exercise?.getQuestion()}">
             </div>
             <div class="col-md-2 d-flex flex-row-reverse">
-
-                <button class="btn btn-success btn-table" style="width: 60%; height: auto;">Edytuj</button>
-
+                <a th:href="@{/exercises/update?exercise={id}(id=${exercise?.getId()})}">
+                    <button class="btn btn-success btn-table" style="width: 60%; height: auto;">Edytuj</button>
+                </a>
             </div>
             <div class="col-md-2 d-flex flex-row">
-
-                <button class="btn btn-success btn-table btn-danger">Usuń</button>
-
+                <a th:href="@{/exercises/delete?exercise={id}(id=${exercise?.getId()})}">
+                    <button class="btn btn-success btn-table btn-danger">Usuń</button>
+                </a>
             </div>
         </div>
         <div th:if="${i.index < (i.size)-1}" class="row mb-1">

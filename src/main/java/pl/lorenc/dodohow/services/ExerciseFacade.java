@@ -11,7 +11,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class CourseFacade {
+public class ExerciseFacade {
 
     private UserService userService;
     private QuizService quizService;
@@ -21,7 +21,7 @@ public class CourseFacade {
     private ClassService classService;
     private DtoMapper mapper;
 
-    public CourseFacade(UserService userService, QuizService quizService, ExerciseService exerciseService, PointsService pointsService, ScoreService scoreService, ClassService classService, DtoMapper mapper) {
+    public ExerciseFacade(UserService userService, QuizService quizService, ExerciseService exerciseService, PointsService pointsService, ScoreService scoreService, ClassService classService, DtoMapper mapper) {
         this.userService = userService;
         this.quizService = quizService;
         this.exerciseService = exerciseService;
@@ -102,10 +102,10 @@ public class CourseFacade {
                     scoreService.deleteScore(user, quizOpt.get());
                     scoreService.saveScore(mapper.map(scoreDto));
 
-                    List<Exercise> exercises = exerciseService.findAllBy(quizOpt.get().getId());
-                    pointsService.deleteAllByUserAndExercises(user, exercises);
+                    Set<Exercise> exercises = quiz.getExercises();
+                    pointsService.deleteAllByUserAndExercises(user, new ArrayList<>(exercises));
 
-                    Optional<Exercise> firstExercise = exerciseService.findAllBy(id)
+                    Optional<Exercise> firstExercise = exercises
                             .stream()
                             .min(Comparator.comparing(Exercise::getNumber));
 
@@ -196,7 +196,6 @@ public class CourseFacade {
             if (exerciseOpt.isEmpty()) {
                 return "redirect:/classes";
             }
-
             return userService.getUserFromSession()
                     .map(u -> {
                         Long quizId = exerciseOpt.get().getQuiz().getId();
@@ -225,15 +224,7 @@ public class CourseFacade {
             Exercise currentExercise = exerciseOpt.get();
             Optional<Exercise> next = exerciseService.findByQuizIdAndNumber(currentExercise.getQuiz().getId(), currentExercise.getNumber() + 1);
             if (next.isEmpty()) {
-                Optional<Quiz> quizOpt = quizService.findById(currentExercise.getQuiz().getId());
-                return quizOpt.map(quiz -> {
-                    userService.getUserFromSession().flatMap(u -> scoreService.findScore(u, quiz))
-                            .ifPresent(s -> {
-                                s.setQuizFinished(true);
-                                scoreService.saveScore(s);
-                            });
-                    return "redirect:/redirect-summary?id=" + quiz.getId();
-                }).orElse("redirect:/classes");
+                return "redirect:/exercise?number=" + id;
             }
 
             return "redirect:/exercise?number=" + next.get().getId();
@@ -255,15 +246,7 @@ public class CourseFacade {
             Optional<Exercise> previous = exerciseService.findByQuizIdAndNumber(currentExercise.getQuiz().getId(), currentExercise.getNumber() - 1);
 
             if (previous.isEmpty()) {
-                Optional<Quiz> quizOpt = quizService.findById(currentExercise.getId());
-                return quizOpt.map(quiz -> {
-                    userService.getUserFromSession().flatMap(u -> scoreService.findScore(u, quiz))
-                            .ifPresent(s -> {
-                                s.setQuizFinished(true);
-                                scoreService.saveScore(s);
-                            });
-                    return "redirect:/redirect-summary?id=" + quiz.getId();
-                }).orElse("redirect:/quizzes");
+                return "redirect:/exercise?number=" + id;
             }
 
             return "redirect:/exercise?number=" + previous.get().getId();
@@ -286,7 +269,7 @@ public class CourseFacade {
                 new ExerciseRefferenceDto(previous, exercise.getId()),
                 new ExerciseRefferenceDto(next, exercise.getId())
         );
-
+        model.addAttribute("quizId", exercise.getQuiz().getId());
         model.addAttribute("booleans", booleans);
 
         return "exercises/" + exercise.getType().getName();
@@ -295,6 +278,12 @@ public class CourseFacade {
     public String redirectSummary(Long quizId) {
         Optional<Quiz> quizOpt = quizService.findById(quizId);
         if (quizOpt.isPresent()) {
+            Quiz quiz = quizOpt.get();
+            userService.getUserFromSession().flatMap(u -> scoreService.findScore(u, quiz))
+                    .ifPresent(s -> {
+                        s.setQuizFinished(true);
+                        scoreService.saveScore(s);
+                    });
             return "redirect:/summary?quiz=" + quizId;
         }
         return "redirect:/classes";
@@ -326,7 +315,7 @@ public class CourseFacade {
             ExerciseDto exercise = new ExerciseDto();
             ExerciseType.findByName(exerciseType).ifPresent(t -> {
                 model.addAttribute("type", t.getLabel());
-                if(t.equals(ExerciseType.TRUTH_FALSE))
+                if (t.equals(ExerciseType.TRUTH_FALSE))
                     exercise.setWrongAnswers("true;false");
             });
             model.addAttribute("quizId", quizId);
@@ -350,6 +339,23 @@ public class CourseFacade {
                     .orElse("redirect:/classes");
         }
         return "redirect:/classes";
+    }
+
+    public String updateExercise(Long exerciseId, Model model) {
+        Optional<Exercise> exerciseOpt = exerciseService.findById(exerciseId);
+        if (exerciseOpt.isEmpty())
+            return "redirect:/classes";
+        Exercise exercise = exerciseOpt.get();
+        Optional<Quiz> quizOpt = quizService.findById(exercise.getQuiz().getId());
+        if (quizOpt.isEmpty())
+            return "redirect:/classes";
+        Quiz quiz = quizOpt.get();
+        if (!authenticateUser(quiz.getQuizClass().getId()))
+            return "redirect:/classes";
+        model.addAttribute("exercise", mapper.map(exercise));
+        model.addAttribute("quizId", quiz.getId());
+
+        return "exercises/" + exercise.getType().getName() + "form";
     }
 
     public String chooseType(Long quizId, Model model) {
@@ -418,17 +424,69 @@ public class CourseFacade {
         return addExercise(exercise, quizOpt.get());
     }
 
+    public String deleteExercise(Long exerciseId) {
+        Optional<Exercise> exerciseOpt = exerciseService.findById(exerciseId);
+        if (exerciseOpt.isEmpty())
+            return "redirect:/classes";
+        Exercise exercise = exerciseOpt.get();
+        Optional<Quiz> quizOpt = quizService.findById(exercise.getQuiz().getId());
+        if (quizOpt.isEmpty())
+            return "redirect:/classes";
+        Quiz quiz = quizOpt.get();
+        if (!authenticateUser(quiz.getQuizClass().getId()))
+            return "redirect:/classes";
+
+        List<Exercise> exercises = quiz.getExercises().stream()
+                .sorted(Comparator.comparing(Exercise::getNumber))
+                .collect(Collectors.toList());
+
+        quiz.getExercises().stream()
+                .filter(e -> e.getId().equals(exercise.getId()))
+                .findFirst()
+                .ifPresent(e -> {
+                    quiz.getExercises().remove(e);
+                    exercises.remove(e);
+                });
+
+        exercises.forEach(e -> e.setNumber(exercises.indexOf(e) + 1));
+
+        exercise.setQuiz(null);
+        quiz.setMaxScore(quiz.getMaxScore() - exercise.getMaxScore());
+        exerciseService.save(exercise);
+        quizService.save(quiz);
+        return "redirect:/classes/exercises?quiz=" + quiz.getId();
+    }
+
     private String addExercise(Exercise exercise, Quiz quiz) {
 
         if (!authenticateUser(quiz.getQuizClass().getId()))
             return "redirect:/classes";
 
-        List<Exercise> quizExercises = exerciseService.findAllBy(quiz.getId());
+        Set<Exercise> quizExercises = quiz.getExercises();
 
-        if (quizExercises == null || quizExercises.isEmpty()) {
-            quiz.setExercises(new HashSet<>());
-            exercise.setNumber(1);
-        } else {
+        if (exercise.getId() != null) {
+            exerciseService.findById(exercise.getId()).ifPresent(e -> {
+                if (!e.getType().equals(exercise.getType()))
+                    exercise.setId(null);
+            });
+            quizExercises.stream()
+                    .filter(e -> e.getId().equals(exercise.getId()))
+                    .findFirst()
+                    .ifPresent(quizExercises::remove);
+        }
+
+        if (exercise.getNumber() == null) {
+            if (quizExercises == null || quizExercises.isEmpty()) {
+                quiz.setExercises(new HashSet<>());
+                exercise.setNumber(1);
+            } else {
+                int number = quizExercises.stream()
+                        .map(Exercise::getNumber)
+                        .max(Integer::compareTo)
+                        .orElse(0);
+                exercise.setNumber(number + 1);
+            }
+        } else if (quizExercises.stream().anyMatch(e -> e.getNumber().equals(exercise.getNumber()))) {
             int number = quizExercises.stream()
                     .map(Exercise::getNumber)
                     .max(Integer::compareTo)
@@ -440,7 +498,7 @@ public class CourseFacade {
             quiz.setMaxScore(0);
 
         String answers = exercise.getWrongAnswers();
-        if (answers != null) {
+        if (answers != null && !answers.contains(exercise.getAnswer())) {
             StringBuilder builder = new StringBuilder();
             builder.append(answers);
             if (answers.charAt(answers.length() - 1) != ';')
@@ -458,7 +516,6 @@ public class CourseFacade {
 
         return "redirect:/classes/exercises?quiz=" + quiz.getId();
     }
-
 
     private List<PointsDto> getUserPoints(User user, Long quizId) {
         List<Exercise> exercises = exerciseService.findAllBy(quizId);

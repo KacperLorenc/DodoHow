@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<th:block th:fragment="buttons">
+    <div class="row w-100 m-0" th:if="${booleans[0]?.exists && booleans[1]?.exists}">
+        <div class="col-4 p-0">
+            <a th:href="@{/previous-exercise?id={exerciseId}(exerciseId= ${booleans[0]?.exerciseId})}">
+                <button class="btn btn-primary btn-xl" style="width: 12rem !important;">Poprzednie</button>
+            </a>
+        </div>
+        <div class="col-4 p-0 text-center">
+            <th:block th:insert="exercises/quizConfirmation :: confirm"></th:block>
+        </div>
+        <div class="col-4 p-0 text-right">
+            <a th:href="@{/next-exercise?id={exerciseId}(exerciseId=${booleans[1]?.exerciseId})}">
+                <button class="btn btn-primary btn-xl" style="width: 12rem !important;">Następne</button>
+            </a>
+        </div>
+    </div>
+    <div class="row w-100 m-0" th:if="${booleans[0]?.exists && !booleans[1]?.exists}">
+        <div class="col-4 p-0">
+            <a th:href="@{/previous-exercise?id={exerciseId}(exerciseId= ${booleans[0]?.exerciseId})}">
+                <button class="btn btn-primary btn-xl" style="width: 12rem !important;">Poprzednie</button>
+            </a>
+        </div>
+        <div class="col-4 p-0 text-center">
+            <th:block th:insert="exercises/quizConfirmation :: confirm"></th:block>
+        </div>
+        <div class="col-4 p-0">
+        </div>
+    </div>
+    <div class="row w-100 m-0" th:if="${!booleans[0]?.exists && booleans[1]?.exists}">
+        <div class="col-4 p-0">
+        </div>
+        <div class="col-4 p-0 text-center">
+            <th:block th:insert="exercises/quizConfirmation :: confirm"></th:block>
+        </div>
+        <div class="col-4 p-0 text-right">
+            <a th:href="@{/next-exercise?id={exerciseId}(exerciseId=${booleans[1]?.exerciseId})}">
+                <button class="btn btn-primary btn-xl" style="width: 12rem !important;">Następne</button>
+            </a>
+        </div>
+    </div>
+</th:block>
+</body>
+</html>

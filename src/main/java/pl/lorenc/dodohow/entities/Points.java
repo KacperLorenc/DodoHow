@@ -21,7 +21,7 @@ public class Points {
     private Integer maxScore;
     @ManyToOne
     private User user;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Exercise exercise;
 
 }

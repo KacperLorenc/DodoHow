@@ -10,18 +10,15 @@
             <img class="masthead-avatar mb-3" src="../../assets/img/avataaars.png" alt=""/>
         </a>
     </div>
-</header>
-<div class="container d-flex align-items-center flex-column" style="margin-top: 6rem">
-    <div class="container">
-        <h2 class="page-section-heading text-center text-uppercase text-secondary">Podsumowanie</h2>
-        <div class="divider-custom">
-            <div class="divider-custom-line"></div>
-            <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
-            <div class="divider-custom-line"></div>
-        </div>
+    <h1 class="masthead-heading text-uppercase mb-0">Podsumowanie</h1>
+
+    <div class="divider-custom divider-light">
+        <div class="divider-custom-line"></div>
+        <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
+        <div class="divider-custom-line"></div>
     </div>
-</div>
-<div th:if="${!points?.isEmpty()}" class="container table-overflow mt-3"
+</header>
+<div th:if="${!points?.isEmpty()}" class="container table-overflow mt-5"
      style="margin-bottom: 3rem;">
     <th:block th:each="point, i : ${points}">
         <div class="row align-items-center mb-1">

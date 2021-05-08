@@ -62,10 +62,19 @@
             th:if="${#fields.hasErrors('wrongAnswers')}"
             th:errors="*{wrongAnswers}">Answer error</span>
     </div>
-    <input class="btn btn-primary btn-thin" type="submit" value="Dodaj zadanie">
+    <input type="hidden" th:field="*{id}"/>
+    <input type="hidden" th:field="*{number}"/>
+    <input class="btn btn-primary btn-thin" type="submit" value="Zapisz">
   </form>
 </div>
-<div class="masthead bg-main-green text-white text-center mt-5">
+<div class="row w-100 mt-3 mb-3">
+  <div class="col-md-12 text-center">
+    <a th:href="@{/classes/exercises?quiz={id}(id=${quizId})}">
+      <button class="btn btn-danger btn-xl" style="width: 14.5rem;">Powrót</button>
+    </a>
+  </div>
+</div>
+<div class="masthead bg-main-green text-white text-center mt-3">
 </div>
 <div class="footer-bottom" th:insert="home/footer :: foot"></div>
 </body>

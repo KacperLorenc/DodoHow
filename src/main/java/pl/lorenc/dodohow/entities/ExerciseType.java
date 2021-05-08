@@ -14,9 +14,9 @@ import java.util.stream.Collectors;
 public enum ExerciseType {
     TRUTH_FALSE("truthFalse", "Prawda lub fałsz"),
     CHOOSE_ANSWER("chooseAnswer", "Wybierz odpowiedź"),
-    TYPE_SENTENCE("typeSentence", "Przetłumacz zdanie"),
+    TYPE_SENTENCE("typeSentence", "Wpisz zdanie"),
     FILL_THE_BLANK("fillTheBlank", "Uzupełnij lukę"),
-    TRANSLATE_WORD("translateWord", "Przetłumacz słowo");
+    TRANSLATE_WORD("translateWord", "Podaj słowo");
 
     private final String name;
     private final String label;
