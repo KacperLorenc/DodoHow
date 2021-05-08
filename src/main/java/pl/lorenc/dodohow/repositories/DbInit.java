@@ -40,7 +40,7 @@ public class DbInit implements CommandLineRunner {
         t1.setClasses(new HashSet<>());
         userRepository.save(t1);
 
-        User user = new User(null, "kapa123", passwordEncoder.encode("kapa123"), "kacperlorenc1@wp.pl", true, "ROLE_USER");
+        User user = new User(null, "kapa123", passwordEncoder.encode("kapa123"), "kapa123@wp.pl", true, "ROLE_USER");
 
         QuizClass dodohow = new QuizClass(null, admin.getId(), Sets.newHashSet(user), new HashSet<>(), "DodoHow", "Podstawy proponowowane przed dodohow");
 
