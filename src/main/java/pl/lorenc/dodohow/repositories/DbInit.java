@@ -6,6 +6,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.lorenc.dodohow.entities.*;
+import pl.lorenc.dodohow.utility.ExerciseType;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -32,7 +33,7 @@ public class DbInit implements CommandLineRunner {
     public void run(String... args) {
 
 
-        User admin = new User(null, "admin123", passwordEncoder.encode("admin123"), "admin@wp.pl", true, "ROLE_ADMIN");
+        User admin = new User(null, "admin123", passwordEncoder.encode("admin123"), "admin@wp.pl", true, "ROLE_ADMIN,ROLE_TEACHER");
         admin.setClasses(new HashSet<>());
         userRepository.save(admin);
 

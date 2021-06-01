@@ -1,7 +1,7 @@
 package pl.lorenc.dodohow.dtos;
 
 import lombok.*;
-import pl.lorenc.dodohow.entities.ExerciseType;
+import pl.lorenc.dodohow.utility.ExerciseType;
 
 import java.util.List;
 

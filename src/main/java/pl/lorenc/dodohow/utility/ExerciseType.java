@@ -1,4 +1,4 @@
-package pl.lorenc.dodohow.entities;
+package pl.lorenc.dodohow.utility;
 
 
 import lombok.AllArgsConstructor;

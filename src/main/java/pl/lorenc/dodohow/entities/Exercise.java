@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pl.lorenc.dodohow.utility.ExerciseType;
 
 import javax.persistence.*;
 import java.util.List;

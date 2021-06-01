@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import pl.lorenc.dodohow.dtos.*;
 import pl.lorenc.dodohow.entities.*;
+import pl.lorenc.dodohow.utility.ExerciseType;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -509,7 +510,17 @@ public class ExerciseFacade {
             exercise.setWrongAnswers("");
         }
 
-        quiz.setMaxScore(quiz.getMaxScore() + exercise.getMaxScore());
+        if(exercise.getId() != null) {
+            Optional<Exercise> exOpt = quiz.getExercises().stream().filter(e -> e.getId().equals(exercise.getId())).findFirst();
+            if(exOpt.isPresent()) {
+                quiz.setMaxScore(quiz.getMaxScore() + Math.abs(exercise.getMaxScore() - exOpt.get().getMaxScore()));
+            } else {
+                quiz.setMaxScore(quiz.getMaxScore() + exercise.getMaxScore());
+            }
+        } else {
+            quiz.setMaxScore(quiz.getMaxScore() + exercise.getMaxScore());
+        }
+
         quiz.getExercises().add(exercise);
         exercise.setQuiz(quiz);
         quizService.save(quiz);

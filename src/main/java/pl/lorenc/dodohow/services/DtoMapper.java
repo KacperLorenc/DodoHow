@@ -8,6 +8,7 @@ import pl.lorenc.dodohow.entities.*;
 import pl.lorenc.dodohow.repositories.ClassRepository;
 import pl.lorenc.dodohow.repositories.ExerciseRepository;
 import pl.lorenc.dodohow.repositories.UserRepository;
+import pl.lorenc.dodohow.utility.ExerciseType;
 
 import java.util.*;
 import java.util.stream.Collectors;
