@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pl.lorenc.dodohow.security.VerificationToken;
 
 import javax.persistence.*;
 import java.util.ArrayList;

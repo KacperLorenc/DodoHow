@@ -76,19 +76,19 @@ public class DbInit implements CommandLineRunner {
 //        sectionRepository.save(Sec);
 
         //Sekcja nr1 - podstawy --------------------------------------------------------------------------------------------------
-        Exercise basic1Ex1 = new Exercise(null, 1, "Mam na imię Jan", "My name is Jan", "My orange is Juan;My name is Jan;You eat Jan;She be Jan", null, ExerciseType.CHOOSE_ANSWER, 1);
-        Exercise basic1Ex2 = new Exercise(null, 1, "Jestem mężczyzną", "I am a man", "You a man;I am a woman;He is an ant;I am a man", null, ExerciseType.CHOOSE_ANSWER, 15);
-        Exercise basic1Ex3 = new Exercise(null, 1, "Ty jesteś kobietą", "You are a woman", "He cooks;You are a woman;You are an apple;She is a woman", null, ExerciseType.CHOOSE_ANSWER, 13);
-        Exercise basic1Ex4 = new Exercise(null, 1, "I is a man", "false", "true;false", null, ExerciseType.TRUTH_FALSE, 11);
-        Exercise basic1Ex5 = new Exercise(null, 1, "She is a girl", "true", "true;false", null, ExerciseType.TRUTH_FALSE, 5);
-        Exercise basic1Ex6 = new Exercise(null, 1, "They are men", "true", "true;false", null, ExerciseType.TRUTH_FALSE, 4);
-        Exercise basic1Ex7 = new Exercise(null, 1, "Jestem chłopcem", "I am a boy", "", null, ExerciseType.TYPE_SENTENCE, 8);
-        Exercise basic1Ex8 = new Exercise(null, 1, "Ona jest dziewczyną", "She is a girl", "", null, ExerciseType.TYPE_SENTENCE, 2);
-        Exercise basic1Ex9 = new Exercise(null, 1, "Jestem kobietą", "I am a woman", "", null, ExerciseType.TYPE_SENTENCE, 6);
-        Exercise basic1Ex10 = new Exercise(null, 1, "Ty jesz", "You eat", "", null, ExerciseType.TYPE_SENTENCE, 12);
-        Exercise basic1Ex11 = new Exercise(null, 1, "My jesteśmy kobietami", "We are women", "", null, ExerciseType.TYPE_SENTENCE, 3);
-        Exercise basic1Ex12 = new Exercise(null, 1, "Jabłko", "An apple", "", null, ExerciseType.TRANSLATE_WORD, 9);
-        Exercise basic1Ex13 = new Exercise(null, 1, "Dziewczyna", "A girl", "", null, ExerciseType.TRANSLATE_WORD, 14);
+        Exercise basic1Ex1 = new Exercise(null, 1, "Przetłumacz: Mam na imię Jan", "My name is Jan", "My orange is Juan;My name is Jan;You eat Jan;She be Jan", null, ExerciseType.CHOOSE_ANSWER, 1);
+        Exercise basic1Ex2 = new Exercise(null, 1, "Przetłumacz: Jestem mężczyzną", "I am a man", "You a man;I am a woman;He is an ant;I am a man", null, ExerciseType.CHOOSE_ANSWER, 15);
+        Exercise basic1Ex3 = new Exercise(null, 1, "Przetłumacz: Ty jesteś kobietą", "You are a woman", "He cooks;You are a woman;You are an apple;She is a woman", null, ExerciseType.CHOOSE_ANSWER, 13);
+        Exercise basic1Ex4 = new Exercise(null, 1, "Czy to zdanie jest poprawne: I is a man", "false", "true;false", null, ExerciseType.TRUTH_FALSE, 11);
+        Exercise basic1Ex5 = new Exercise(null, 1, "Czy to zdanie jest poprawne: She is a girl", "true", "true;false", null, ExerciseType.TRUTH_FALSE, 5);
+        Exercise basic1Ex6 = new Exercise(null, 1, "Czy to zdanie jest poprawne: They are men", "true", "true;false", null, ExerciseType.TRUTH_FALSE, 4);
+        Exercise basic1Ex7 = new Exercise(null, 1, "Przetłumacz: Jestem chłopcem", "I am a boy", "", null, ExerciseType.TYPE_SENTENCE, 8);
+        Exercise basic1Ex8 = new Exercise(null, 1, "Przetłumacz: Ona jest dziewczyną", "She is a girl", "", null, ExerciseType.TYPE_SENTENCE, 2);
+        Exercise basic1Ex9 = new Exercise(null, 1, "Przetłumacz: Jestem kobietą", "I am a woman", "", null, ExerciseType.TYPE_SENTENCE, 6);
+        Exercise basic1Ex10 = new Exercise(null, 1, "Przetłumacz: Ty jesz", "You eat", "", null, ExerciseType.TYPE_SENTENCE, 12);
+        Exercise basic1Ex11 = new Exercise(null, 1, "Przetłumacz: My jesteśmy kobietami", "We are women", "", null, ExerciseType.TYPE_SENTENCE, 3);
+        Exercise basic1Ex12 = new Exercise(null, 1, "Przetłumacz: Jabłko", "An apple", "", null, ExerciseType.TRANSLATE_WORD, 9);
+        Exercise basic1Ex13 = new Exercise(null, 1, "Przetłumacz: Dziewczyna", "A girl", "", null, ExerciseType.TRANSLATE_WORD, 14);
         Exercise basic1Ex14 = new Exercise(null, 1, "He ... a man", "is", "are;am;is;be", null, ExerciseType.FILL_THE_BLANK, 7);
         Exercise basic1Ex15 = new Exercise(null, 1, "We ... women", "are", "are;is;am;be", null, ExerciseType.FILL_THE_BLANK, 10);
 
@@ -98,19 +98,19 @@ public class DbInit implements CommandLineRunner {
         exercisesBasic1.forEach(e -> e.setQuiz(basicsSec));
 
         //Sekcja nr1 - Zwierzęta --------------------------------------------------------------------------------------------------
-        Exercise animalsEx1 = new Exercise(null, 1, "Kot i pies", "A cat and a dog", "A cat and a dog;An elephant and an ant;A dog and a duck", null, ExerciseType.CHOOSE_ANSWER, 1);
-        Exercise animalsEx2 = new Exercise(null, 1, "Koty jedzą ryby", "Cats eat fish", "Fish eat cats;Ants eat elephants;Cats eat fish", null, ExerciseType.CHOOSE_ANSWER, 5);
-        Exercise animalsEx3 = new Exercise(null, 1, "Jestem człowiekiem", "I am a human", "I are an apple;I am a human;She a duck", null, ExerciseType.CHOOSE_ANSWER, 10);
-        Exercise animalsEx4 = new Exercise(null, 1, "Cats are animals", "true", "true;false", null, ExerciseType.TRUTH_FALSE, 2);
-        Exercise animalsEx5 = new Exercise(null, 1, "Dogs is animals", "false", "true;false", null, ExerciseType.TRUTH_FALSE, 6);
-        Exercise animalsEx6 = new Exercise(null, 1, "The elephant eat a apple", "false", "", null, ExerciseType.TRUTH_FALSE, 11);
-        Exercise animalsEx7 = new Exercise(null, 1, "Ptaki jedzą chleb", "Birds eat bread", "", null, ExerciseType.TYPE_SENTENCE, 3);
-        Exercise animalsEx8 = new Exercise(null, 1, "Ona ma kota", "She has a cat", "", null, ExerciseType.TYPE_SENTENCE, 7);
-        Exercise animalsEx9 = new Exercise(null, 1, "To jest świnia", "It is a pig", "", null, ExerciseType.TYPE_SENTENCE, 12);
-        Exercise animalsEx10 = new Exercise(null, 1, "Konie biegają", "Horses run", "", null, ExerciseType.TYPE_SENTENCE, 4);
-        Exercise animalsEx11 = new Exercise(null, 1, "Kaczka jest ptakiem", "A duck is a bird", "", null, ExerciseType.TYPE_SENTENCE, 8);
-        Exercise animalsEx12 = new Exercise(null, 1, "Psy", "Dogs", "", null, ExerciseType.TRANSLATE_WORD, 9);
-        Exercise animalsEx13 = new Exercise(null, 1, "Świnia", "Pig", "", null, ExerciseType.TRANSLATE_WORD, 14);
+        Exercise animalsEx1 = new Exercise(null, 1, "Przetłumacz: Kot i pies", "A cat and a dog", "A cat and a dog;An elephant and an ant;A dog and a duck", null, ExerciseType.CHOOSE_ANSWER, 1);
+        Exercise animalsEx2 = new Exercise(null, 1, "Przetłumacz: Koty jedzą ryby", "Cats eat fish", "Fish eat cats;Ants eat elephants;Cats eat fish", null, ExerciseType.CHOOSE_ANSWER, 5);
+        Exercise animalsEx3 = new Exercise(null, 1, "Przetłumacz: Jestem człowiekiem", "I am a human", "I are an apple;I am a human;She a duck", null, ExerciseType.CHOOSE_ANSWER, 10);
+        Exercise animalsEx4 = new Exercise(null, 1, "Czy to zdanie jest poprawne: Cats are animals", "true", "true;false", null, ExerciseType.TRUTH_FALSE, 2);
+        Exercise animalsEx5 = new Exercise(null, 1, "Czy to zdanie jest poprawne: Dogs is animals", "false", "true;false", null, ExerciseType.TRUTH_FALSE, 6);
+        Exercise animalsEx6 = new Exercise(null, 1, "Czy to zdanie jest poprawne: The elephant eat a apple", "false", "", null, ExerciseType.TRUTH_FALSE, 11);
+        Exercise animalsEx7 = new Exercise(null, 1, "Przetłumacz: Ptaki jedzą chleb", "Birds eat bread", "", null, ExerciseType.TYPE_SENTENCE, 3);
+        Exercise animalsEx8 = new Exercise(null, 1, "Przetłumacz: Ona ma kota", "She has a cat", "", null, ExerciseType.TYPE_SENTENCE, 7);
+        Exercise animalsEx9 = new Exercise(null, 1, "Przetłumacz: To jest świnia", "It is a pig", "", null, ExerciseType.TYPE_SENTENCE, 12);
+        Exercise animalsEx10 = new Exercise(null, 1, "Przetłumacz: Konie biegają", "Horses run", "", null, ExerciseType.TYPE_SENTENCE, 4);
+        Exercise animalsEx11 = new Exercise(null, 1, "Przetłumacz: Kaczka jest ptakiem", "A duck is a bird", "", null, ExerciseType.TYPE_SENTENCE, 8);
+        Exercise animalsEx12 = new Exercise(null, 1, "Przetłumacz: Psy", "Dogs", "", null, ExerciseType.TRANSLATE_WORD, 9);
+        Exercise animalsEx13 = new Exercise(null, 1, "Przetłumacz: Świnia", "Pig", "", null, ExerciseType.TRANSLATE_WORD, 14);
         Exercise animalsEx14 = new Exercise(null, 1, "... bark", "Dogs", "Ants;Dogs;Cats", null, ExerciseType.FILL_THE_BLANK, 13);
         Exercise animalsEx15 = new Exercise(null, 1, "... purr", "Cats", "Elephants;Dogs;Cats", null, ExerciseType.FILL_THE_BLANK, 15);
 
@@ -120,21 +120,21 @@ public class DbInit implements CommandLineRunner {
         exercisesAnimals.forEach(e -> e.setQuiz(animalsSec));
 
         //Sekcja nr3 - Jedzenie --------------------------------------------------------------------------------------------------
-        Exercise foodEx1 = new Exercise(null, 1, "Oni mają pomarańcze", "They have oranges", "They are oranges;They have oranges;We have bread;You eat an orange", null, ExerciseType.CHOOSE_ANSWER, 15);
-        Exercise foodEx2 = new Exercise(null, 1, "Jem kurczaka", "I eat chicken", "I have chicken;You have an apple;I eat chicken;She has a fork", null, ExerciseType.CHOOSE_ANSWER, 10);
-        Exercise foodEx3 = new Exercise(null, 1, "Owoce i warzywa", "Fruits and vegetables", "Apple and pie;Fruits and vegetables;Cats and dogs;Fruits and fish", null, ExerciseType.CHOOSE_ANSWER, 5);
-        Exercise foodEx4 = new Exercise(null, 1, "He has an orange", "true", "true;false", null, ExerciseType.TRUTH_FALSE, 14);
-        Exercise foodEx5 = new Exercise(null, 1, "I has an apple", "false", "true;false", null, ExerciseType.TRUTH_FALSE, 9);
-        Exercise foodEx6 = new Exercise(null, 1, "I eat dinner", "true", "true;false", null, ExerciseType.TRUTH_FALSE, 4);
-        Exercise foodEx7 = new Exercise(null, 1, "On gotuje", "He cooks", "", null, ExerciseType.TYPE_SENTENCE, 13);
-        Exercise foodEx8 = new Exercise(null, 1, "Ser i chleb", "The cheese and the bread", "", null, ExerciseType.TYPE_SENTENCE, 8);
-        Exercise foodEx9 = new Exercise(null, 1, "Ona pije wode", "She drinks water", "", null, ExerciseType.TYPE_SENTENCE, 3);
-        Exercise foodEx10 = new Exercise(null, 1, "Wy pijecie sok", "You drink juice", "", null, ExerciseType.TYPE_SENTENCE, 11);
-        Exercise foodEx11 = new Exercise(null, 1, "On je kanapkę", "He eats a sandwich", "", null, ExerciseType.TYPE_SENTENCE, 7);
-        Exercise foodEx12 = new Exercise(null, 1, "Widelec", "A fork", "", null, ExerciseType.TRANSLATE_WORD, 1);
-        Exercise foodEx13 = new Exercise(null, 1, "Talerz", "A plate", "", null, ExerciseType.TRANSLATE_WORD, 12);
-        Exercise foodEx14 = new Exercise(null, 1, "She ... eggs", "has", "have;hat;has;is", null, ExerciseType.FILL_THE_BLANK, 6);
-        Exercise foodEx15 = new Exercise(null, 1, "They ... beer", "drink", "eat;drink;are;is", null, ExerciseType.FILL_THE_BLANK, 2);
+        Exercise foodEx1 = new Exercise(null, 1, "Przetłumacz: Oni mają pomarańcze", "They have oranges", "They are oranges;They have oranges;We have bread;You eat an orange", null, ExerciseType.CHOOSE_ANSWER, 15);
+        Exercise foodEx2 = new Exercise(null, 1, "Przetłumacz: Jem kurczaka", "I eat chicken", "I have chicken;You have an apple;I eat chicken;She has a fork", null, ExerciseType.CHOOSE_ANSWER, 10);
+        Exercise foodEx3 = new Exercise(null, 1, "Przetłumacz: Owoce i warzywa", "Fruits and vegetables", "Apple and pie;Fruits and vegetables;Cats and dogs;Fruits and fish", null, ExerciseType.CHOOSE_ANSWER, 5);
+        Exercise foodEx4 = new Exercise(null, 1, "Czy to zdanie jest poprawne: He has an orange", "true", "true;false", null, ExerciseType.TRUTH_FALSE, 14);
+        Exercise foodEx5 = new Exercise(null, 1, "Czy to zdanie jest poprawne: I has an apple", "false", "true;false", null, ExerciseType.TRUTH_FALSE, 9);
+        Exercise foodEx6 = new Exercise(null, 1, "Czy to zdanie jest poprawne: I eat dinner", "true", "true;false", null, ExerciseType.TRUTH_FALSE, 4);
+        Exercise foodEx7 = new Exercise(null, 1, "Przetłumacz: On gotuje", "He cooks", "", null, ExerciseType.TYPE_SENTENCE, 13);
+        Exercise foodEx8 = new Exercise(null, 1, "Przetłumacz: Ser i chleb", "The cheese and the bread", "", null, ExerciseType.TYPE_SENTENCE, 8);
+        Exercise foodEx9 = new Exercise(null, 1, "Przetłumacz: Ona pije wode", "She drinks water", "", null, ExerciseType.TYPE_SENTENCE, 3);
+        Exercise foodEx10 = new Exercise(null, 1, "Przetłumacz: Wy pijecie sok", "You drink juice", "", null, ExerciseType.TYPE_SENTENCE, 11);
+        Exercise foodEx11 = new Exercise(null, 1, "Przetłumacz: On je kanapkę", "He eats a sandwich", "", null, ExerciseType.TYPE_SENTENCE, 7);
+        Exercise foodEx12 = new Exercise(null, 1, "Przetłumacz: Widelec", "A fork", "", null, ExerciseType.TRANSLATE_WORD, 1);
+        Exercise foodEx13 = new Exercise(null, 1, "Przetłumacz: Talerz", "A plate", "", null, ExerciseType.TRANSLATE_WORD, 12);
+        Exercise foodEx14 = new Exercise(null, 1, "Przetłumacz: She ... eggs", "has", "have;hat;has;is", null, ExerciseType.FILL_THE_BLANK, 6);
+        Exercise foodEx15 = new Exercise(null, 1, "Przetłumacz: They ... beer", "drink", "eat;drink;are;is", null, ExerciseType.FILL_THE_BLANK, 2);
 
         Set<Exercise> exercises = Sets.newHashSet(foodEx1, foodEx2, foodEx3, foodEx4, foodEx5, foodEx6, foodEx7, foodEx8, foodEx9, foodEx10, foodEx11, foodEx12, foodEx13, foodEx14, foodEx15);
         Quiz foodSec = new Quiz(null, "Jedzenie", exercises, 15, 3, dodohow, true, true);

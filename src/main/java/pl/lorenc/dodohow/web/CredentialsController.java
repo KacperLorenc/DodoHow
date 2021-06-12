@@ -11,7 +11,7 @@ import pl.lorenc.dodohow.dtos.UserDto;
 import pl.lorenc.dodohow.dtos.UserListDto;
 import pl.lorenc.dodohow.entities.User;
 import pl.lorenc.dodohow.security.OnRegistrationCompleteEvent;
-import pl.lorenc.dodohow.security.VerificationToken;
+import pl.lorenc.dodohow.entities.VerificationToken;
 import pl.lorenc.dodohow.services.ClassService;
 import pl.lorenc.dodohow.services.DtoMapper;
 import pl.lorenc.dodohow.services.UserService;

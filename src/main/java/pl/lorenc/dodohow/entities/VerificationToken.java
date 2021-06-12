@@ -1,4 +1,4 @@
-package pl.lorenc.dodohow.security;
+package pl.lorenc.dodohow.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

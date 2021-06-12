@@ -2,7 +2,7 @@ package pl.lorenc.dodohow.repositories;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
-import pl.lorenc.dodohow.security.VerificationToken;
+import pl.lorenc.dodohow.entities.VerificationToken;
 
 import java.util.Optional;
 

@@ -11,7 +11,7 @@ import pl.lorenc.dodohow.entities.User;
 import pl.lorenc.dodohow.repositories.TokenRepository;
 import pl.lorenc.dodohow.repositories.UserRepository;
 import pl.lorenc.dodohow.security.IAuthenticationFacade;
-import pl.lorenc.dodohow.security.VerificationToken;
+import pl.lorenc.dodohow.entities.VerificationToken;
 
 import java.util.List;
 import java.util.Optional;
